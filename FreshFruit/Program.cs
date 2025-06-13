@@ -1,7 +1,13 @@
+using FreshFruit.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<FreshFruitDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FreshFruitConnection")));
 
 var app = builder.Build();
 
@@ -19,6 +25,10 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.MapControllerRoute(
+      name: "admin",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
 
 app.MapControllerRoute(
     name: "default",
