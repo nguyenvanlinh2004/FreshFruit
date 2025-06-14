@@ -30,6 +30,7 @@ public partial class Product
 
     [Unicode(false)]
     public string? Slug { get; set; }
+    public double? Quantity { get; set; }
 
     [ForeignKey("CategotyId")]
     [InverseProperty("Products")]

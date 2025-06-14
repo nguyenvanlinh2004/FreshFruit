@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreshFruit.Migrations
 {
     [DbContext(typeof(FreshFruitDbContext))]
-    [Migration("20250613061624_AddEmailToAccount")]
-    partial class AddEmailToAccount
+    [Migration("20250614064217_editProduct")]
+    partial class editProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -311,6 +311,9 @@ namespace FreshFruit.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Quantity")
                         .HasColumnType("float");
 
                     b.Property<string>("ShipmentId")
