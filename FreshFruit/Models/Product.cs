@@ -13,7 +13,7 @@ public partial class Product
 
     public string? Name { get; set; }
 
-    public int CategotyId { get; set; }
+    public int CategoryId { get; set; }
 
     public double? Price { get; set; }
 
@@ -34,9 +34,9 @@ public partial class Product
     [Unicode(false)]
     public string? Slug { get; set; }
 
-    [ForeignKey("CategotyId")]
+    [ForeignKey("CategoryId")]
     [InverseProperty("Products")]
-    public virtual Category Categoty { get; set; } = null!;
+    public virtual Category Category { get; set; } = null!;
 
     [InverseProperty("Product")]
     public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; } = new List<InvoiceDetail>();
