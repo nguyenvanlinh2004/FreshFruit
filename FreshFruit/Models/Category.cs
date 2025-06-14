@@ -16,6 +16,6 @@ public partial class Category
 
     public int? Status { get; set; }
 
-    [InverseProperty("Categoty")]
+    [InverseProperty("Category")]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

@@ -47,11 +47,42 @@ public partial class FreshFruitDbContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_account");
+            entity.HasData(
+				  new Account { Id = 1, Email = "admin1@freshfruit.vn", Password = "Admin@123", Role = 1, Status = 1 },
+	              new Account { Id = 2, Email = "admin2@freshfruit.vn", Password = "User@123", Role = 1, Status = 1 },
+	              new Account { Id = 3, Email = "user2@freshfruit.vn", Password = "User@123", Role = 0, Status = 1 },
+	              new Account { Id = 4, Email = "user3@freshfruit.vn", Password = "User@123", Role = 0, Status = 1 },
+	              new Account { Id = 5, Email = "staff1@freshfruit.vn", Password = "Staff@123", Role = 0, Status = 1 },
+	              new Account { Id = 6, Email = "staff2@freshfruit.vn", Password = "Staff@123", Role = 0, Status = 1 },
+	              new Account { Id = 7, Email = "staff3@freshfruit.vn", Password = "Staff@123", Role = 0, Status = 1 }
+				);
+			entity.HasKey(e => e.Id).HasName("PK_account");
         });
 
         modelBuilder.Entity<Blog>(entity =>
         {
+			modelBuilder.Entity<Category>(entity =>
+			{
+				entity.HasData(
+					new Category { Id = 1, Name = "Fruits", Status = 1 },
+					new Category { Id = 2, Name = "Vegetables", Status = 1 },
+					new Category { Id = 3, Name = "Dairy", Status = 1 },
+					new Category { Id = 4, Name = "Bakery", Status = 1 },
+					new Category { Id = 5, Name = "Meat", Status = 1 },
+					new Category { Id = 6, Name = "Beverages", Status = 1 },
+					new Category { Id = 7, Name = "Snacks", Status = 1 }
+				);
+			});
+
+			entity.HasData(
+                 new Blog { Id = 1, Title = "Lợi ích của việc ăn trái cây mỗi ngày", Slug = "loi-ich-an-trai-cay", Contents = "Trái cây giúp tăng cường hệ miễn dịch và cung cấp nhiều vitamin.", Image = "blog1.jpg", AuthorId = 1, CreatedAt = new DateOnly(2025, 1, 15), Status = 1 },
+                 new Blog { Id = 2, Title = "Cách chọn trái cây sạch và an toàn", Slug = "cach-chon-trai-cay-sach", Contents = "Hướng dẫn chọn trái cây tươi, không bị tẩm hóa chất.", Image = "blog2.jpg", AuthorId = 2, CreatedAt = new DateOnly(2025, 2, 5), Status = 1 },
+                 new Blog { Id = 3, Title = "Top 5 loại trái cây giúp giảm cân", Slug = "trai-cay-giam-can", Contents = "Chuối, táo, dưa hấu... giúp no lâu và ít calo.", Image = "blog3.jpg", AuthorId = 3, CreatedAt = new DateOnly(2024, 3, 10), Status = 1 },
+                 new Blog { Id = 4, Title = "Sự khác biệt giữa trái cây hữu cơ và thông thường", Slug = "trai-cay-huu-co", Contents = "Trái cây hữu cơ không dùng thuốc trừ sâu hóa học.", Image = "blog4.jpg", AuthorId = 4, CreatedAt = new DateOnly(2025, 4, 12), Status = 1 },
+                 new Blog { Id = 5, Title = "Nước ép trái cây: lợi ích và lưu ý khi sử dụng", Slug = "nuoc-ep-trai-cay", Contents = "Nước ép giàu dưỡng chất nhưng nên uống đúng cách.", Image = "blog5.jpg", AuthorId = 5, CreatedAt = new DateOnly(2025, 5, 20), Status = 1 },
+                 new Blog { Id = 6, Title = "Tác dụng của vitamin C trong cam", Slug = "vitamin-c-trong-cam", Contents = "Cam chứa nhiều vitamin C giúp đẹp da và tăng sức đề kháng.", Image = "blog6.jpg", AuthorId = 6, CreatedAt = new DateOnly(2025, 6, 1), Status = 1 },
+                 new Blog { Id = 7, Title = "Ăn trái cây đúng thời điểm để hấp thu tối đa", Slug = "an-trai-cay-dung-luc", Contents = "Ăn trái cây vào buổi sáng giúp hấp thu tốt hơn.", Image = "blog7.jpg", AuthorId = 7, CreatedAt = new DateOnly(2025, 6, 10), Status = 1 }
+                );
             entity.Property(e => e.Id).ValueGeneratedNever();
 
             entity.HasOne(d => d.Author).WithMany(p => p.Blogs).HasConstraintName("FK_Blogs_Accounts_01");
@@ -59,6 +90,15 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<BlogImage>(entity =>
         {
+            entity.HasData(
+			    new BlogImage { Id = 1, BlogId = 1, ImageUrl = "blogimage1.jpg", Status = 1 },
+	            new BlogImage { Id = 2, BlogId = 2, ImageUrl = "blogimage2.jpg", Status = 1 },
+	            new BlogImage { Id = 3, BlogId = 3, ImageUrl = "blogimage3.jpg", Status = 1 },
+	            new BlogImage { Id = 4, BlogId = 4, ImageUrl = "blogimage4.jpg", Status = 1 },
+	            new BlogImage { Id = 5, BlogId = 5, ImageUrl = "blogimage5.jpg", Status = 1 },
+	            new BlogImage { Id = 6, BlogId = 6, ImageUrl = "blogimage6.jpg", Status = 1 },
+	            new BlogImage { Id = 7, BlogId = 7, ImageUrl = "blogimage7.jpg", Status = 1 }
+			);
             entity.HasOne(d => d.Blog).WithMany(p => p.BlogImages)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BlogImages_Blogs");
@@ -66,6 +106,15 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<Comment>(entity =>
         {
+            entity.HasData(
+                 new Comment { Id = 1, RatingId = 1, CommentText = "Sản phẩm rất tốt, sẽ ủng hộ tiếp!", CreatedAt = new DateOnly(2025, 1, 10), Status = 1 },
+                 new Comment { Id = 2, RatingId = 2, CommentText = "Chất lượng ổn, giá hợp lý.", CreatedAt = new DateOnly(2025, 1, 15), Status = 1 },
+                 new Comment { Id = 3, RatingId = 3, CommentText = "Không tươi như mong đợi.", CreatedAt = new DateOnly(2025, 2, 1), Status = 1 },
+                 new Comment { Id = 4, RatingId = 4, CommentText = "Dịch vụ giao hàng nhanh chóng.", CreatedAt = new DateOnly(2025, 2, 5), Status = 1 },
+                 new Comment { Id = 5, RatingId = 5, CommentText = "Sẽ giới thiệu cho bạn bè.", CreatedAt = new DateOnly(2025, 3, 1), Status = 1 },
+                 new Comment { Id = 6, RatingId = 6, CommentText = "Trái cây ngon và ngọt.", CreatedAt = new DateOnly(2025, 3, 12), Status = 1 },
+                 new Comment { Id = 7, RatingId = 7, CommentText = "Không hài lòng vì đóng gói sơ sài.", CreatedAt = new DateOnly(2025, 3, 20), Status = 0 }
+    );
             entity.HasOne(d => d.Rating).WithMany(p => p.Comments)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Comment_Rating");
@@ -73,6 +122,15 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<Invoice>(entity =>
         {
+            entity.HasData(
+				new Invoice { Id = 1, InvoicesCode = "INV0001", MemberId = 1, InvoiceDate = new DateOnly(2025, 1, 10), Total = 250000, Status = 1, PaymentMethod = "Tiền mặt" },
+	new Invoice { Id = 2, InvoicesCode = "INV0002", MemberId = 2, InvoiceDate = new DateOnly(2025, 1, 15), Total = 350000, Status = 1, PaymentMethod = "Chuyển khoản" },
+	new Invoice { Id = 3, InvoicesCode = "INV0003", MemberId = 3, InvoiceDate = new DateOnly(2025, 2, 1), Total = 180000, Status = 1, PaymentMethod = "Chuyển khoản" },
+	new Invoice { Id = 4, InvoicesCode = "INV0004", MemberId = 4, InvoiceDate = new DateOnly(2025, 2, 18), Total = 410000, Status = 1, PaymentMethod = "Tiền mặt" },
+	new Invoice { Id = 5, InvoicesCode = "INV0005", MemberId = 5, InvoiceDate = new DateOnly(2025, 3, 2), Total = 295000, Status = 1, PaymentMethod = "Chuyển khoản" },
+	new Invoice { Id = 6, InvoicesCode = "INV0006", MemberId = 6, InvoiceDate = new DateOnly(2025, 3, 20), Total = 150000, Status = 1, PaymentMethod = "Chuyển khoản" },
+	new Invoice { Id = 7, InvoicesCode = "INV0007", MemberId = 7, InvoiceDate = new DateOnly(2025, 4, 5), Total = 320000, Status = 1, PaymentMethod = "Tiền mặt" }
+				);
             entity.HasOne(d => d.Member).WithMany(p => p.Invoices)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Invoices_Members_01");
@@ -80,6 +138,15 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<InvoiceDetail>(entity =>
         {
+            entity.HasData(
+				new InvoiceDetail { Id = 1, InvoiceId = 1, ProductId = 1, Quantity = 2.000m, UnitPrice = 50000, Total = 100000, Status = 1 },
+	            new InvoiceDetail { Id = 2, InvoiceId = 2, ProductId = 2, Quantity = 1.000m, UnitPrice = 35000, Total = 35000, Status = 1 },
+	            new InvoiceDetail { Id = 3, InvoiceId = 3, ProductId = 3, Quantity = 3.500m, UnitPrice = 40000, Total = 140000, Status = 1 },
+	            new InvoiceDetail { Id = 4, InvoiceId = 4, ProductId = 4, Quantity = 1.200m, UnitPrice = 60000, Total = 72000, Status = 1 },
+	            new InvoiceDetail { Id = 5, InvoiceId = 5, ProductId = 5, Quantity = 0.800m, UnitPrice = 45000, Total = 36000, Status = 1 },
+	            new InvoiceDetail { Id = 6, InvoiceId = 6, ProductId = 6, Quantity = 2.000m, UnitPrice = 55000, Total = 110000, Status = 1 },
+	            new InvoiceDetail { Id = 7, InvoiceId = 7, ProductId = 7, Quantity = 1.500m, UnitPrice = 48000, Total = 72000, Status = 1 }
+				);
             entity.HasOne(d => d.Invoice).WithMany(p => p.InvoiceDetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_InvoiceDetails_Invoices_01");
@@ -91,6 +158,15 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
+            entity.HasData(
+				new Member { Id = 1, Fullname = "Nguyễn Văn A", Phone = "0912345678", Address = "123 Lê Lợi, Q1, TP.HCM", Email = "a.nguyen@example.com", Dob = new DateOnly(1990, 1, 1), AccountId = 1, Status = 1 },
+	            new Member { Id = 2, Fullname = "Trần Thị B", Phone = "0934567890", Address = "45 Pasteur, Q3, TP.HCM", Email = "b.tran@example.com", Dob = new DateOnly(1992, 5, 12), AccountId = 2, Status = 1 },
+	            new Member { Id = 3, Fullname = "Lê Văn C", Phone = "0901122334", Address = "99 Trần Hưng Đạo, Q5, TP.HCM", Email = "c.le@example.com", Dob = new DateOnly(1985, 8, 23), AccountId = 3, Status = 1 },
+	            new Member { Id = 4, Fullname = "Phạm Thị D", Phone = "0987654321", Address = "10 Nguyễn Du, Q1, TP.HCM", Email = "d.pham@example.com", Dob = new DateOnly(1995, 12, 5), AccountId = 4, Status = 1 },
+	            new Member { Id = 5, Fullname = "Đặng Văn E", Phone = "0911223344", Address = "75 Điện Biên Phủ, Q10, TP.HCM", Email = "e.dang@example.com", Dob = new DateOnly(1993, 3, 15), AccountId = 5, Status = 1 },
+	            new Member { Id = 6, Fullname = "Võ Thị F", Phone = "0977554433", Address = "234 Lý Thường Kiệt, Q11, TP.HCM", Email = "f.vo@example.com", Dob = new DateOnly(1988, 9, 9), AccountId = 6, Status = 1 },
+	            new Member { Id = 7, Fullname = "Hoàng Văn G", Phone = "0966888999", Address = "88 Nguyễn Văn Cừ, Q5, TP.HCM", Email = "g.hoang@example.com", Dob = new DateOnly(1991, 7, 7), AccountId = 7, Status = 1 }
+				);
             entity.HasKey(e => e.Id).HasName("PK_member");
 
             entity.Property(e => e.Email).IsFixedLength();
@@ -103,23 +179,50 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_product");
+            entity.HasData(
+				 new Product { Id = 1, Name = "Táo Mỹ", CategoryId = 1, Price = 45000, Description = "Táo nhập khẩu Mỹ, giòn ngọt", Image = "tao.jpg", Status = 1, Quantity = 100, ShipmentId = "SHIP001", Slug = "tao-my" },
+	new Product { Id = 2, Name = "Cam Sành", CategoryId = 2, Price = 30000, Description = "Cam sành miền Tây, nhiều nước", Image = "cam.jpg", Status = 1, Quantity = 150, ShipmentId = "SHIP002", Slug = "cam-sanh" },
+	new Product { Id = 3, Name = "Chuối Laba", CategoryId = 3, Price = 20000, Description = "Chuối Laba Đà Lạt chín cây", Image = "chuoi.jpg", Status = 1, Quantity = 120, ShipmentId = "SHIP003", Slug = "chuoi-laba" },
+	new Product { Id = 4, Name = "Nho Ninh Thuận", CategoryId = 4, Price = 60000, Description = "Nho tươi không hạt", Image = "nho.jpg", Status = 1, Quantity = 80, ShipmentId = "SHIP004", Slug = "nho-ninh-thuan" },
+	new Product { Id = 5, Name = "Dưa Hấu", CategoryId = 5, Price = 15000, Description = "Dưa hấu đỏ ruột, ngọt mát", Image = "duahau.jpg", Status = 1, Quantity = 200, ShipmentId = "SHIP005", Slug = "dua-hau" },
+	new Product { Id = 6, Name = "Ổi Lê", CategoryId = 6, Price = 25000, Description = "Ổi lê giòn, ít hạt", Image = "oi.jpg", Status = 1, Quantity = 90, ShipmentId = "SHIP006", Slug = "oi-le" },
+	new Product { Id = 7, Name = "Mít Thái", CategoryId = 7, Price = 40000, Description = "Mít Thái thơm, ngọt", Image = "mit.jpg", Status = 1, Quantity = 70, ShipmentId = "SHIP007", Slug = "mit-thai" }
+				);
+			entity.HasKey(e => e.Id).HasName("PK_product");
 
-            entity.HasOne(d => d.Categoty).WithMany(p => p.Products)
+            entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Products_Categories_01");
         });
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
+            entity.HasData(
+				new ProductImage { Id = 1, ProductId = 1, ImageUrl = "tao-1.jpg", Status = 1 },
+	            new ProductImage { Id = 2, ProductId = 2, ImageUrl = "cam-1.jpg", Status = 1 },
+	            new ProductImage { Id = 3, ProductId = 3, ImageUrl = "chuoi-1.jpg", Status = 1 },
+	            new ProductImage { Id = 4, ProductId = 4, ImageUrl = "nho-1.jpg", Status = 1 },
+	            new ProductImage { Id = 5, ProductId = 5, ImageUrl = "duahau-1.jpg", Status = 1 },
+	            new ProductImage { Id = 6, ProductId = 6, ImageUrl = "oi-1.jpg", Status = 1 },
+	            new ProductImage { Id = 7, ProductId = 7, ImageUrl = "mit-1.jpg", Status = 1 }
+				);
+			entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductImages_Products");
         });
 
         modelBuilder.Entity<PurchaseReceipt>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_GoodsReceipt");
+            entity.HasData(
+				new PurchaseReceipt { Id = 1, ShipmentId = "SHIP001", ReceiptDate = new DateOnly(2024, 1, 5), Total = 1000000, Supplier = "Công ty A", CreateBy = 1, Status = 1 },
+	            new PurchaseReceipt { Id = 2, ShipmentId = "SHIP002", ReceiptDate = new DateOnly(2024, 1, 10), Total = 1500000, Supplier = "Công ty B", CreateBy = 2, Status = 1 },
+	            new PurchaseReceipt { Id = 3, ShipmentId = "SHIP003", ReceiptDate = new DateOnly(2024, 2, 1), Total = 850000, Supplier = "Công ty C", CreateBy = 3, Status = 1 },
+	            new PurchaseReceipt { Id = 4, ShipmentId = "SHIP004", ReceiptDate = new DateOnly(2024, 2, 15), Total = 1300000, Supplier = "Công ty D", CreateBy = 4, Status = 1 },
+	            new PurchaseReceipt { Id = 5, ShipmentId = "SHIP005", ReceiptDate = new DateOnly(2024, 3, 3), Total = 950000, Supplier = "Công ty E", CreateBy = 5, Status = 1 },
+	            new PurchaseReceipt { Id = 6, ShipmentId = "SHIP006", ReceiptDate = new DateOnly(2024, 3, 20), Total = 1100000, Supplier = "Công ty F", CreateBy = 6, Status = 1 },
+	            new PurchaseReceipt { Id = 7, ShipmentId = "SHIP007", ReceiptDate = new DateOnly(2024, 4, 2), Total = 1250000, Supplier = "Công ty G", CreateBy = 7, Status = 1 }
+				);
+			entity.HasKey(e => e.Id).HasName("PK_GoodsReceipt");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -130,7 +233,16 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<PurchaseReceiptDetail>(entity =>
         {
-            entity.HasOne(d => d.Product).WithMany(p => p.PurchaseReceiptDetails)
+            entity.HasData(
+				 new PurchaseReceiptDetail { Id = 1, ReceiptId = 1, ProductId = 1, Quantity = 50, ImportPrice = 20000, ExpiryDate = new DateOnly(2024, 12, 1), Total = 1000000, Status = 1 },
+	             new PurchaseReceiptDetail { Id = 2, ReceiptId = 2, ProductId = 2, Quantity = 60, ImportPrice = 25000, ExpiryDate = new DateOnly(2024, 11, 20), Total = 1500000, Status = 1 },
+	             new PurchaseReceiptDetail { Id = 3, ReceiptId = 3, ProductId = 3, Quantity = 40, ImportPrice = 21250, ExpiryDate = new DateOnly(2024, 11, 10), Total = 850000, Status = 1 },
+	             new PurchaseReceiptDetail { Id = 4, ReceiptId = 4, ProductId = 4, Quantity = 65, ImportPrice = 20000, ExpiryDate = new DateOnly(2024, 12, 5), Total = 1300000, Status = 1 },
+	             new PurchaseReceiptDetail { Id = 5, ReceiptId = 5, ProductId = 5, Quantity = 70, ImportPrice = 13571, ExpiryDate = new DateOnly(2024, 10, 25), Total = 950000, Status = 1 },
+               	 new PurchaseReceiptDetail { Id = 6, ReceiptId = 6, ProductId = 6, Quantity = 55, ImportPrice = 20000, ExpiryDate = new DateOnly(2024, 12, 15), Total = 1100000, Status = 1 },
+             	 new PurchaseReceiptDetail { Id = 7, ReceiptId = 7, ProductId = 7, Quantity = 50, ImportPrice = 25000, ExpiryDate = new DateOnly(2024, 12, 31), Total = 1250000, Status = 1 }
+				);
+			entity.HasOne(d => d.Product).WithMany(p => p.PurchaseReceiptDetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PurchaseReceiptDetails_Products_01");
 
@@ -141,7 +253,16 @@ public partial class FreshFruitDbContext : DbContext
 
         modelBuilder.Entity<Rating>(entity =>
         {
-            entity.HasOne(d => d.Member).WithMany(p => p.Ratings)
+            entity.HasData(
+				new Rating { Id = 1, ProductId = 1, MemberId = 1, Rating1 = 5, CreatedAt = new DateOnly(2024, 6, 1), Status = 1 },
+	            new Rating { Id = 2, ProductId = 2, MemberId = 2, Rating1 = 4, CreatedAt = new DateOnly(2024, 6, 2), Status = 1 },
+	            new Rating { Id = 3, ProductId = 3, MemberId = 3, Rating1 = 3, CreatedAt = new DateOnly(2024, 6, 3), Status = 1 },
+	            new Rating { Id = 4, ProductId = 4, MemberId = 4, Rating1 = 5, CreatedAt = new DateOnly(2024, 6, 4), Status = 1 },
+	            new Rating { Id = 5, ProductId = 5, MemberId = 5, Rating1 = 4, CreatedAt = new DateOnly(2024, 6, 5), Status = 1 },
+	            new Rating { Id = 6, ProductId = 6, MemberId = 6, Rating1 = 2, CreatedAt = new DateOnly(2024, 6, 6), Status = 1 },
+	            new Rating { Id = 7, ProductId = 7, MemberId = 7, Rating1 = 5, CreatedAt = new DateOnly(2024, 6, 7), Status = 1 }
+				);
+			entity.HasOne(d => d.Member).WithMany(p => p.Ratings)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rating_Members");
 
@@ -149,6 +270,7 @@ public partial class FreshFruitDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rating_Products");
         });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

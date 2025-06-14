@@ -51,6 +51,64 @@ namespace FreshFruit.Migrations
                         .HasName("PK_account");
 
                     b.ToTable("Accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin1@freshfruit.vn",
+                            Password = "Admin@123",
+                            Role = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "admin2@freshfruit.vn",
+                            Password = "User@123",
+                            Role = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "user2@freshfruit.vn",
+                            Password = "User@123",
+                            Role = 0,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Email = "user3@freshfruit.vn",
+                            Password = "User@123",
+                            Role = 0,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Email = "staff1@freshfruit.vn",
+                            Password = "Staff@123",
+                            Role = 0,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Email = "staff2@freshfruit.vn",
+                            Password = "Staff@123",
+                            Role = 0,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Email = "staff3@freshfruit.vn",
+                            Password = "Staff@123",
+                            Role = 0,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Blog", b =>
@@ -87,6 +145,85 @@ namespace FreshFruit.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Blogs");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AuthorId = 1,
+                            Contents = "Trái cây giúp tăng cường hệ miễn dịch và cung cấp nhiều vitamin.",
+                            CreatedAt = new DateOnly(2025, 1, 15),
+                            Image = "blog1.jpg",
+                            Slug = "loi-ich-an-trai-cay",
+                            Status = 1,
+                            Title = "Lợi ích của việc ăn trái cây mỗi ngày"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AuthorId = 2,
+                            Contents = "Hướng dẫn chọn trái cây tươi, không bị tẩm hóa chất.",
+                            CreatedAt = new DateOnly(2025, 2, 5),
+                            Image = "blog2.jpg",
+                            Slug = "cach-chon-trai-cay-sach",
+                            Status = 1,
+                            Title = "Cách chọn trái cây sạch và an toàn"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AuthorId = 3,
+                            Contents = "Chuối, táo, dưa hấu... giúp no lâu và ít calo.",
+                            CreatedAt = new DateOnly(2024, 3, 10),
+                            Image = "blog3.jpg",
+                            Slug = "trai-cay-giam-can",
+                            Status = 1,
+                            Title = "Top 5 loại trái cây giúp giảm cân"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AuthorId = 4,
+                            Contents = "Trái cây hữu cơ không dùng thuốc trừ sâu hóa học.",
+                            CreatedAt = new DateOnly(2025, 4, 12),
+                            Image = "blog4.jpg",
+                            Slug = "trai-cay-huu-co",
+                            Status = 1,
+                            Title = "Sự khác biệt giữa trái cây hữu cơ và thông thường"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AuthorId = 5,
+                            Contents = "Nước ép giàu dưỡng chất nhưng nên uống đúng cách.",
+                            CreatedAt = new DateOnly(2025, 5, 20),
+                            Image = "blog5.jpg",
+                            Slug = "nuoc-ep-trai-cay",
+                            Status = 1,
+                            Title = "Nước ép trái cây: lợi ích và lưu ý khi sử dụng"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AuthorId = 6,
+                            Contents = "Cam chứa nhiều vitamin C giúp đẹp da và tăng sức đề kháng.",
+                            CreatedAt = new DateOnly(2025, 6, 1),
+                            Image = "blog6.jpg",
+                            Slug = "vitamin-c-trong-cam",
+                            Status = 1,
+                            Title = "Tác dụng của vitamin C trong cam"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AuthorId = 7,
+                            Contents = "Ăn trái cây vào buổi sáng giúp hấp thu tốt hơn.",
+                            CreatedAt = new DateOnly(2025, 6, 10),
+                            Image = "blog7.jpg",
+                            Slug = "an-trai-cay-dung-luc",
+                            Status = 1,
+                            Title = "Ăn trái cây đúng thời điểm để hấp thu tối đa"
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.BlogImage", b =>
@@ -114,6 +251,57 @@ namespace FreshFruit.Migrations
                     b.HasIndex("BlogId");
 
                     b.ToTable("BlogImages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BlogId = 1,
+                            ImageUrl = "blogimage1.jpg",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BlogId = 2,
+                            ImageUrl = "blogimage2.jpg",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BlogId = 3,
+                            ImageUrl = "blogimage3.jpg",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BlogId = 4,
+                            ImageUrl = "blogimage4.jpg",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BlogId = 5,
+                            ImageUrl = "blogimage5.jpg",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BlogId = 6,
+                            ImageUrl = "blogimage6.jpg",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BlogId = 7,
+                            ImageUrl = "blogimage7.jpg",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Category", b =>
@@ -134,6 +322,50 @@ namespace FreshFruit.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Fruits",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Vegetables",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Dairy",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Bakery",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Meat",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Beverages",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Snacks",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Comment", b =>
@@ -161,6 +393,64 @@ namespace FreshFruit.Migrations
                     b.HasIndex("RatingId");
 
                     b.ToTable("Comment");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CommentText = "Sản phẩm rất tốt, sẽ ủng hộ tiếp!",
+                            CreatedAt = new DateOnly(2025, 1, 10),
+                            RatingId = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CommentText = "Chất lượng ổn, giá hợp lý.",
+                            CreatedAt = new DateOnly(2025, 1, 15),
+                            RatingId = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CommentText = "Không tươi như mong đợi.",
+                            CreatedAt = new DateOnly(2025, 2, 1),
+                            RatingId = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CommentText = "Dịch vụ giao hàng nhanh chóng.",
+                            CreatedAt = new DateOnly(2025, 2, 5),
+                            RatingId = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CommentText = "Sẽ giới thiệu cho bạn bè.",
+                            CreatedAt = new DateOnly(2025, 3, 1),
+                            RatingId = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CommentText = "Trái cây ngon và ngọt.",
+                            CreatedAt = new DateOnly(2025, 3, 12),
+                            RatingId = 6,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CommentText = "Không hài lòng vì đóng gói sơ sài.",
+                            CreatedAt = new DateOnly(2025, 3, 20),
+                            RatingId = 7,
+                            Status = 0
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Invoice", b =>
@@ -199,6 +489,78 @@ namespace FreshFruit.Migrations
                     b.HasIndex("MemberId");
 
                     b.ToTable("Invoices");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            InvoiceDate = new DateOnly(2025, 1, 10),
+                            InvoicesCode = "INV0001",
+                            MemberId = 1,
+                            PaymentMethod = "Tiền mặt",
+                            Status = 1,
+                            Total = 250000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            InvoiceDate = new DateOnly(2025, 1, 15),
+                            InvoicesCode = "INV0002",
+                            MemberId = 2,
+                            PaymentMethod = "Chuyển khoản",
+                            Status = 1,
+                            Total = 350000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            InvoiceDate = new DateOnly(2025, 2, 1),
+                            InvoicesCode = "INV0003",
+                            MemberId = 3,
+                            PaymentMethod = "Chuyển khoản",
+                            Status = 1,
+                            Total = 180000m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            InvoiceDate = new DateOnly(2025, 2, 18),
+                            InvoicesCode = "INV0004",
+                            MemberId = 4,
+                            PaymentMethod = "Tiền mặt",
+                            Status = 1,
+                            Total = 410000m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            InvoiceDate = new DateOnly(2025, 3, 2),
+                            InvoicesCode = "INV0005",
+                            MemberId = 5,
+                            PaymentMethod = "Chuyển khoản",
+                            Status = 1,
+                            Total = 295000m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            InvoiceDate = new DateOnly(2025, 3, 20),
+                            InvoicesCode = "INV0006",
+                            MemberId = 6,
+                            PaymentMethod = "Chuyển khoản",
+                            Status = 1,
+                            Total = 150000m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            InvoiceDate = new DateOnly(2025, 4, 5),
+                            InvoicesCode = "INV0007",
+                            MemberId = 7,
+                            PaymentMethod = "Tiền mặt",
+                            Status = 1,
+                            Total = 320000m
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.InvoiceDetail", b =>
@@ -235,6 +597,78 @@ namespace FreshFruit.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("InvoiceDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            InvoiceId = 1,
+                            ProductId = 1,
+                            Quantity = 2.000m,
+                            Status = 1,
+                            Total = 100000m,
+                            UnitPrice = 50000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            InvoiceId = 2,
+                            ProductId = 2,
+                            Quantity = 1.000m,
+                            Status = 1,
+                            Total = 35000m,
+                            UnitPrice = 35000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            InvoiceId = 3,
+                            ProductId = 3,
+                            Quantity = 3.500m,
+                            Status = 1,
+                            Total = 140000m,
+                            UnitPrice = 40000m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            InvoiceId = 4,
+                            ProductId = 4,
+                            Quantity = 1.200m,
+                            Status = 1,
+                            Total = 72000m,
+                            UnitPrice = 60000m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            InvoiceId = 5,
+                            ProductId = 5,
+                            Quantity = 0.800m,
+                            Status = 1,
+                            Total = 36000m,
+                            UnitPrice = 45000m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            InvoiceId = 6,
+                            ProductId = 6,
+                            Quantity = 2.000m,
+                            Status = 1,
+                            Total = 110000m,
+                            UnitPrice = 55000m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            InvoiceId = 7,
+                            ProductId = 7,
+                            Quantity = 1.500m,
+                            Status = 1,
+                            Total = 72000m,
+                            UnitPrice = 48000m
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Member", b =>
@@ -284,6 +718,85 @@ namespace FreshFruit.Migrations
                     b.HasIndex("AccountId");
 
                     b.ToTable("Members");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 1,
+                            Address = "123 Lê Lợi, Q1, TP.HCM",
+                            Dob = new DateOnly(1990, 1, 1),
+                            Email = "a.nguyen@example.com",
+                            Fullname = "Nguyễn Văn A",
+                            Phone = "0912345678",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccountId = 2,
+                            Address = "45 Pasteur, Q3, TP.HCM",
+                            Dob = new DateOnly(1992, 5, 12),
+                            Email = "b.tran@example.com",
+                            Fullname = "Trần Thị B",
+                            Phone = "0934567890",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccountId = 3,
+                            Address = "99 Trần Hưng Đạo, Q5, TP.HCM",
+                            Dob = new DateOnly(1985, 8, 23),
+                            Email = "c.le@example.com",
+                            Fullname = "Lê Văn C",
+                            Phone = "0901122334",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccountId = 4,
+                            Address = "10 Nguyễn Du, Q1, TP.HCM",
+                            Dob = new DateOnly(1995, 12, 5),
+                            Email = "d.pham@example.com",
+                            Fullname = "Phạm Thị D",
+                            Phone = "0987654321",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccountId = 5,
+                            Address = "75 Điện Biên Phủ, Q10, TP.HCM",
+                            Dob = new DateOnly(1993, 3, 15),
+                            Email = "e.dang@example.com",
+                            Fullname = "Đặng Văn E",
+                            Phone = "0911223344",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccountId = 6,
+                            Address = "234 Lý Thường Kiệt, Q11, TP.HCM",
+                            Dob = new DateOnly(1988, 9, 9),
+                            Email = "f.vo@example.com",
+                            Fullname = "Võ Thị F",
+                            Phone = "0977554433",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccountId = 7,
+                            Address = "88 Nguyễn Văn Cừ, Q5, TP.HCM",
+                            Dob = new DateOnly(1991, 7, 7),
+                            Email = "g.hoang@example.com",
+                            Fullname = "Hoàng Văn G",
+                            Phone = "0966888999",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Product", b =>
@@ -294,7 +807,7 @@ namespace FreshFruit.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategotyId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -328,9 +841,102 @@ namespace FreshFruit.Migrations
                     b.HasKey("Id")
                         .HasName("PK_product");
 
-                    b.HasIndex("CategotyId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "Táo nhập khẩu Mỹ, giòn ngọt",
+                            Image = "tao.jpg",
+                            Name = "Táo Mỹ",
+                            Price = 45000.0,
+                            Quantity = 100.0,
+                            ShipmentId = "SHIP001",
+                            Slug = "tao-my",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 2,
+                            Description = "Cam sành miền Tây, nhiều nước",
+                            Image = "cam.jpg",
+                            Name = "Cam Sành",
+                            Price = 30000.0,
+                            Quantity = 150.0,
+                            ShipmentId = "SHIP002",
+                            Slug = "cam-sanh",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 3,
+                            Description = "Chuối Laba Đà Lạt chín cây",
+                            Image = "chuoi.jpg",
+                            Name = "Chuối Laba",
+                            Price = 20000.0,
+                            Quantity = 120.0,
+                            ShipmentId = "SHIP003",
+                            Slug = "chuoi-laba",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 4,
+                            Description = "Nho tươi không hạt",
+                            Image = "nho.jpg",
+                            Name = "Nho Ninh Thuận",
+                            Price = 60000.0,
+                            Quantity = 80.0,
+                            ShipmentId = "SHIP004",
+                            Slug = "nho-ninh-thuan",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 5,
+                            Description = "Dưa hấu đỏ ruột, ngọt mát",
+                            Image = "duahau.jpg",
+                            Name = "Dưa Hấu",
+                            Price = 15000.0,
+                            Quantity = 200.0,
+                            ShipmentId = "SHIP005",
+                            Slug = "dua-hau",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 6,
+                            Description = "Ổi lê giòn, ít hạt",
+                            Image = "oi.jpg",
+                            Name = "Ổi Lê",
+                            Price = 25000.0,
+                            Quantity = 90.0,
+                            ShipmentId = "SHIP006",
+                            Slug = "oi-le",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 7,
+                            Description = "Mít Thái thơm, ngọt",
+                            Image = "mit.jpg",
+                            Name = "Mít Thái",
+                            Price = 40000.0,
+                            Quantity = 70.0,
+                            ShipmentId = "SHIP007",
+                            Slug = "mit-thai",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.ProductImage", b =>
@@ -358,6 +964,57 @@ namespace FreshFruit.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ImageUrl = "tao-1.jpg",
+                            ProductId = 1,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ImageUrl = "cam-1.jpg",
+                            ProductId = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ImageUrl = "chuoi-1.jpg",
+                            ProductId = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ImageUrl = "nho-1.jpg",
+                            ProductId = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ImageUrl = "duahau-1.jpg",
+                            ProductId = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ImageUrl = "oi-1.jpg",
+                            ProductId = 6,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ImageUrl = "mit-1.jpg",
+                            ProductId = 7,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.PurchaseReceipt", b =>
@@ -391,6 +1048,78 @@ namespace FreshFruit.Migrations
                     b.HasIndex("CreateBy");
 
                     b.ToTable("PurchaseReceipts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreateBy = 1,
+                            ReceiptDate = new DateOnly(2024, 1, 5),
+                            ShipmentId = "SHIP001",
+                            Status = 1,
+                            Supplier = "Công ty A",
+                            Total = 1000000.0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreateBy = 2,
+                            ReceiptDate = new DateOnly(2024, 1, 10),
+                            ShipmentId = "SHIP002",
+                            Status = 1,
+                            Supplier = "Công ty B",
+                            Total = 1500000.0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreateBy = 3,
+                            ReceiptDate = new DateOnly(2024, 2, 1),
+                            ShipmentId = "SHIP003",
+                            Status = 1,
+                            Supplier = "Công ty C",
+                            Total = 850000.0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreateBy = 4,
+                            ReceiptDate = new DateOnly(2024, 2, 15),
+                            ShipmentId = "SHIP004",
+                            Status = 1,
+                            Supplier = "Công ty D",
+                            Total = 1300000.0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreateBy = 5,
+                            ReceiptDate = new DateOnly(2024, 3, 3),
+                            ShipmentId = "SHIP005",
+                            Status = 1,
+                            Supplier = "Công ty E",
+                            Total = 950000.0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreateBy = 6,
+                            ReceiptDate = new DateOnly(2024, 3, 20),
+                            ShipmentId = "SHIP006",
+                            Status = 1,
+                            Supplier = "Công ty F",
+                            Total = 1100000.0
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreateBy = 7,
+                            ReceiptDate = new DateOnly(2024, 4, 2),
+                            ShipmentId = "SHIP007",
+                            Status = 1,
+                            Supplier = "Công ty G",
+                            Total = 1250000.0
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.PurchaseReceiptDetail", b =>
@@ -429,6 +1158,85 @@ namespace FreshFruit.Migrations
                     b.HasIndex("ReceiptId");
 
                     b.ToTable("PurchaseReceiptDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ExpiryDate = new DateOnly(2024, 12, 1),
+                            ImportPrice = 20000m,
+                            ProductId = 1,
+                            Quantity = 50,
+                            ReceiptId = 1,
+                            Status = 1,
+                            Total = 1000000m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ExpiryDate = new DateOnly(2024, 11, 20),
+                            ImportPrice = 25000m,
+                            ProductId = 2,
+                            Quantity = 60,
+                            ReceiptId = 2,
+                            Status = 1,
+                            Total = 1500000m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ExpiryDate = new DateOnly(2024, 11, 10),
+                            ImportPrice = 21250m,
+                            ProductId = 3,
+                            Quantity = 40,
+                            ReceiptId = 3,
+                            Status = 1,
+                            Total = 850000m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ExpiryDate = new DateOnly(2024, 12, 5),
+                            ImportPrice = 20000m,
+                            ProductId = 4,
+                            Quantity = 65,
+                            ReceiptId = 4,
+                            Status = 1,
+                            Total = 1300000m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ExpiryDate = new DateOnly(2024, 10, 25),
+                            ImportPrice = 13571m,
+                            ProductId = 5,
+                            Quantity = 70,
+                            ReceiptId = 5,
+                            Status = 1,
+                            Total = 950000m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ExpiryDate = new DateOnly(2024, 12, 15),
+                            ImportPrice = 20000m,
+                            ProductId = 6,
+                            Quantity = 55,
+                            ReceiptId = 6,
+                            Status = 1,
+                            Total = 1100000m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ExpiryDate = new DateOnly(2024, 12, 31),
+                            ImportPrice = 25000m,
+                            ProductId = 7,
+                            Quantity = 50,
+                            ReceiptId = 7,
+                            Status = 1,
+                            Total = 1250000m
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Rating", b =>
@@ -462,6 +1270,71 @@ namespace FreshFruit.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Rating");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateOnly(2024, 6, 1),
+                            MemberId = 1,
+                            ProductId = 1,
+                            Rating1 = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateOnly(2024, 6, 2),
+                            MemberId = 2,
+                            ProductId = 2,
+                            Rating1 = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateOnly(2024, 6, 3),
+                            MemberId = 3,
+                            ProductId = 3,
+                            Rating1 = 3,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateOnly(2024, 6, 4),
+                            MemberId = 4,
+                            ProductId = 4,
+                            Rating1 = 5,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateOnly(2024, 6, 5),
+                            MemberId = 5,
+                            ProductId = 5,
+                            Rating1 = 4,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateOnly(2024, 6, 6),
+                            MemberId = 6,
+                            ProductId = 6,
+                            Rating1 = 2,
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateOnly(2024, 6, 7),
+                            MemberId = 7,
+                            ProductId = 7,
+                            Rating1 = 5,
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("FreshFruit.Models.Blog", b =>
@@ -539,13 +1412,13 @@ namespace FreshFruit.Migrations
 
             modelBuilder.Entity("FreshFruit.Models.Product", b =>
                 {
-                    b.HasOne("FreshFruit.Models.Category", "Categoty")
+                    b.HasOne("FreshFruit.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategotyId")
+                        .HasForeignKey("CategoryId")
                         .IsRequired()
                         .HasConstraintName("FK_Products_Categories_01");
 
-                    b.Navigation("Categoty");
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("FreshFruit.Models.ProductImage", b =>
