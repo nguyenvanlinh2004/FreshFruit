@@ -24,7 +24,10 @@ public partial class Product
 
     public int? Status { get; set; }
 
-    [StringLength(50)]
+
+	public double? Quantity { get; set; }
+
+	[StringLength(50)]
     [Unicode(false)]
     public string? ShipmentId { get; set; }
 
