@@ -1,4 +1,5 @@
-﻿@{
+﻿@model FreshFruit.Models.ViewModel.RegisterViewModel
+@{
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 <div class="main-wrapper">
@@ -13,40 +14,44 @@
                         <h3>Create an Account</h3>
                         <h4>Continue where you left off</h4>
                     </div>
-                    <div class="form-login">
-                        <label>User Name</label>
-                        <div class="form-addons">
-                            <input type="text"
-                                   placeholder="Enter your full name">
-                            <img src="/admin/assets/img/icons/users1.svg"
-                                 alt="img">
+
+                    @* FORM ĐĂNG KÝ *@
+                    <form asp-action="Register" method="post">
+                        <div class="form-login">
+                            <label>Email</label>
+                            <div class="form-addons">
+                                <input asp-for="Email" class="form-control" placeholder="Enter your Email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-login">
-                        <label>Password</label>
-                        <div class="pass-group">
-                            <input type="password" class="pass-input"
-                                   placeholder="Enter your password">
-                            <span class="fas toggle-password fa-eye-slash"></span>
+
+                        <div class="form-login">
+                            <label>Password</label>
+                            <div class="pass-group">
+                                <input asp-for="Password" type="password" class="form-control pass-input" placeholder="Enter your password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-login">
-                        <label>Confirm Password</label>
-                        <div class="pass-group">
-                            <input type="password" class="pass-input"
-                                   placeholder="Enter your password">
-                            <span class="fas toggle-password fa-eye-slash"></span>
+
+                        <div class="form-login">
+                            <label>Confirm Password</label>
+                            <div class="pass-group">
+                                <input asp-for="ConfirmPassword" type="password" class="form-control pass-input" placeholder="Confirm your password" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-login">
-                        <a class="btn btn-login">Sign Up</a>
-                    </div>
+
+                        <div class="form-login">
+                            <button type="submit" class="btn btn-login">Sign Up</button>
+                        </div>
+                    </form>
+
                     <div class="signinform text-center">
                         <h4>
-                            Already a user? <a href="login"
-                                               class="hover-a">Sign In</a>
+                            Already a user? <a href="/Account/Login" class="hover-a">Sign In</a>
                         </h4>
                     </div>
+
                     <div class="form-setlogin">
                         <h4>Or sign up with</h4>
                     </div>
@@ -54,15 +59,13 @@
                         <ul>
                             <li>
                                 <a href="javascript:void(0);">
-                                    <img src="/admin/assets/img/icons/google.png"
-                                         class="me-2" alt="google">
+                                    <img src="/admin/assets/img/icons/google.png" class="me-2" alt="google">
                                     Sign Up using Google
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0);">
-                                    <img src="/admin/assets/img/icons/facebook.png"
-                                         class="me-2" alt="google">
+                                    <img src="/admin/assets/img/icons/facebook.png" class="me-2" alt="google">
                                     Sign Up using Facebook
                                 </a>
                             </li>
@@ -70,6 +73,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="login-img">
                 <img src="/admin/assets/img/login.jpg" alt="img">
             </div>

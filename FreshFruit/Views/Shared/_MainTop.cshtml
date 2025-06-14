@@ -1,4 +1,7 @@
-﻿<div class="main-top">
+﻿@{
+    var accountId = Context.Session.GetInt32("AccountId");
+}
+<div class="main-top">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -22,10 +25,20 @@
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="login-box">
-                    <select id="basic" class="selectpicker show-tick form-control" data-placeholder="Sign In">
-                        <option>Register Here</option>
-                        <option>Sign In</option>
-                    </select>
+                    @if (accountId == null)
+                    {
+                        <select id="basic" class="selectpicker show-tick form-control" data-placeholder="Sign In" onchange="location = this.value;">
+                            >
+                            <option value="/Account/Register">Register Here</option>
+                            <option value="/Account/Login">Sign In</option>
+                        </select>
+                    }else
+                    {
+                        <span class="form-control bg-[#b0b435] text-white">
+                            Xin Chào!
+                        </span>
+                    }
+
                 </div>
                 <div class="text-slid-box">
                     <div id="offer-box" class="carouselTicker">
