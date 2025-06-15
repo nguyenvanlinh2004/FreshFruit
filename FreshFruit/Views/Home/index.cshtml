@@ -1,4 +1,4 @@
-﻿@await Html.PartialAsync("_Slider")    <!-- Start Categories  -->
+﻿@await Html.PartialAsync("_Slider")
 @using FreshFruit.Models
 
 @{
@@ -6,34 +6,113 @@
     var topRated = ViewBag.TopRated as List<Product>;
     var topSelling = ViewBag.TopSelling as List<Product>;
 }
-<div class="categories-shop">
-    <div class="container">
-        <div class="row">
-            @foreach (var product in ViewBag.AllProducts)
-            {
-                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                    <div class="shop-cat-box">
-                        <img class="img-fluid" src="~/images/@product.Image" alt="@product.Name" />
-                        <a class="btn hvr-hover" href="#">@product.Name</a>
-                        <p>Giá: @String.Format("{0:N0}₫", product.Price)</p>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>
-<!-- End Categories -->
+
+<style>
+    body {
+        background: linear-gradient(135deg, #fdfaf6 0%, #fff9f0 100%);
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #fdfaf6;
+        background-image: radial-gradient(circle, #f9f7f2 1px, transparent 1px);
+        background-size: 40px 40px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    
+    .product-img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin: 0 auto;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .product-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .offer-box-products {
+        padding: 15px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ffffff, #fef5e7);
+        border: 1px solid #f0e5da;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .offer-box-products:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+    .price-highlight {
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 20px;
+        animation: pulse 1.5s infinite;
+        transition: text-shadow 0.3s ease;
+    }
+
+        .price-highlight:hover {
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        }
+
+   
+
+    h2.section-title {
+        font-size: 32px;
+        font-weight: 700;
+        text-align: center;
+        background: linear-gradient(90deg, #ff8a00, #ff3c83);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 30px;
+        animation: fadeIn 1.2s ease-in-out;
+    }
+
+        h2.section-title:hover {
+            text-shadow: 0 0 10px rgba(255, 120, 120, 0.8);
+            transform: scale(1.03);
+        }
+
+   
+
+    .product-name {
+        font-weight: 600;
+        font-size: 18px;
+        color: #444;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+        .product-name:hover {
+            color: #ff7043;
+            transform: scale(1.05);
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #ff8c00, #f06292);
+        border: none;
+        color: white;
+        transition: background 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #f57c00, #ec407a);
+        }
+</style>
 
 <div class="box-add-products">
     <div class="container">
+        <h2 class="section-title">Top 3 sản phẩm bán chạy nhất</h2>
         <div class="row">
-            @foreach (var product in ViewBag.TopSelling)
+            @foreach (var product in topSelling)
             {
-                <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                     <div class="offer-box-products text-center">
-                        <img class="img-fluid" src="~/images/@product.Image" alt="@product.Name" />
-                        <h5 class="mt-2">@product.Name</h5>
-                        <p class="text-danger fw-bold">Giá: @String.Format("{0:N0}₫", product.Price)</p>
+                        <img class="img-fluid product-img" src="~/images/@product.Image" alt="@product.Name" />
+                        <h5 class="mt-2 product-name">@product.Name</h5>
+                        <p class="price-highlight">Giá: @String.Format("{0:N0}₫", product.Price)</p>
                         <a href="#" class="btn btn-primary btn-sm">Xem chi tiết</a>
                     </div>
                 </div>
@@ -44,139 +123,19 @@
 
 <div class="box-add-products">
     <div class="container">
+        <h2 class="section-title">Top 3 sản phẩm được đánh giá nhiều nhất</h2>
         <div class="row">
-            @foreach (var product in ViewBag.TopRated)
+            @foreach (var product in topRated)
             {
-                <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                     <div class="offer-box-products text-center">
-                        <img class="img-fluid" src="~/images/@product.Image" alt="@product.Name" />
-                        <h5 class="mt-2">@product.Name</h5>
-                        <p class="text-danger fw-bold">Giá: @String.Format("{0:N0}₫", product.Price)</p>
+                        <img class="img-fluid product-img" src="~/images/@product.Image" alt="@product.Name" />
+                        <h5 class="mt-2 product-name">@product.Name</h5>
+                        <p class="price-highlight">Giá: @String.Format("{0:N0}₫", product.Price)</p>
                         <a href="#" class="btn btn-primary btn-sm">Xem chi tiết</a>
                     </div>
                 </div>
             }
         </div>
     </div>
-
-<!-- Start Products  -->
-<div class="products-box">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="title-all text-center">
-                    <h1>Fruits & Vegetables</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="special-menu text-center">
-                    <div class="button-group filter-button-group">
-                        <button class="active" data-filter="*">All</button>
-                        <button data-filter=".top-featured">Top featured</button>
-                        <button data-filter=".best-seller">Best seller</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <h2>Tất cả sản phẩm</h2>
-        <ul>
-            @foreach (var product in allProducts!)
-            {
-                <li>@product.Name - Giá: @product.Price</li>
-            }
-        </ul>
-
-        <h2>Top 3 sản phẩm được đánh giá nhiều nhất</h2>
-        <ul>
-            @foreach (var product in topRated!)
-            {
-                <li>@product.Name - Số lượt đánh giá: @product.Ratings.Count</li>
-            }
-        </ul>
-
-        <h2>Top 3 sản phẩm bán chạy nhất</h2>
-        <ul>
-            @foreach (var product in topSelling!)
-            {
-                <li>@product.Name</li>
-            }
-        </ul>
-    </div>
 </div>
-<!-- End Products  -->
-<!-- Start Blog  -->
-<div class="latest-blog">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="title-all text-center">
-                    <h1>latest blog</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 col-lg-4 col-xl-4">
-                <div class="blog-box">
-                    <div class="blog-img">
-                        <img class="img-fluid" src="images/blog-img.jpg" alt="" />
-                    </div>
-                    <div class="blog-content">
-                        <div class="title-blog">
-                            <h3>Fusce in augue non nisi fringilla</h3>
-                            <p>Nulla ut urna egestas, porta libero id, suscipit orci. Quisque in lectus sit amet urna dignissim feugiat. Mauris molestie egestas pharetra. Ut finibus cursus nunc sed mollis. Praesent laoreet lacinia elit id lobortis.</p>
-                        </div>
-                        <ul class="option-blog">
-                            <li><a href="#"><i class="far fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fas fa-eye"></i></a></li>
-                            <li><a href="#"><i class="far fa-comments"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-4">
-                <div class="blog-box">
-                    <div class="blog-img">
-                        <img class="img-fluid" src="images/blog-img-01.jpg" alt="" />
-                    </div>
-                    <div class="blog-content">
-                        <div class="title-blog">
-                            <h3>Fusce in augue non nisi fringilla</h3>
-                            <p>Nulla ut urna egestas, porta libero id, suscipit orci. Quisque in lectus sit amet urna dignissim feugiat. Mauris molestie egestas pharetra. Ut finibus cursus nunc sed mollis. Praesent laoreet lacinia elit id lobortis.</p>
-                        </div>
-                        <ul class="option-blog">
-                            <li><a href="#"><i class="far fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fas fa-eye"></i></a></li>
-                            <li><a href="#"><i class="far fa-comments"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4 col-xl-4">
-                <div class="blog-box">
-                    <div class="blog-img">
-                        <img class="img-fluid" src="images/blog-img-02.jpg" alt="" />
-                    </div>
-                    <div class="blog-content">
-                        <div class="title-blog">
-                            <h3>Fusce in augue non nisi fringilla</h3>
-                            <p>Nulla ut urna egestas, porta libero id, suscipit orci. Quisque in lectus sit amet urna dignissim feugiat. Mauris molestie egestas pharetra. Ut finibus cursus nunc sed mollis. Praesent laoreet lacinia elit id lobortis.</p>
-                        </div>
-                        <ul class="option-blog">
-                            <li><a href="#"><i class="far fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fas fa-eye"></i></a></li>
-                            <li><a href="#"><i class="far fa-comments"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End Blog  -->
-
