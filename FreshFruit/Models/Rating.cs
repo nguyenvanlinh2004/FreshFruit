@@ -12,25 +12,21 @@ public partial class Rating
     [Key]
     public int Id { get; set; }
 
+    [Required]
     public int ProductId { get; set; }
 
-    public int MemberId { get; set; }
+    public int? MemberId { get; set; }
 
-    [Column("Rating")]
-    public int Rating1 { get; set; }
+    [Range(1, 5)]
+    public int RatingValue { get; set; }
 
-    public DateOnly? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public int Status { get; set; }
 
-    public int? Status { get; set; }
-
-    [InverseProperty("Rating")]
-    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    // Navigation
+    [ForeignKey("ProductId")]
+    public virtual Product Product { get; set; } = null!;
 
     [ForeignKey("MemberId")]
-    [InverseProperty("Ratings")]
-    public virtual Member Member { get; set; } = null!;
-
-    [ForeignKey("ProductId")]
-    [InverseProperty("Ratings")]
-    public virtual Product Product { get; set; } = null!;
+    public virtual Member? Member { get; set; }
 }

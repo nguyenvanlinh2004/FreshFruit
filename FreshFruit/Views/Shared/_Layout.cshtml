@@ -33,6 +33,7 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+
 </head>
 <body> 
     @await Html.PartialAsync("_MainTop")
@@ -203,7 +204,7 @@
     </div>
     <!-- End Instagram Feed  -->
     @await Html.PartialAsync("_Footer")
-
+    @RenderSection("Scripts", required: false)
     <!-- ALL JS FILES -->
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/popper.min.js"></script>
