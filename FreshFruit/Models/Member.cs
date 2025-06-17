@@ -44,4 +44,7 @@ public partial class Member
 
     [InverseProperty("Member")]
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+    [InverseProperty("Member")]
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
 }

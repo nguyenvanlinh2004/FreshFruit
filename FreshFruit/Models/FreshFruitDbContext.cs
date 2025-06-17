@@ -107,18 +107,24 @@ public partial class FreshFruitDbContext : DbContext
         modelBuilder.Entity<Comment>(entity =>
         {
             entity.HasData(
-                 new Comment { Id = 1, RatingId = 1, CommentText = "Sản phẩm rất tốt, sẽ ủng hộ tiếp!", CreatedAt = new DateOnly(2025, 1, 10), Status = 1 },
-                 new Comment { Id = 2, RatingId = 2, CommentText = "Chất lượng ổn, giá hợp lý.", CreatedAt = new DateOnly(2025, 1, 15), Status = 1 },
-                 new Comment { Id = 3, RatingId = 3, CommentText = "Không tươi như mong đợi.", CreatedAt = new DateOnly(2025, 2, 1), Status = 1 },
-                 new Comment { Id = 4, RatingId = 4, CommentText = "Dịch vụ giao hàng nhanh chóng.", CreatedAt = new DateOnly(2025, 2, 5), Status = 1 },
-                 new Comment { Id = 5, RatingId = 5, CommentText = "Sẽ giới thiệu cho bạn bè.", CreatedAt = new DateOnly(2025, 3, 1), Status = 1 },
-                 new Comment { Id = 6, RatingId = 6, CommentText = "Trái cây ngon và ngọt.", CreatedAt = new DateOnly(2025, 3, 12), Status = 1 },
-                 new Comment { Id = 7, RatingId = 7, CommentText = "Không hài lòng vì đóng gói sơ sài.", CreatedAt = new DateOnly(2025, 3, 20), Status = 0 }
-    );
-            entity.HasOne(d => d.Rating).WithMany(p => p.Comments)
+                new Comment { Id = 1, ProductId = 1, MemberId = 1, Contents = "Sản phẩm rất tốt, sẽ ủng hộ tiếp!", CreatedAt = new DateTime(2025, 1, 10), Status = 1 },
+                new Comment { Id = 2, ProductId = 2, MemberId = 2, Contents = "Chất lượng ổn, giá hợp lý.", CreatedAt = new DateTime(2025, 1, 15), Status = 1 },
+                new Comment { Id = 3, ProductId = 3, MemberId = 3, Contents = "Không tươi như mong đợi.", CreatedAt = new DateTime(2025, 2, 1), Status = 1 },
+                new Comment { Id = 4, ProductId = 4, MemberId = 4, Contents = "Dịch vụ giao hàng nhanh chóng.", CreatedAt = new DateTime(2025, 2, 5), Status = 1 },
+                new Comment { Id = 5, ProductId = 5, MemberId = 5, Contents = "Sẽ giới thiệu cho bạn bè.", CreatedAt = new DateTime(2025, 3, 1), Status = 1 },
+                new Comment { Id = 6, ProductId = 6, MemberId = 6, Contents = "Trái cây ngon và ngọt.", CreatedAt = new DateTime(2025, 3, 12), Status = 1 },
+                new Comment { Id = 7, ProductId = 7, MemberId = 7, Contents = "Không hài lòng vì đóng gói sơ sài.", CreatedAt = new DateTime(2025, 3, 20), Status = 0 }
+            );
+
+            entity.HasOne(d => d.Member).WithMany(p => p.Comments)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Comment_Rating");
+                .HasConstraintName("FK_Comment_Members");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Comments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Comment_Products");
         });
+
 
         modelBuilder.Entity<Invoice>(entity =>
         {
@@ -254,15 +260,16 @@ public partial class FreshFruitDbContext : DbContext
         modelBuilder.Entity<Rating>(entity =>
         {
             entity.HasData(
-				new Rating { Id = 1, ProductId = 1, MemberId = 1, Rating1 = 5, CreatedAt = new DateOnly(2024, 6, 1), Status = 1 },
-	            new Rating { Id = 2, ProductId = 2, MemberId = 2, Rating1 = 4, CreatedAt = new DateOnly(2024, 6, 2), Status = 1 },
-	            new Rating { Id = 3, ProductId = 3, MemberId = 3, Rating1 = 3, CreatedAt = new DateOnly(2024, 6, 3), Status = 1 },
-	            new Rating { Id = 4, ProductId = 4, MemberId = 4, Rating1 = 5, CreatedAt = new DateOnly(2024, 6, 4), Status = 1 },
-	            new Rating { Id = 5, ProductId = 5, MemberId = 5, Rating1 = 4, CreatedAt = new DateOnly(2024, 6, 5), Status = 1 },
-	            new Rating { Id = 6, ProductId = 6, MemberId = 6, Rating1 = 2, CreatedAt = new DateOnly(2024, 6, 6), Status = 1 },
-	            new Rating { Id = 7, ProductId = 7, MemberId = 7, Rating1 = 5, CreatedAt = new DateOnly(2024, 6, 7), Status = 1 }
-				);
-			entity.HasOne(d => d.Member).WithMany(p => p.Ratings)
+                new Rating { Id = 1, ProductId = 1, MemberId = 1, RatingValue = 5, CreatedAt = new DateTime(2024, 6, 1), Status = 1 },
+                new Rating { Id = 2, ProductId = 2, MemberId = 2, RatingValue = 4, CreatedAt = new DateTime(2024, 6, 2), Status = 1 },
+                new Rating { Id = 3, ProductId = 3, MemberId = 3, RatingValue = 3, CreatedAt = new DateTime(2024, 6, 3), Status = 1 },
+                new Rating { Id = 4, ProductId = 4, MemberId = 4, RatingValue = 5, CreatedAt = new DateTime(2024, 6, 4), Status = 1 },
+                new Rating { Id = 5, ProductId = 5, MemberId = 5, RatingValue = 4, CreatedAt = new DateTime(2024, 6, 5), Status = 1 },
+                new Rating { Id = 6, ProductId = 6, MemberId = 6, RatingValue = 2, CreatedAt = new DateTime(2024, 6, 6), Status = 1 },
+                new Rating { Id = 7, ProductId = 7, MemberId = 7, RatingValue = 5, CreatedAt = new DateTime(2024, 6, 7), Status = 1 }
+            );
+
+            entity.HasOne(d => d.Member).WithMany(p => p.Ratings)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rating_Members");
 
@@ -270,6 +277,7 @@ public partial class FreshFruitDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Rating_Products");
         });
+
 
 
         OnModelCreatingPartial(modelBuilder);

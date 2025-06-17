@@ -12,15 +12,23 @@ public partial class Comment
     [Key]
     public int Id { get; set; }
 
-    public int RatingId { get; set; }
+    [Required]
+    public int ProductId { get; set; }
 
-    public string? CommentText { get; set; }
+    public int? MemberId { get; set; }
 
-    public DateOnly? CreatedAt { get; set; }
+    [Required]
+    [StringLength(1000)]
+    public string Contents { get; set; } = null!;
 
-    public int? Status { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public int Status { get; set; }
 
-    [ForeignKey("RatingId")]
-    [InverseProperty("Comments")]
-    public virtual Rating Rating { get; set; } = null!;
+    // Navigation
+    [ForeignKey("ProductId")]
+    public virtual Product Product { get; set; } = null!;
+
+    [ForeignKey("MemberId")]
+    public virtual Member? Member { get; set; }
+
 }
