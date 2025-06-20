@@ -51,4 +51,6 @@ public partial class Product
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     [InverseProperty("Product")]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+	
 }

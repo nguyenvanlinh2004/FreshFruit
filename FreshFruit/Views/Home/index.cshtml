@@ -1,10 +1,11 @@
 ﻿@await Html.PartialAsync("_Slider")
 @using FreshFruit.Models
+@using FreshFruit.Models.ViewModel
 
 @{
     var allProducts = ViewBag.AllProducts as List<Product>;
-    var topRated = ViewBag.TopRated as List<Product>;
-    var topSelling = ViewBag.TopSelling as List<Product>;
+    var topRated = ViewBag.TopRated as List<ProductViewModel>;
+    var topSelling = ViewBag.TopSelling as List<ProductViewModel>;
 }
 
 <style>
@@ -102,40 +103,99 @@
         }
 </style>
 
-<div class="box-add-products">
-    <div class="container">
-        <h2 class="section-title">Top 3 sản phẩm bán chạy nhất</h2>
-        <div class="row">
-            @foreach (var product in topSelling)
-            {
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                    <div class="offer-box-products text-center">
-                        <img class="img-fluid product-img" src="~/images/@product.Image" alt="@product.Name" />
-                        <h5 class="mt-2 product-name">@product.Name</h5>
-                        <p class="price-highlight">Giá: @String.Format("{0:N0}₫", product.Price)</p>
-                        <a href="#" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                    </div>
-                </div>
-            }
+<br />
+<br />
+
+<h2 class="section-title">Top 3 sản phẩm bán chạy nhất</h2>
+<div class="row">
+    @foreach (var item in topSelling)
+    {
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="offer-box-products text-center">
+
+                <a href="@Url.Action("ProductDetail", "Shop", new { id = item.Product.Id })">
+                    <img class="img-fluid product-img" src="~/images/@item.Product.Image" alt="@item.Product.Name" />
+                </a>
+
+                <h5 class="mt-2 product-name">@item.Product.Name</h5>
+                <p class="price-highlight">Giá: @String.Format("{0:N0}₫", item.Product.Price)</p>
+
+                <p>
+                    <span class="star-rating">
+                        @{
+                            int fullStars = (int)item.AverageRating;
+                            bool hasHalfStar = (item.AverageRating - fullStars) >= 0.5;
+                            int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                        }
+
+                        @for (int i = 0; i < fullStars; i++)
+                        {
+                            <i class="fas fa-star" style="color: gold;"></i>
+                        }
+                        @if (hasHalfStar)
+                        {
+                            <i class="fas fa-star-half-alt" style="color: gold;"></i>
+                        }
+                        @for (int i = 0; i < emptyStars; i++)
+                        {
+                            <i class="far fa-star"></i>
+                        }
+                    </span>
+                    <span>(@item.AverageRating.ToString("0.0"))</span>
+                </p>
+
+                <p>🛒 Đã bán: @item.TotalSold lượt</p>
+
+            </div>
         </div>
-    </div>
+    }
 </div>
 
-<div class="box-add-products">
-    <div class="container">
-        <h2 class="section-title">Top 3 sản phẩm được đánh giá nhiều nhất</h2>
-        <div class="row">
-            @foreach (var product in topRated)
-            {
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                    <div class="offer-box-products text-center">
-                        <img class="img-fluid product-img" src="~/images/@product.Image" alt="@product.Name" />
-                        <h5 class="mt-2 product-name">@product.Name</h5>
-                        <p class="price-highlight">Giá: @String.Format("{0:N0}₫", product.Price)</p>
-                        <a href="#" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                    </div>
-                </div>
-            }
+<h2 class="section-title">Top 3 sản phẩm được đánh giá nhiều nhất</h2>
+<div class="row">
+    @foreach (var item in topRated)
+    {
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="offer-box-products text-center">
+
+                <a href="@Url.Action("ProductDetail", "Shop", new { id = item.Product.Id })">
+                    <img class="img-fluid product-img" src="~/images/@item.Product.Image" alt="@item.Product.Name" />
+                </a>
+
+                <h5 class="mt-2 product-name">@item.Product.Name</h5>
+                <p class="price-highlight">Giá: @String.Format("{0:N0}₫", item.Product.Price)</p>
+
+                <p>
+                    <span class="star-rating">
+                        @{
+                            int fullStars = (int)item.AverageRating;
+                            bool hasHalfStar = (item.AverageRating - fullStars) >= 0.5;
+                            int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                        }
+
+                        @for (int i = 0; i < fullStars; i++)
+                        {
+                            <i class="fas fa-star" style="color: gold;"></i>
+                        }
+                        @if (hasHalfStar)
+                        {
+                            <i class="fas fa-star-half-alt" style="color: gold;"></i>
+                        }
+                        @for (int i = 0; i < emptyStars; i++)
+                        {
+                            <i class="far fa-star"></i>
+                        }
+                    </span>
+                    <span>(@item.AverageRating.ToString("0.0"))</span>
+                </p>
+
+                <p>🛒 Đã bán: @item.TotalSold lượt</p>
+
+            </div>
         </div>
-    </div>
+    }
 </div>
+
+
+
+
