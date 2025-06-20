@@ -43,24 +43,48 @@ namespace FreshFruit.Controllers
         public IActionResult ProductDetail(int id)
         {
             var product = _context.Products
-                          .Include(p => p.ProductImages)
-                          .Include(p => p.Ratings)
-                          .Include(p => p.Comments)
-                          .FirstOrDefault(p => p.Id == id && p.Status == 1);
+                .Include(p => p.ProductImages)
+                .Include(p => p.Ratings)
+                .Include(p => p.Comments)
+                .FirstOrDefault(p => p.Id == id && p.Status == 1);
 
             if (product == null) return NotFound();
+
+            var ratingsWithComments = (
+                from r in _context.Ratings
+                join c in _context.Comments
+                    on new { r.ProductId, r.MemberId } equals new { c.ProductId, c.MemberId }
+                where r.ProductId == id && r.Status == 1 && c.Status == 1
+                select new RatingWithCommentVM
+                {
+                    RatingId = r.Id,
+                    ProductId = r.ProductId,
+                    MemberId = r.MemberId,
+                    RatingValue = r.RatingValue,
+                    CreatedAt = r.CreatedAt,
+                    Status = r.Status,
+                    CommentText = c.Contents,
+                    CommentCreatedAt = c.CreatedAt,
+                    CommentStatus = c.Status
+                }
+            ).ToList();
 
             var vm = new ProductDetailViewModel
             {
                 Product = product,
-                AverageRating = product.Ratings.Any() ? product.Ratings.Average(r => r.RatingValue) : 0,
+                ProductImages = product.ProductImages?.ToList(),
+                RatingsWithComments = ratingsWithComments,
                 RelatedProducts = _context.Products
-                                    .Where(p => p.CategoryId == product.CategoryId && p.Id != id && p.Status == 1)
-                                    .Take(4).ToList()
+                    .Where(p => p.CategoryId == product.CategoryId && p.Id != id && p.Status == 1)
+                    .Take(4).ToList(),
+                AverageRating = ratingsWithComments.Any()
+                    ? ratingsWithComments.Average(r => r.RatingValue)
+                    : 0
             };
 
             return View(vm);
         }
+
         [HttpPost]
         public IActionResult SubmitRating(ProductDetailViewModel model)
         {
@@ -120,8 +144,9 @@ namespace FreshFruit.Controllers
             // Tạo Comment mới
             var comment = new Comment
             {
-                Id = rating.Id,
+                ProductId=model.ProductId,
                 Contents = model.CommentInput!,
+                MemberId = memberId,
                 CreatedAt = DateTime.Now,
                 Status = 1
             };

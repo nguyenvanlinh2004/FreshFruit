@@ -1,5 +1,14 @@
 ﻿@using System.Linq
   <!-- Start All Title Box -->
+  <style>
+    .review-star {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        display: flex;
+        gap: 3px;
+    }
+  </style>
 <div class="all-title-box">
     <div class="container">
         <div class="row">
@@ -73,10 +82,9 @@
                             <li data-target="#carousel-example-1"
                                 data-slide-to="@i"
                                 class="@(i == 0 ? "active" : "")"
-                                style="width: 60px; height: 60px; overflow: hidden; margin: 0 5px; cursor: pointer;">
-                                <img src="~/images/@img"
-                                     class="img-fluid"
-                                     style="width: 100%; height: 100%; object-fit: cover;" />
+                                style="width: 60px; height: 60px; overflow: hidden; margin: 0 5px; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc;">
+                                <img src="@Url.Content($"~/images/{img}")"
+                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;" />
                             </li>
                         }
                     </ol>
@@ -86,6 +94,31 @@
             <div class="col-xl-7 col-lg-7 col-md-6">
                 <div class="single-product-details">
                     <h2>@Model.Product.Name</h2>
+                    <p>
+                        <span class="star-rating">
+                            @{
+                                int fullStars = (int)Model.AverageRating;
+                                bool hasHalfStar = (Model.AverageRating - fullStars) >= 0.4;
+                                int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                            }
+
+                            @for (int i = 0; i < fullStars; i++)
+                            {
+                                <i class="fas fa-star" style="color: gold;"></i>
+                            }
+                            @if (hasHalfStar)
+                            {
+                                <i class="fas fa-star-half-alt" style="color: gold;"></i>
+                            }
+                            @for (int i = 0; i < emptyStars; i++)
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        </span>
+                        <span>(@Model.AverageRating.ToString("0.0"))</span>
+                    </p>
+
+
                     <h5>@Model.Product.Price</h5>
                     <p class="available-stock">
                         <span>
@@ -139,91 +172,87 @@
             </div>
         </div>
 
-        <div class="row my-5">
-            <div class="card card-outline-secondary my-4">
-                <div class="card-header">
-                    <h2>Product Reviews</h2>
+        <div class=" my-5">
+            <div class="card card-outline-secondary my-4 w-full">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Đánh giá sản phẩm</h4>
                 </div>
+
+                <!-- Danh sách bình luận -->
                 <div class="card-body">
-                    <div class="media mb-3">
-                        <div class="mr-2">
-                            <img class="rounded-circle border p-1"
-                                 src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2264%22%20height%3D%2264%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_160c142c97c%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_160c142c97c%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2213.5546875%22%20y%3D%2236.5%22%3E64x64%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-                                 alt="Generic placeholder image">
+                    @{
+                        var ratings = Model.RatingsWithComments as List<FreshFruit.Models.ViewModel.RatingWithCommentVM>;
+                        var filteredRatings = ratings?
+                        .Where(c => c.ProductId == Model.Product.Id && c.Status == 1 && (c.CommentStatus == 1 || c.CommentStatus == null))
+                        .ToList();
+                    }
+
+                    @if (filteredRatings != null && filteredRatings.Any())
+                    {
+                        foreach (var comment in filteredRatings)
+                        {
+                            <li class="media mb-4 pb-3 border-bottom">
+                                <div class="media-body">
+                                    <h6 class="text-primary font-weight-bold">
+                                        @(comment.MemberId != null ? $"Thành viên #{comment.MemberId}" : "Ẩn danh")
+                                    </h6>
+
+                                    <ul class="list-inline review-star mb-1">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <li class="list-inline-item @(i <= comment.RatingValue ? "text-warning" : "text-secondary")">
+                                                <i class="fa @(i <= comment.RatingValue ? "fa-star" : "fa-star-o")"></i>
+                                            </li>
+                                        }
+                                    </ul>
+
+                                    <p class="mb-1">@comment.CommentText</p>
+                                    <small class="text-muted">@comment.CommentCreatedAt?.ToString("dd/MM/yyyy")</small>
+                                </div>
+                            </li>
+                        }
+                    }
+                    
+                    else
+                    {
+                        <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+                    }
+                </div>
+
+                <!-- Form gửi đánh giá -->
+                <div class="card-footer bg-light">
+                    <h5 class="mb-3">Thêm đánh giá</h5>
+
+                    @if (Context.Session.GetInt32("AccountId") == null)
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fa fa-exclamation-circle mr-2"></i> Bạn cần đăng nhập để gửi đánh giá.
                         </div>
-                        <div class="media-body">
-                            <p>
-                                Lorem ipsum dolor sit amet,
-                                consectetur adipisicing elit.
-                                Omnis et enim aperiam inventore,
-                                similique necessitatibus neque
-                                non! Doloribus, modi sapiente
-                                laboriosam aperiam fugiat
-                                laborum. Sequi mollitia,
-                                necessitatibus quae sint
-                                natus.
-                            </p>
-                            <small class="text-muted">
-                                Posted by
-                                Anonymous on 3/1/18
-                            </small>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media mb-3">
-                        <div class="mr-2">
-                            <img class="rounded-circle border p-1"
-                                 src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2264%22%20height%3D%2264%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_160c142c97c%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_160c142c97c%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2213.5546875%22%20y%3D%2236.5%22%3E64x64%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-                                 alt="Generic placeholder image">
-                        </div>
-                        <div class="media-body">
-                            <p>
-                                Lorem ipsum dolor sit amet,
-                                consectetur adipisicing elit.
-                                Omnis et enim aperiam inventore,
-                                similique necessitatibus neque
-                                non! Doloribus, modi sapiente
-                                laboriosam aperiam fugiat
-                                laborum. Sequi mollitia,
-                                necessitatibus quae sint
-                                natus.
-                            </p>
-                            <small class="text-muted">
-                                Posted by
-                                Anonymous on 3/1/18
-                            </small>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media mb-3">
-                        <div class="mr-2">
-                            <img class="rounded-circle border p-1"
-                                 src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2264%22%20height%3D%2264%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_160c142c97c%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A10pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_160c142c97c%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%2213.5546875%22%20y%3D%2236.5%22%3E64x64%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-                                 alt="Generic placeholder image">
-                        </div>
-                        <div class="media-body">
-                            <p>
-                                Lorem ipsum dolor sit amet,
-                                consectetur adipisicing elit.
-                                Omnis et enim aperiam inventore,
-                                similique necessitatibus neque
-                                non! Doloribus, modi sapiente
-                                laboriosam aperiam fugiat
-                                laborum. Sequi mollitia,
-                                necessitatibus quae sint
-                                natus.
-                            </p>
-                            <small class="text-muted">
-                                Posted by
-                                Anonymous on 3/1/18
-                            </small>
-                        </div>
-                    </div>
-                    <hr>
-                    <a href="#" class="btn hvr-hover">
-                        Leave a
-                        Review
-                    </a>
+                    }
+                    else
+                    {
+                        <form asp-action="SubmitRating" method="post">
+                            <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="RatingInput">Điểm (1–5) <span class="text-danger">*</span></label>
+                                    <input id="RatingInput" name="RatingInput" type="number" min="1" max="5" class="form-control" required />
+                                </div>
+                                <div class="form-group col-md-8">
+                                    <label for="CommentInput">Bình luận <span class="text-danger">*</span></label>
+                                    <textarea id="CommentInput" name="CommentInput" rows="3" class="form-control" placeholder="Viết bình luận..." required></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-paper-plane mr-1"></i> Gửi đánh giá
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+
                 </div>
             </div>
         </div>
