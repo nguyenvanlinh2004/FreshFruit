@@ -24,11 +24,10 @@ namespace FreshFruit.Areas.Admin.Controllers
 		{
 			return View();
 		}
-		public IActionResult Edit(int id)
+		public IActionResult EditProduct()
 		{
-			var product = _context.Products.Find(id);
-			if (product == null) return NotFound();
-			return View(product);
+			
+			return View();
 		}
 
 		[HttpPost]
