@@ -1,0 +1,51 @@
+﻿<div class="page-wrapper">
+    @model IEnumerable<FreshFruit.Models.PurchaseReceipt>
+    @{
+        ViewData["Title"] = "Danh sách phiếu nhập";
+    }
+
+    <h2>Danh sách phiếu nhập</h2>
+
+    <a asp-action="Create" class="btn btn-primary mb-3">Thêm phiếu nhập</a>
+
+
+    <div class="text-center align-middle table-responsive mt-3 table-striped table-hover ">
+        <table class="table datanew ">
+            <thead>
+                <tr>
+                    <th>Mã phiếu</th>
+                    <th>Nhà cung cấp</th>
+                    <th>Ngày nhập</th>
+                    <th>Tổng tiền</th>
+                    <th>Người tạo</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var receipt in Model)
+                {
+                    <tr>
+                        <td>@receipt.ShipmentId</td>
+                        <td>@receipt.Supplier</td>
+                        <td>@receipt.ReceiptDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@receipt.Total?.ToString("N0") đ</td>
+                        <td>@receipt.CreateByNavigation?.Id</td>
+                        <td>
+                            @(receipt.Status == 1 ? "Đã duyệt" : "Chưa duyệt")
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@receipt.Id" class="btn btn-info btn-sm">Chi tiết</a>
+                            <a asp-action="Edit" asp-route-id="@receipt.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@receipt.Id" class="btn btn-danger btn-sm">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+    </div>
+    </div>
+
+
+</div>

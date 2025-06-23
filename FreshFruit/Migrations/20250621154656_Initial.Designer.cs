@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreshFruit.Migrations
 {
     [DbContext(typeof(FreshFruitDbContext))]
-    [Migration("20250616032555_updateRatingAndComment")]
-    partial class updateRatingAndComment
+    [Migration("20250621154656_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1037,7 +1037,10 @@ namespace FreshFruit.Migrations
             modelBuilder.Entity("FreshFruit.Models.PurchaseReceipt", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CreateBy")
                         .HasColumnType("int");

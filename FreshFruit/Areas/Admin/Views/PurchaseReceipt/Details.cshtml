@@ -1,0 +1,49 @@
+﻿@model FreshFruit.Models.PurchaseReceipt
+@{
+    ViewData["Title"] = "Chi tiết phiếu nhập";
+}
+<div class="page-wrapper">
+    <h2>Chi tiết phiếu nhập</h2>
+
+    <div class="mb-3">
+        <strong>Mã phiếu:</strong> @Model.ShipmentId <br />
+        <strong>Nhà cung cấp:</strong> @Model.Supplier <br />
+        <strong>Ngày nhập:</strong> @Model.ReceiptDate?.ToString("dd/MM/yyyy") <br />
+        <strong>Người tạo:</strong> @Model.CreateByNavigation?.Id <br />
+        <strong>Trạng thái:</strong> @(Model.Status == 1 ? "Đã duyệt" : "Chưa duyệt") <br />
+    </div>
+
+    <h4>Danh sách sản phẩm</h4>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Giá nhập</th>
+                <th>Số lượng</th>
+                <th>Hạn sử dụng</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PurchaseReceiptDetails)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.ImportPrice?.ToString("N0") đ</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.ExpiryDate?.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Total?.ToString("N0") đ</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Tổng cộng:</strong></td>
+                <td><strong>@Model.Total?.ToString("N0") đ</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+</div>

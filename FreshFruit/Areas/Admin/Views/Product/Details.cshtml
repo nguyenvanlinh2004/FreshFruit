@@ -1,0 +1,63 @@
+﻿@model FreshFruit.Models.ViewModel.ProductLotDetailVM
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4>Product Detail</h4>
+                <h6>Chi tiết sản phẩm và các lô hàng</h6>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <img src="~/images/@Model.Product.Image" alt="@Model.Product.Name" class="img-fluid rounded" />
+                    </div>
+                    <div class="col-lg-8">
+                        <h3>@Model.Product.Name</h3>
+                        <p><strong>Danh mục:</strong> @Model.Product.Category?.Name</p>
+                        <p><strong>Giá bán:</strong> @Model.Product.Price?.ToString("N0") đ</p>
+                        <p><strong>Mô tả:</strong> @Model.Product.Description</p>
+                        <p><strong>Tổng tồn kho:</strong> @Model.Product.Quantity</p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <h5 class="mt-4">Chi tiết từng lô hàng</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Mã lô hàng</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập</th>
+                                <th>Thành tiền</th>
+                                <th>Hạn sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var lot in Model.Lots)
+                            {
+                                <tr>
+                                    <td>@lot.ShipmentId</td>
+                                    <td>@lot.Quantity</td>
+                                    <td>@lot.ImportPrice.ToString("N0") đ</td>
+                                    <td>@lot.Total.ToString("N0") đ</td>
+                                    <td>@lot.ExpiryDate?.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <a asp-action="Index" class="btn btn-secondary mt-3">Quay lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</div>

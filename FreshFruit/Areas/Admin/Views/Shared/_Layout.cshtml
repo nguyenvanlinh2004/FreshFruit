@@ -11,6 +11,28 @@
     <meta name="robots" content="noindex, nofollow">
     <title>Dreams Pos admin template</title>
 
+    <style>
+        .submenu ul {
+            display: none;
+            padding-left: 20px;
+        }
+
+        .submenu.active > ul {
+            display: block;
+        }
+
+        .submenu > a {
+            cursor: pointer;
+        }
+
+        .submenu ul li a.active {
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        }
+
+    </style>
     <link rel="shortcut icon" type="image/x-icon"
           href="~/admin/assets/img/favicon.jpg">
 
@@ -27,6 +49,10 @@
 
     <link rel="stylesheet" href="~/admin/assets/css/style.css">
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+
 </head>
 <body>
     <div id="global-loader">
@@ -353,6 +379,7 @@
         </div>
         @await Html.PartialAsync("_SideBar")
     @RenderBody()
+        @RenderSection("Scripts", required: false)
     <script src="~/admin/assets/js/jquery-3.6.0.min.js"></script>
     <script src="~/admin/assets/js/feather.min.js"></script>
     <script src="~/admin/assets/js/jquery.slimscroll.min.js"></script>
@@ -364,7 +391,50 @@
     <script src="~/admin/assets/js/script.js"></script>
        
         <script src="~/lib/select2/js/select2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
  
 </body>
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const submenus = document.querySelectorAll('.submenu > a');
+
+        submenus.forEach(function (menuLink) {
+            menuLink.addEventListener('click', function (e) {
+                e.preventDefault(); // Ngăn load trang
+
+                // Tìm menu cha <li>
+                const parentLi = this.parentElement;
+
+                // Đóng tất cả các submenu khác
+                document.querySelectorAll('.submenu').forEach(function (li) {
+                    if (li !== parentLi) {
+                        li.classList.remove('active');
+                        const submenuUl = li.querySelector('ul');
+                        if (submenuUl) submenuUl.style.display = 'none';
+                    }
+                });
+
+                // Toggle submenu hiện tại
+                parentLi.classList.toggle('active');
+                const submenu = this.nextElementSibling;
+                if (submenu && submenu.tagName === 'UL') {
+                    submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+        });
+
+        // Giữ menu đang active (nếu có) khi reload lại
+        const currentUrl = window.location.pathname.toLowerCase();
+        document.querySelectorAll('.submenu ul li a').forEach(function (link) {
+            if (currentUrl === link.getAttribute('href').toLowerCase()) {
+                const submenu = link.closest('.submenu');
+                submenu.classList.add('active');
+                submenu.querySelector('ul').style.display = 'block';
+                link.classList.add('active'); // tuỳ bạn dùng thêm class để highlight
+            }
+        });
+    });
+</script>
