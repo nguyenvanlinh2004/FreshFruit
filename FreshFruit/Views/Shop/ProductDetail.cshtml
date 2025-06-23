@@ -1,14 +1,88 @@
 ﻿@using System.Linq
   <!-- Start All Title Box -->
-  <style>
-    .review-star {
-        padding: 0;
-        margin: 0;
-        list-style: none;
+
+<style>
+    .carousel-indicators {
+        position: static;
         display: flex;
-        gap: 3px;
+        justify-content: center;
+        margin-top: 16px;
+        padding-left: 0;
     }
-  </style>
+
+        .carousel-indicators li {
+            width: 70px;
+            height: 70px;
+            margin: 0 6px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            background-color: transparent !important; 
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .thumb-wrapper {
+        width: 100%;
+        height: 100%;
+        padding: 3px;
+        background: #fff;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .thumb-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+            display: block;
+        }
+
+    /* Active thumbnail */
+    .carousel-indicators li.active .thumb-wrapper {
+        border-color: #7BBE1A;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .main-img-wrapper {
+        width: 100%;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+    }
+
+        .main-img-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+    .carousel-indicators {
+        background-color: transparent !important;
+    }
+
+        .carousel-indicators li {
+            background-color: transparent !important;
+        }
+
+            .carousel-indicators li .thumb-wrapper {
+                background-color: #ffffff !important;
+            }
+</style>
+
+<!-- Các phần còn lại của View giữ nguyên như cũ -->
+
 <div class="all-title-box">
     <div class="container">
         <div class="row">
@@ -55,7 +129,9 @@
                         {
                             var img = allImages[i];
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img class="d-block w-100" src="~/images/@img" alt="Ảnh sản phẩm @(i + 1)" />
+                                <div class="main-img-wrapper">
+                                    <img class="img-fluid" src="~/images/@img" alt="Ảnh sản phẩm @(i + 1)" />
+                                </div>
                             </div>
                         }
                     </div>
@@ -81,15 +157,16 @@
                             var img = allImages[i];
                             <li data-target="#carousel-example-1"
                                 data-slide-to="@i"
-                                class="@(i == 0 ? "active" : "")"
-                                style="width: 60px; height: 60px; overflow: hidden; margin: 0 5px; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc;">
-                                <img src="@Url.Content($"~/images/{img}")"
-                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;" />
+                                class="@(i == 0 ? "active" : "")">
+                                <div class="thumb-wrapper">
+                                    <img src="@Url.Content($"~/images/{img}")" alt="Thumb @i" />
+                                </div>
                             </li>
                         }
                     </ol>
-                </div>
 
+
+                </div>
             </div>
             <div class="col-xl-7 col-lg-7 col-md-6">
                 <div class="single-product-details">

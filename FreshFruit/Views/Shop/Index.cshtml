@@ -1,4 +1,53 @@
 ﻿    <!-- Start All Title Box -->
+    <style>
+        .products-single {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.box-img-hover {
+    position: relative;
+    overflow: hidden;
+    height: 230px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+.sale {
+    background-color: darkolivegreen;
+    color: white;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 3px;
+}
+
+.why-text h4 {
+    font-size: 18px;
+    margin: 10px 0 5px;
+}
+
+.why-text h5 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+    </style>
 <div class="all-title-box">
     <div class="container">
         <div class="row">
@@ -51,16 +100,16 @@
                                 <div class="row">
                                     @foreach (var item in Model.Products)
                                     {
-                                        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-4">
-                                            <div class="products-single fix">
+                                        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-4 d-flex">
+                                            <div class="products-single fix flex-fill d-flex flex-column">
                                                 <div class="box-img-hover">
                                                     <div class="type-lb">
-                                                        @if (item.Status == 1) // tuỳ chỉnh gắn nhãn Sale nếu cần
+                                                        @if (item.Status == 1)
                                                         {
-                                                            <p class="sale">Sale</p>
+                                                            <p class="sale">SALE</p>
                                                         }
                                                     </div>
-                                                    <img src="~/images/@item.Image" class="img-fluid" alt="@item.Name">
+                                                    <img src="~/images/@item.Image" class="img-fluid product-img" alt="@item.Name">
                                                     <div class="mask-icon">
                                                         <ul>
                                                             <li>
@@ -69,17 +118,18 @@
                                                                 </a>
                                                             </li>
                                                             <li><a href="#" data-toggle="tooltip" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
-                                                            <li><a href="#" data-toggle="tooltip" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
+                                                            <li><a href="#" data-toggle="tooltip" title="Wishlist"><i class="far fa-heart"></i></a></li>
                                                         </ul>
                                                         <a class="cart" href="@Url.Action("AddToCart", "Cart", new { id = item.Id })">Add to Cart</a>
                                                     </div>
                                                 </div>
-                                                <div class="why-text text-center">
+                                                <div class="why-text text-center mt-auto p-2">
                                                     <h4>@item.Name</h4>
-                                                    <h5>@String.Format("{0:C}", item.Price)</h5>
+                                                    <h5>@String.Format("{0:0,0}₫", item.Price)</h5>
                                                 </div>
                                             </div>
                                         </div>
+
                                     }
                                 </div>
                                 <nav aria-label="Page navigation example">

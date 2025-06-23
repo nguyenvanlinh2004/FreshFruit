@@ -230,7 +230,6 @@ public partial class FreshFruitDbContext : DbContext
 				);
 			entity.HasKey(e => e.Id).HasName("PK_GoodsReceipt");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
 
             entity.HasOne(d => d.CreateByNavigation).WithMany(p => p.PurchaseReceipts)
                 .OnDelete(DeleteBehavior.ClientSetNull)

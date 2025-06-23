@@ -1,211 +1,163 @@
-﻿@model List<FreshFruit.Models.Product>
+﻿@model List<FreshFruit.Models.ViewModel.ProductWithExpiryViewModel>
+
 @{
-    Layout = "_layout";
+    var successMessage = TempData["success"] as string;
 }
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const successMessage = @Html.Raw(Json.Serialize(successMessage));
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: successMessage,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    </script>
+}
 <div class="page-wrapper">
     <div class="content">
-        <div class="page-header">
-            <div class="page-title">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
                 <h4>Product List</h4>
                 <h6>Manage your products</h6>
             </div>
-            <div class="page-btn">
-                <a href="addproduct.html" class="btn btn-added">
-                    <img src="~/admin/assets/img/icons/plus.svg" alt="img"
-                         class="me-1">Add New Product
-                </a>
-            </div>
+            <a asp-action="Create" asp-controller="Product" class="btn btn-added">
+                <img src="~/admin/assets/img/icons/plus.svg" alt="Add"> Add New Product
+            </a>
         </div>
 
         <div class="card">
             <div class="card-body">
-                <div class="table-top">
-                    <div class="search-set">
-                        <div class="search-path">
-                            <a class="btn btn-filter"
-                               id="filter_search">
-                                <img src="~/admin/assets/img/icons/filter.svg"
-                                     alt="img">
-                                <span>
-                                    <img src="~/admin/assets/img/icons/closes.svg"
-                                         alt="img">
-                                </span>
-                            </a>
-                        </div>
-                        <div class="search-input">
-                            <a class="btn btn-searchset">
-                                <img src="~/admin/assets/img/icons/search-white.svg"
-                                     alt="img">
-                            </a>
-                        </div>
+                <!-- Filter (optional) -->
+                <div class="table-top d-flex justify-content-between">
+                    <div class="search-set d-flex">
+                        <a class="btn btn-filter me-2" id="filter_search">
+                            <img src="~/admin/assets/img/icons/filter.svg" alt="Filter">
+                        </a>
+                        <a class="btn btn-searchset">
+                            <img src="~/admin/assets/img/icons/search-white.svg" alt="Search">
+                        </a>
                     </div>
                     <div class="wordset">
-                        <ul>
-                            <li>
-                                <a data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="pdf">
-                                    <img src="~/admin/assets/img/icons/pdf.svg"
-                                         alt="img">
-                                </a>
-                            </li>
-                            <li>
-                                <a data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="excel">
-                                    <img src="~/admin/assets/img/icons/excel.svg"
-                                         alt="img">
-                                </a>
-                            </li>
-                            <li>
-                                <a data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="print">
-                                    <img src="~/admin/assets/img/icons/printer.svg"
-                                         alt="img">
-                                </a>
-                            </li>
+                        <ul class="d-flex gap-2 list-unstyled m-0">
+                            <li><img src="~/admin/assets/img/icons/pdf.svg" alt="PDF" title="PDF"></li>
+                            <li><img src="~/admin/assets/img/icons/excel.svg" alt="Excel" title="Excel"></li>
+                            <li><img src="~/admin/assets/img/icons/printer.svg" alt="Print" title="Print"></li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="card mb-0" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-12 col-sm-12">
-                                <div class="row">
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>
-                                                    Choose
-                                                    Product
-                                                </option>
-                                                <option>
-                                                    Macbook
-                                                    pro
-                                                </option>
-                                                <option>Orange</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>
-                                                    Choose
-                                                    Category
-                                                </option>
-                                                <option>Computers</option>
-                                                <option>Fruits</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>
-                                                    Choose Sub
-                                                    Category
-                                                </option>
-                                                <option>Computer</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>Brand</option>
-                                                <option>N/D</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 col-12 ">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>Price</option>
-                                                <option>150.00</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-1 col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <a class="btn btn-filters ms-auto">
-                                                <img src="~/admin/assets/img/icons/search-whites.svg"
-                                                     alt="img">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table  datanew">
+                <!-- Table -->
+                <div class="text-center align-middle table-responsive mt-3 table-striped table-hover ">
+                    <table class="table datanew ">
                         <thead>
                             <tr>
-                                <th>
-                                    <label class="checkboxs">
-                                        <input type="checkbox"
-                                               id="select-all">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </th>
-                                <th>Product Name</th>
-                                <th>SKU</th>
-                                <th>Category </th>
-                                <th>Brand</th>
-                                <th>price</th>
-                                <th>Unit</th>
-                                <th>Qty</th>
-                                <th>Created By</th>
-                                <th>Action</th>
+                                <th><input type="checkbox" id="select-all"></th>
+                                <th>Tên sản phẩm</th>
+                                @* <th>Shipment</th> *@
+                                <th>Loại sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng tồn</th>
+                                <th>Đơn vị</th>
+                                <th>Lô hàng sắp hết hạn</th>
+                                <th class="d-flex justify-content-center gap-2">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model.Where(p => p.Product?.Status == 1))
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" /></td>
+                                        <td class="productimgname" style="height: 100%">
+                                            <a class="product-img" href="javascript:void(0);">
+                                                <img src="~/images/@item.Product?.Image" alt="@item.Product?.Name" style="width: 40px; height: 100%" />
+                                            </a>
+                                            <a href="#" style="height: 100%">@item.Product?.Name</a>
+                                        </td>
+                                        @* <td>@item.Product?.ShipmentId</td> *@
+                                        <td>@item.Product?.Category?.Name</td>
+                                        <td>@(item.Product?.Price?.ToString("N2") ?? "0.00")</td>
+                                        <td>@item.Product?.Quantity</td>
+                                        <td>Kg</td>
+                                        <td>
+                                            @foreach (var lot in item.ExpiringLots)
+                                            {
+                                                <div style="">
+                                                    <span class="badge bg-warning">
+                                                        HSD: @lot.ExpiryDate?.ToString("dd/MM/yyyy") | SL: @lot.Quantity kg
+                                                    </span>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a class="me-2" href="@Url.Action("Details", "Product", new { id = item.Product?.Id })">
+                                                <img src="~/admin/assets/img/icons/eye.svg" alt="View">
+                                            </a>
+                                            <a class="me-2" href="@Url.Action("Edit", "Product", new { id = item.Product?.Id })">
+                                                <img src="~/admin/assets/img/icons/edit.svg" alt="Edit">
+                                            </a>
+                                            <a href="@Url.Action("Delete", "Product", new { id = item.Product?.Id })"
+                                               onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
+                                                <img src="~/admin/assets/img/icons/delete.svg" alt="Delete">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
                             {
                                 <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="~/images/@item.Image" alt="product" />
-                                        </a>
-                                        <a href="javascript:void(0);">@item.Name</a>
-                                    </td>
-                                    <td>SP-@item.Id</td> <!-- giả sử SKU là Id -->
-                                    <td>@item.Category?.Name</td>
-                                    <td>N/D</td>
-                                    <td>@(item.Price?.ToString("N2") ?? "0")</td>
-                                    <td>kg</td> <!-- nếu có đơn vị thì thay thế -->
-                                    <td>@item.Quantity</td>
-                                    <td>Admin</td> <!-- nếu có CreatedBy thì thay thế -->
-                                    <td>
-                                        <a class="me-3" href="@Url.Action("Details", "Product", new { id = item.Id })">
-                                            <img src="~/admin/assets/img/icons/eye.svg" alt="View" />
-                                        </a>
-                                        <a class="me-3" href="@Url.Action("Edit", "Product", new { id = item.Id })">
-                                            <img src="~/admin/assets/img/icons/edit.svg" alt="Edit" />
-                                        </a>
-                                        <a class="confirm-text" href="@Url.Action("Delete", "Product", new { id = item.Id })" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
-                                            <img src="~/admin/assets/img/icons/delete.svg" alt="Delete" />
-                                        </a>
-                                    </td>
+                                    <td colspan="9" class="text-center">Không có sản phẩm nào.</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
+                <h4 class="mt-5">Sản phẩm đã xoá</h4>
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Loại</th>
+                                <th>Giá</th>
+                                <th>Khôi phục</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Where(p => p.Product?.Status == 0))
+                            {
+                                <tr>
+                                    <td>@item.Product?.Name</td>
+                                    <td>@item.Product?.Category?.Name</td>
+                                    <td>@item.Product?.Price?.ToString("N0")</td>
+                                    <td>
+                                        <a href="@Url.Action("Restore", "Product", new { id = item.Product?.Id })"
+                                           onclick="return confirm('Khôi phục sản phẩm này?');">
+                                            <img src="~/admin/assets/img/icons/restore.svg" alt="Restore" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                            @if (!Model.Any(p => p.Product?.Status == 0))
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Không có sản phẩm nào đã xoá.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
-
     </div>
 </div>

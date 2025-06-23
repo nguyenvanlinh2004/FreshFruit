@@ -1034,7 +1034,10 @@ namespace FreshFruit.Migrations
             modelBuilder.Entity("FreshFruit.Models.PurchaseReceipt", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CreateBy")
                         .HasColumnType("int");

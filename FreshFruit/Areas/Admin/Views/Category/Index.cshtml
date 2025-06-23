@@ -1,0 +1,121 @@
+﻿@model IEnumerable<FreshFruit.Models.Category>
+
+@{
+    var successMessage = TempData["success"] as string;
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const successMessage = @Html.Raw(Json.Serialize(successMessage));
+
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: successMessage,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    </script>
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4>Danh sách loại sản phẩm</h4>
+                <h6>Quản lý loại sản phẩm</h6>
+            </div>
+            <div class="page-btn">
+                <a asp-action="Create" class="btn btn-added">
+                    <img src="~/assets/img/icons/plus.svg" class="me-1" alt="img" />
+                    Thêm loại mới
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <!-- Danh sách đang hoạt động -->
+                <div class="table-responsive">
+                    <table class="table datanew">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên loại</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Any(m => m.Status == 1))
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">Không có loại nào đang hoạt động.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model.Where(m => m.Status == 1))
+                                {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.Name</td>
+                                        <td>Hoạt động</td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="me-2">
+                                                <img src="~/admin/assets/img/icons/edit.svg" alt="edit" />
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="confirm-text">
+                                                <img src="~/admin/assets/img/icons/delete.svg" alt="delete" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Danh sách đã xoá mềm -->
+                <h4 class="mt-5">Loại sản phẩm đã xoá</h4>
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Tên loại</th>
+                                <th>Khôi phục</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Where(m => m.Status == 0))
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        <a href="@Url.Action("Restore", "Category", new { id = item.Id })"
+                                           onclick="return confirm('Bạn có muốn khôi phục loại này không?');">
+                                            <img src="~/admin/assets/img/icons/restore.svg" alt="restore" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                            @if (!Model.Any(m => m.Status == 0))
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">Không có loại nào đã xoá.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
