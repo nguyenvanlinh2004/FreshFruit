@@ -126,7 +126,8 @@ namespace FreshFruit.Controllers
 
 			if (account == null)
 			{
-				return NotFound();
+				TempData["Error"] = "Tài khoản không tồn tại.";
+				return RedirectToAction(nameof(Profile));
 			}
 
 			// Kiểm tra mật khẩu hiện tại
@@ -157,14 +158,16 @@ namespace FreshFruit.Controllers
 					return RedirectToAction(nameof(Profile));
 				}
 
-				account.Password = password; 
+				account.Password = password;
 				_context.Update(account);
 			}
 
-			// Cập nhật thông tin thành viên
+			// Kiểm tra Member đã tồn tại hay chưa
 			var member = account.Members.FirstOrDefault();
+
 			if (member != null)
 			{
+				// Update thông tin
 				member.Fullname = fullname;
 				member.Phone = phone;
 				member.Address = address;
@@ -172,12 +175,27 @@ namespace FreshFruit.Controllers
 
 				_context.Update(member);
 			}
+			else
+			{
+				// Nếu chưa có, thêm mới thông tin
+				var newMember = new Member
+				{
+					Fullname = fullname,
+					Phone = phone,
+					Address = address,
+					Dob = dob.HasValue ? DateOnly.FromDateTime(dob.Value) : (DateOnly?)null,
+					AccountId = account.Id // Gán lại AccountId để liên kết
+				};
+
+				_context.Members.Add(newMember);
+			}
 
 			await _context.SaveChangesAsync();
 			TempData["Success"] = "Cập nhật thông tin thành công.";
-
 			return RedirectToAction(nameof(Profile));
 		}
+
+
 
 
 
