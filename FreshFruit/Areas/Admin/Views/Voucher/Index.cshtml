@@ -1,0 +1,51 @@
+﻿
+@model List<FreshFruit.Models.Voucher>
+<div class="page-wrapper">
+@{
+    ViewData["Title"] = "Danh sách voucher";
+    Layout = "_Layout";
+}
+
+    <h2>Danh sách voucher</h2>
+
+    <a asp-action="Create" class="btn btn-primary mb-3">Thêm voucher</a>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">@TempData["success"]</div>
+    }
+
+    <div class="text-center align-middle table-responsive mt-3 table-striped table-hover">
+        <table class="table datanew">
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Tên</th>
+                    <th>Giảm giá</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Code</td>
+                        <td>@item.Name</td>
+                        <td>@item.DiscountAmount.ToString("N0") đ</td>
+                        <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
+                        <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
+                        <td>@(item.Status == 1 ? "Hoạt động" : "Ngừng")</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Bạn có chắc muốn xoá voucher này?');">Xoá</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
