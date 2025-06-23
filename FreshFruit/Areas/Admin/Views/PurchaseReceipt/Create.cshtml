@@ -62,34 +62,38 @@
         <button type="submit" class="btn btn-primary">Lưu phiếu</button>
         <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
     </form>
+</div>
 
+<!-- Template row (hidden) -->
+<template id="rowTemplate">
+    <tr>
+        <td>
+            <select name="__name__.ProductId" class="form-control" required>
+                <option value="">-- Chọn sản phẩm --</option>
+                @foreach (var item in products)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </td>
+        <td><input name="__name__.Quantity" type="number" class="form-control" required min="1" /></td>
+        <td><input name="__name__.ImportPrice" type="number" step="0.01" class="form-control" required min="0.01" /></td>
+        <td><input name="__name__.ExpiryDate" type="date" class="form-control" required /></td>
+        <td><button type="button" class="btn btn-danger remove-row">Xoá</button></td>
+    </tr>
+</template>
 
-    </div>
 @section Scripts {
     <script>
         let rowIndex = 1;
 
         document.getElementById("addRow").addEventListener("click", function () {
-            const tableBody = document.querySelector("#itemTable tbody");
-            const newRow = document.createElement("tr");
+            const template = document.getElementById("rowTemplate").innerHTML;
+            const newRowHtml = template.replaceAll("__name__", `Items[${rowIndex}]`);
+            const newRow = document.createElement("tbody");
+            newRow.innerHTML = newRowHtml;
 
-            newRow.innerHTML = `
-                <td>
-                    <select name="Items[${rowIndex}].ProductId" class="form-control">
-                        <option value="">-- Chọn sản phẩm --</option>
-                        @foreach (var item in products)
-                        {
-                                <option value="@item.Value">@item.Text</option>
-                        }
-                    </select>
-                </td>
-                <td><input name="Items[${rowIndex}].Quantity" type="number" class="form-control" /></td>
-                <td><input name="Items[${rowIndex}].ImportPrice" type="number" step="0.01" class="form-control" /></td>
-                <td><input name="Items[${rowIndex}].ExpiryDate" type="date" class="form-control" /></td>
-                <td><button type="button" class="btn btn-danger remove-row">Xoá</button></td>
-            `;
-
-            tableBody.appendChild(newRow);
+            document.querySelector("#itemTable tbody").appendChild(newRow.firstElementChild);
             rowIndex++;
         });
 
@@ -98,8 +102,7 @@
                 e.target.closest("tr").remove();
             }
         });
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        };
     </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
