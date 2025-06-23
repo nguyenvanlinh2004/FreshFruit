@@ -1,163 +1,208 @@
-﻿<div class="about-box-main">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="banner-frame">
-                    <img class="img-fluid" src="images/about-img.jpg" alt="" />
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <h2 class="noo-sh-title-top">We are <span>Freshshop.hihihi</span></h2>
-                <p>
-                    "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam
-                    voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-                    sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
-                    Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.
-                </p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <a class="btn hvr-hover" href="#">Read More</a>
-            </div>
+﻿@model List<FreshFruit.Models.Blog>
+
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+        body > .container, /* cái container trong Layout */
+        .blog-list.container {
+            min-height: calc(100vh - 120px); /* trừ chiều cao footer + header */
+            display: flex;
+            flex-direction: column;
+        }
+
+    /* Giữ footer luôn dưới cùng */
+    footer {
+        height: 120px; /* chiều cao footer, sửa cho phù hợp */
+        background-color: #f8f9fa;
+        padding: 1rem;
+        margin-top: auto;
+    }
+
+    /* Các style hiện có */
+    .blog-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #fdfdfd;
+        border: 1px solid #e1e1e1;
+    }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+    .blog-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        object-position: center;
+        transition: transform 0.4s ease-in-out;
+        border-bottom: 1px solid #eee;
+    }
+
+    .blog-card:hover .blog-image {
+        transform: scale(1.05);
+    }
+
+    .blog-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: #1a73e8;
+        transition: color 0.3s ease;
+    }
+
+    .blog-card:hover .blog-title {
+        color: #0d47a1;
+    }
+
+    .blog-description {
+        color: #4a4a4a;
+        font-size: 0.95rem;
+        min-height: 60px;
+        margin-bottom: 10px;
+    }
+
+    .blog-meta {
+        font-size: 0.85rem;
+        color: #6c757d;
+        line-height: 1.4;
+    }
+
+    .blog-button {
+        transition: all 0.3s ease;
+        border-radius: 20px;
+        font-weight: 500;
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+        .blog-button:hover {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+    .blog-list h2 {
+        color: #343a40;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+        .blog-list h2::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #007bff;
+            margin: 12px auto 0;
+            border-radius: 3px;
+        }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .pagination .page-link {
+        color: #007bff;
+        transition: background-color 0.3s ease;
+    }
+
+        .pagination .page-link:hover {
+            background-color: #e9f4ff;
+        }
+</style>
+
+<section class="blog-list container my-5">
+    <h2 class="text-center fw-bold">📚 Bài Viết Mới Nhất</h2>
+
+    <!-- Search Form -->
+    <form method="get" asp-action="Index" class="row mb-4">
+        <div class="col-md-4 mb-2">
+            <input type="text" name="searchTitle" class="form-control" placeholder="Tìm theo tiêu đề"
+                   value="@ViewBag.SearchTitle" />
         </div>
-        <div class="row my-5">
-            <div class="col-sm-6 col-lg-4">
-                <div class="service-block-inner">
-                    <h3>We are Trusted</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="service-block-inner">
-                    <h3>We are Professional</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-4">
-                <div class="service-block-inner">
-                    <h3>We are Expert</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                </div>
-            </div>
+        <div class="col-md-4 mb-2">
+            <input type="text" name="searchAuthor" class="form-control" placeholder="Tìm theo người viết"
+                   value="@ViewBag.SearchAuthor" />
         </div>
-        <div class="row my-4">
-            <div class="col-12">
-                <h2 class="noo-sh-title">Meet Our Team</h2>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="hover-team">
-                    <div class="our-team">
-                        <img src="images/img-1.jpg" alt="" />
-                        <div class="team-content">
-                            <h3 class="title">Williamson</h3> <span class="post">Web Developer</span>
-                        </div>
-                        <ul class="social">
-                            <li>
-                                <a href="#" class="fab fa-facebook"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-twitter"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-google-plus"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-youtube"></a>
-                            </li>
-                        </ul>
-                        <div class="icon"> <i class="fa fa-plus" aria-hidden="true"></i> </div>
-                    </div>
-                    <div class="team-description">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent urna diam, maximus ut ullamcorper quis, placerat id eros. Duis semper justo sed condimentum rutrum. Nunc tristique purus turpis. Maecenas vulputate. </p>
-                    </div>
-                    <hr class="my-0">
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="hover-team">
-                    <div class="our-team">
-                        <img src="images/img-2.jpg" alt="" />
-                        <div class="team-content">
-                            <h3 class="title">Kristiana</h3> <span class="post">Web Developer</span>
-                        </div>
-                        <ul class="social">
-                            <li>
-                                <a href="#" class="fab fa-facebook"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-twitter"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-google-plus"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-youtube"></a>
-                            </li>
-                        </ul>
-                        <div class="icon"> <i class="fa fa-plus" aria-hidden="true"></i> </div>
-                    </div>
-                    <div class="team-description">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent urna diam, maximus ut ullamcorper quis, placerat id eros. Duis semper justo sed condimentum rutrum. Nunc tristique purus turpis. Maecenas vulputate. </p>
-                    </div>
-                    <hr class="my-0">
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="hover-team">
-                    <div class="our-team">
-                        <img src="images/img-3.jpg" alt="" />
-                        <div class="team-content">
-                            <h3 class="title">Steve Thomas</h3> <span class="post">Web Developer</span>
-                        </div>
-                        <ul class="social">
-                            <li>
-                                <a href="#" class="fab fa-facebook"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-twitter"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-google-plus"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-youtube"></a>
-                            </li>
-                        </ul>
-                        <div class="icon"> <i class="fa fa-plus" aria-hidden="true"></i> </div>
-                    </div>
-                    <div class="team-description">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent urna diam, maximus ut ullamcorper quis, placerat id eros. Duis semper justo sed condimentum rutrum. Nunc tristique purus turpis. Maecenas vulputate. </p>
-                    </div>
-                    <hr class="my-0">
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="hover-team">
-                    <div class="our-team">
-                        <img src="images/img-1.jpg" alt="" />
-                        <div class="team-content">
-                            <h3 class="title">Williamson</h3> <span class="post">Web Developer</span>
-                        </div>
-                        <ul class="social">
-                            <li>
-                                <a href="#" class="fab fa-facebook"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-twitter"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-google-plus"></a>
-                            </li>
-                            <li>
-                                <a href="#" class="fab fa-youtube"></a>
-                            </li>
-                        </ul>
-                        <div class="icon"> <i class="fa fa-plus" aria-hidden="true"></i> </div>
-                    </div>
-                    <div class="team-description">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent urna diam, maximus ut ullamcorper quis, placerat id eros. Duis semper justo sed condimentum rutrum. Nunc tristique purus turpis. Maecenas vulputate. </p>
-                    </div>
-                    <hr class="my-0">
-                </div>
-            </div>
+        <div class="col-md-4 mb-2">
+            <input type="date" name="searchDate" class="form-control"
+                   value="@ViewBag.SearchDate" />
         </div>
+        <div class="col-12 d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary me-2">🔍 Tìm kiếm</button>
+            <a href="@Url.Action("Index", "Blog")" class="btn btn-secondary">🧹 Xóa bộ lọc</a>
+        </div>
+    </form>
+
+    <!-- Blog List -->
+    <div class="row">
+        @foreach (var blog in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card blog-card h-100 shadow-sm">
+                    @if (!string.IsNullOrEmpty(blog.Image))
+                    {
+                        <img src="~/images/@blog.Image" class="card-img-top blog-image" alt="@blog.Title" />
+                    }
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title blog-title">@blog.Title</h5>
+
+                        <p class="card-text text-truncate blog-description">
+                            @(!string.IsNullOrEmpty(blog.Contents) ? blog.Contents : "Không có nội dung.")
+                        </p>
+
+                        <small class="text-muted mb-2 d-block blog-meta">
+                            @{
+                                var fullname = blog.Author?.Members.FirstOrDefault()?.Fullname ?? "Không rõ người viết";
+                                var createdDate = blog.CreatedAt?.ToString("dd/MM/yyyy") ?? "Chưa rõ ngày";
+                            }
+                            🖋️ <span style="color: #28a745;">@fullname</span><br />
+                            📅 <span style="color: #17a2b8;">@createdDate</span>
+                        </small>
+
+                        <a href="@Url.Action("Details", "Blog", new { id = blog.Id })" class="btn btn-outline-primary mt-auto blog-button">
+                            Xem chi tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-</div>
+
+    <!-- Pagination with query params -->
+    <div class="pagination mt-4 d-flex justify-content-center">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item @(ViewBag.CurrentPage <= 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, searchDate = ViewBag.SearchDate })" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Trước</span>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i, searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, searchDate = ViewBag.SearchDate })">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, searchDate = ViewBag.SearchDate })" aria-label="Next">
+                        <span aria-hidden="true">Tiếp &raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>

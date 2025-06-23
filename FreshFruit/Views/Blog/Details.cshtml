@@ -1,0 +1,151 @@
+﻿@model FreshFruit.Models.Blog
+
+@{
+    Layout = "_Layout";
+}
+
+<style>
+    .blog-details {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .blog-card-details {
+        border-radius: 16px;
+        overflow: hidden;
+        background-color: #fff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeIn 0.8s ease;
+    }
+
+        .blog-card-details:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+    .blog-image-details {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: cover;
+        object-position: center;
+        border-bottom: 1px solid #ddd;
+        transition: transform 0.4s ease;
+        border-radius: 12px;
+        display: block;
+        margin: 0 auto;
+    }
+
+        .blog-image-details:hover {
+            transform: scale(1.03);
+        }
+
+    .blog-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        text-align: center;
+        background: linear-gradient(90deg, #ff6a00, #ee0979);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+        animation: fadeIn 1s ease;
+    }
+
+    .blog-meta-details {
+        font-size: 0.95rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+        text-align: center;
+        animation: fadeIn 1.2s ease;
+    }
+
+    .blog-contents {
+        font-size: 1.15rem;
+        line-height: 1.9;
+        color: #444;
+        animation: fadeIn 1.5s ease;
+        text-align: justify;
+    }
+
+        .blog-contents p {
+            margin-bottom: 1rem;
+        }
+
+        .blog-contents strong {
+            color: #e91e63;
+        }
+
+    .back-button {
+        transition: all 0.3s ease;
+        border-radius: 20px;
+        font-weight: 500;
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+        .back-button:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        background: none;
+        padding-left: 0;
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">";
+        padding: 0 0.5rem;
+        color: #6c757d;
+    }
+
+    .breadcrumb a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+    
+
+    
+</style>
+
+<section class="container my-5 blog-details">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Blog")">Bài viết</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="card blog-card-details p-4">
+        <h2 class="blog-title">@Model.Title</h2>
+
+        @if (!string.IsNullOrEmpty(Model.Image))
+        {
+            <img src="~/images/@Model.Image" alt="@Model.Title" class="blog-image-details mb-4" />
+        }
+
+        <p class="blog-meta-details">
+            🖋️ Tác giả: <strong style="color: #28a745;">@Model.Author?.Members.FirstOrDefault()?.Fullname</strong> |
+            📅 Ngày đăng: <strong style="color: #17a2b8;">@Model.CreatedAt?.ToString("dd/MM/yyyy")</strong>
+        </p>
+
+        <div class="blog-contents mb-4">
+            @Html.Raw(Model.Contents)
+        </div>
+
+        <div class="text-center">
+            <a href="@Url.Action("Index", "Blog")" class="btn btn-outline-primary back-button">⬅️ Quay lại danh sách</a>
+        </div>
+    </div>
+</section>

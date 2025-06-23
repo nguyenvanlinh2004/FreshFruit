@@ -1,6 +1,7 @@
 ﻿using FreshFruit.Models;
 using FreshFruit.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FreshFruit.Controllers
 {
@@ -79,5 +80,106 @@ namespace FreshFruit.Controllers
             HttpContext.Session.Clear(); // Xoá toàn bộ session
             return RedirectToAction("Login");
         }
-    }
+
+		// Hiển thị form Profile
+		[HttpGet]
+		public async Task<IActionResult> Profile()
+		{
+			var accountId = HttpContext.Session.GetInt32("AccountId");
+			if (accountId == null)
+			{
+				return RedirectToAction("Login");
+			}
+
+			var account = await _context.Accounts
+				.Include(a => a.Members)
+					.ThenInclude(m => m.Invoices)
+						.ThenInclude(i => i.InvoiceDetails)
+							.ThenInclude(d => d.Product)
+				.FirstOrDefaultAsync(a => a.Id == accountId);
+
+			if (account == null)
+			{
+				return NotFound();
+			}
+
+			var member = account.Members.FirstOrDefault();
+			ViewBag.Member = member;
+
+			if (member != null)
+			{
+				ViewBag.Invoices = member.Invoices.OrderByDescending(i => i.InvoiceDate).ToList();
+			}
+			else
+			{
+				ViewBag.Invoices = new List<Invoice>();
+			}
+
+			return View(account);
+		}
+
+		// Xử lý cập nhật Profile
+		[HttpPost]
+		public async Task<IActionResult> Profile(int id, string fullname, string phone, string address, DateTime? dob, string currentPassword, string password, string confirmPassword)
+		{
+			var account = await _context.Accounts.Include(a => a.Members).FirstOrDefaultAsync(a => a.Id == id);
+
+			if (account == null)
+			{
+				return NotFound();
+			}
+
+			// Kiểm tra mật khẩu hiện tại
+			if (account.Password != currentPassword)
+			{
+				TempData["Error"] = "Mật khẩu hiện tại không đúng.";
+				return RedirectToAction(nameof(Profile));
+			}
+
+			// Nếu người dùng muốn đổi mật khẩu
+			if (!string.IsNullOrEmpty(password))
+			{
+				if (password == currentPassword)
+				{
+					TempData["Error"] = "Mật khẩu mới không được trùng với mật khẩu hiện tại.";
+					return RedirectToAction(nameof(Profile));
+				}
+
+				if (string.IsNullOrEmpty(confirmPassword))
+				{
+					TempData["Error"] = "Vui lòng nhập lại mật khẩu mới.";
+					return RedirectToAction(nameof(Profile));
+				}
+
+				if (password != confirmPassword)
+				{
+					TempData["Error"] = "Mật khẩu mới và mật khẩu nhập lại không khớp.";
+					return RedirectToAction(nameof(Profile));
+				}
+
+				account.Password = password; 
+				_context.Update(account);
+			}
+
+			// Cập nhật thông tin thành viên
+			var member = account.Members.FirstOrDefault();
+			if (member != null)
+			{
+				member.Fullname = fullname;
+				member.Phone = phone;
+				member.Address = address;
+				member.Dob = dob.HasValue ? DateOnly.FromDateTime(dob.Value) : (DateOnly?)null;
+
+				_context.Update(member);
+			}
+
+			await _context.SaveChangesAsync();
+			TempData["Success"] = "Cập nhật thông tin thành công.";
+
+			return RedirectToAction(nameof(Profile));
+		}
+
+
+
+	}
 }
