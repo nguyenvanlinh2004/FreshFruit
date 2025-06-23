@@ -1,0 +1,240 @@
+﻿@model FreshFruit.Models.Account
+@{
+    var member = ViewBag.Member as FreshFruit.Models.Member;
+    var invoices = ViewBag.Invoices as List<FreshFruit.Models.Invoice>;
+}
+
+<style>
+    body {
+        background: url('/images/fruit-background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    input, button {
+        transition: all 0.3s ease;
+    }
+
+        input:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: #16a34a;
+        }
+
+    .profile-container {
+        display: flex;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    .form-section {
+        flex: 0 0 40%;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+        border: 2px solid #bbf7d0;
+    }
+
+    .history-section {
+        flex: 0 0 60%;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+        border: 2px solid #bbf7d0;
+        overflow-x: auto;
+    }
+
+        .form-section h2, .history-section h2 {
+            text-align: center;
+            color: #16a34a;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+    label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #065f46;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        background-color: #f0fdf4;
+    }
+
+    button {
+        background-color: #22c55e;
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .success-message {
+        background-color: #d1fae5;
+        color: #065f46;
+        padding: 0.8rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .error-message {
+        background-color: #fee2e2;
+        color: #b91c1c;
+        padding: 0.8rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f0fdf4;
+        color: #065f46;
+    }
+
+    
+</style>
+
+<div class="profile-container">
+    <!-- Form cập nhật thông tin -->
+    <div class="form-section">
+        <h2>Thông tin tài khoản</h2>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-message">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="error-message">@TempData["Error"]</div>
+        }
+
+        <form asp-action="Profile" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" value="@Model.Email" disabled />
+            </div>
+
+            <!-- Họ tên -->
+            <div class="form-group">
+                <label for="fullname">Họ tên</label>
+                <input type="text" id="fullname" name="fullname" value="@member?.Fullname" />
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input type="text" id="phone" name="phone" value="@member?.Phone" />
+            </div>
+
+            <!-- Địa chỉ -->
+            <div class="form-group">
+                <label for="address">Địa chỉ</label>
+                <input type="text" id="address" name="address" value="@member?.Address" />
+            </div>
+
+            <!-- Ngày sinh -->
+            <div class="form-group">
+                <label for="dob">Ngày sinh</label>
+                <input type="date" id="dob" name="dob" value="@(member?.Dob?.ToString("yyyy-MM-dd"))" />
+            </div>
+
+            <!-- Mật khẩu hiện tại -->
+            <div class="form-group">
+                <label for="currentPassword">Mật khẩu hiện tại <span style="color:red">*</span></label>
+                <input type="password" id="currentPassword" name="currentPassword" required />
+            </div>
+
+            <!-- Mật khẩu mới -->
+            <div class="form-group">
+                <label for="password">Mật khẩu mới</label>
+                <input type="password" id="password" name="password" />
+            </div>
+
+            <!-- Nhập lại mật khẩu mới -->
+            <div class="form-group">
+                <label for="confirmPassword">Nhập lại mật khẩu mới</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" />
+            </div>
+
+            <button type="submit">Cập nhật</button>
+        </form>
+    </div>
+
+    <!-- Lịch sử mua hàng -->
+    <div class="history-section">
+        <h2>Lịch sử mua hàng</h2>
+
+        @if (invoices != null && invoices.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã hóa đơn</th>
+                        <th>Ngày mua</th>
+                        <th>Tổng tiền</th>
+                        <th>Phương thức</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var invoice in invoices)
+                    {
+                        <tr>
+                            <td>@invoice.InvoicesCode</td>
+                            <td>@invoice.InvoiceDate.ToString("dd/MM/yyyy")</td>
+                            <td>@String.Format("{0:N0}₫", invoice.Total)</td>
+                            <td>@invoice.PaymentMethod</td>
+                            <td>@(invoice.Status == 1 ? "Hoàn thành" : "Đang xử lý")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p style="text-align:center; margin-top:20px; color:#b91c1c;">Bạn chưa có đơn hàng nào.</p>
+        }
+    </div>
+</div>
