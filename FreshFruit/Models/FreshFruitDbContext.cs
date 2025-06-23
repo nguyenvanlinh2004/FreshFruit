@@ -40,6 +40,7 @@ public partial class FreshFruitDbContext : DbContext
     public virtual DbSet<PurchaseReceiptDetail> PurchaseReceiptDetails { get; set; }
 
     public virtual DbSet<Rating> Ratings { get; set; }
+    public virtual DbSet<Voucher> Vouchers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       => optionsBuilder.UseSqlServer("Name=FreshFruitConnection");
