@@ -1,0 +1,129 @@
+﻿@model List<FreshFruit.Models.Blog>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .search-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+        .search-form input, .search-form button, .search-form a {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: all 0.3s ease;
+        }
+
+            .search-form input:focus {
+                border-color: #4caf50;
+                box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+                outline: none;
+            }
+
+        .search-form button {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+            .search-form button:hover {
+                background-color: #45a049;
+            }
+
+        .search-form a {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+            .search-form a:hover {
+                background-color: #5a6268;
+            }
+
+    table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+        table thead {
+            background-color: #f0f0f0;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+    .btn {
+        border-radius: 8px !important;
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="content">
+        <h2>Danh sách bài viết</h2>
+
+        <!-- Form tìm kiếm -->
+        <form method="get" asp-area="Admin" asp-controller="Blog" asp-action="Index" class="search-form">
+            <input type="text" name="searchTitle" placeholder="Tìm theo tiêu đề" value="@Context.Request.Query["searchTitle"]" />
+            <input type="text" name="searchAuthor" placeholder="Tìm theo tác giả" value="@Context.Request.Query["searchAuthor"]" />
+            <label>Từ ngày:</label>
+            <input type="date" name="fromDate" value="@Context.Request.Query["fromDate"]" />
+            <label>Đến ngày:</label>
+            <input type="date" name="toDate" value="@Context.Request.Query["toDate"]" />
+            <button type="submit">🔍 Tìm kiếm</button>
+            <a asp-area="Admin" asp-controller="Blog" asp-action="Index" class="btn btn-secondary">🔄 Làm mới</a>
+        </form>
+
+        <a asp-area="Admin" asp-controller="Blog" asp-action="Create" class="btn btn-success mb-3">➕ Thêm bài viết mới</a>
+
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Tiêu đề</th>
+                    <th>Tác giả</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Author?.Members.FirstOrDefault()?.Fullname</td>
+                            <td>@item.CreatedAt</td>
+                            <td>@(item.Status == 1 ? "Hiển thị" : "Đã ẩn")</td>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Blog" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️ Sửa</a>
+
+                                <a asp-area="Admin" asp-controller="Blog" asp-action="ToggleStatus" asp-route-id="@item.Id"
+                                   class="btn @(item.Status == 1 ? "btn-danger" : "btn-success") btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái bài viết này?');">
+                                    @(item.Status == 1 ? "🗑️ Ẩn" : "👁️ Hiển thị")
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-danger">Không tìm thấy bài viết nào phù hợp.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

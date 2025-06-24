@@ -83,9 +83,10 @@ public partial class FreshFruitDbContext : DbContext
                  new Blog { Id = 6, Title = "Tác dụng của vitamin C trong cam", Slug = "vitamin-c-trong-cam", Contents = "Cam chứa nhiều vitamin C giúp đẹp da và tăng sức đề kháng.", Image = "blog6.jpg", AuthorId = 6, CreatedAt = new DateOnly(2025, 6, 1), Status = 1 },
                  new Blog { Id = 7, Title = "Ăn trái cây đúng thời điểm để hấp thu tối đa", Slug = "an-trai-cay-dung-luc", Contents = "Ăn trái cây vào buổi sáng giúp hấp thu tốt hơn.", Image = "blog7.jpg", AuthorId = 7, CreatedAt = new DateOnly(2025, 6, 10), Status = 1 }
                 );
-            entity.Property(e => e.Id).ValueGeneratedNever();
+			entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-            entity.HasOne(d => d.Author).WithMany(p => p.Blogs).HasConstraintName("FK_Blogs_Accounts_01");
+
+			entity.HasOne(d => d.Author).WithMany(p => p.Blogs).HasConstraintName("FK_Blogs_Accounts_01");
         });
 
         modelBuilder.Entity<BlogImage>(entity =>
