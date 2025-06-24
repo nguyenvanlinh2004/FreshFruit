@@ -1,0 +1,148 @@
+﻿@model List<FreshFruit.Models.Invoice>
+
+@{
+    Layout = "_Layout";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string searchCustomer = ViewBag.SearchCustomer as string ?? "";
+    decimal? minTotal = ViewBag.MinTotal as decimal?;
+    decimal? maxTotal = ViewBag.MaxTotal as decimal?;
+}
+
+<style>
+    .btn {
+        border-radius: 8px !important;
+    }
+
+    table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+        table thead {
+            background-color: #f0f0f0;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+    .pagination {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .pagination a, .pagination span {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .pagination .active {
+            background-color: #4caf50;
+            color: white;
+        }
+</style>
+
+<div class="page-wrapper">
+    <div class="content">
+        <h2>📦 Danh sách đơn hàng</h2>
+
+        <!-- Form tìm kiếm -->
+        <form method="get" class="mb-3 d-flex gap-3 flex-wrap">
+            <input type="text" name="searchCustomer" value="@searchCustomer" placeholder="Tìm theo tên khách hàng" class="form-control w-auto" />
+            <input type="number" name="minTotal" value="@(minTotal?.ToString("N0") ?? "")" placeholder="Tổng tiền từ" class="form-control w-auto" />
+            <input type="number" name="maxTotal" value="@(maxTotal?.ToString("N0") ?? "")" placeholder="Tổng tiền đến" class="form-control w-auto" />
+            <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
+            <a href="@Url.Action("Index", "Invoice", new { area = "Admin" })" class="btn btn-secondary">🔄 Làm mới</a>
+        </form>
+
+        <!-- Hiển thị tổng số trang -->
+        <p class="text-center mt-3">
+            Trang @currentPage / @totalPages
+        </p>
+
+        <!-- Bảng danh sách -->
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Mã đơn hàng</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.InvoicesCode</td>
+                            <td>@item.Member?.Fullname</td>
+                            <td>@item.InvoiceDate.ToString("dd/MM/yyyy")</td>
+                            <td>@string.Format("{0:N0} VNĐ", item.Total)</td>
+                            <td>
+                                <span class="badge bg-@(item.Status == 1 ? "success" : "secondary")">
+                                    @(item.Status == 1 ? "Đã giao" : "Chưa giao")
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Invoice" asp-action="ToggleStatus" asp-route-id="@item.Id"
+                                   class="btn @(item.Status == 1 ? "btn-danger" : "btn-success") btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái đơn hàng này?');">
+                                    @(item.Status == 1 ? "🕒 Chưa giao" : "✅ Đã giao")
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-danger">Không có đơn hàng nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Phân trang -->
+        <div class="pagination">
+            @if (currentPage > 1)
+            {
+                <a href="@Url.Action("Index", "Invoice", new { area = "Admin", searchCustomer = searchCustomer, minTotal = minTotal, maxTotal = maxTotal, page = currentPage - 1 })">⬅️</a>
+            }
+            else
+            {
+                <span>⬅️</span>
+            }
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                if (i == currentPage)
+                {
+                    <span class="active">@i</span>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "Invoice", new { area = "Admin", searchCustomer = searchCustomer, minTotal = minTotal, maxTotal = maxTotal, page = i })">@i</a>
+                }
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <a href="@Url.Action("Index", "Invoice", new { area = "Admin", searchCustomer = searchCustomer, minTotal = minTotal, maxTotal = maxTotal, page = currentPage + 1 })">➡️</a>
+            }
+            else
+            {
+                <span>➡️</span>
+            }
+        </div>
+    </div>
+</div>
