@@ -73,12 +73,12 @@
 
         <!-- Form tìm kiếm -->
         <form method="get" asp-area="Admin" asp-controller="Blog" asp-action="Index" class="search-form">
-            <input type="text" name="searchTitle" placeholder="Tìm theo tiêu đề" value="@Context.Request.Query["searchTitle"]" />
-            <input type="text" name="searchAuthor" placeholder="Tìm theo tác giả" value="@Context.Request.Query["searchAuthor"]" />
+            <input type="text" name="searchTitle" placeholder="Tìm theo tiêu đề" value="@ViewBag.SearchTitle" />
+            <input type="text" name="searchAuthor" placeholder="Tìm theo tác giả" value="@ViewBag.SearchAuthor" />
             <label>Từ ngày:</label>
-            <input type="date" name="fromDate" value="@Context.Request.Query["fromDate"]" />
+            <input type="date" name="fromDate" value="@ViewBag.FromDate" />
             <label>Đến ngày:</label>
-            <input type="date" name="toDate" value="@Context.Request.Query["toDate"]" />
+            <input type="date" name="toDate" value="@ViewBag.ToDate" />
             <button type="submit">🔍 Tìm kiếm</button>
             <a asp-area="Admin" asp-controller="Blog" asp-action="Index" class="btn btn-secondary">🔄 Làm mới</a>
         </form>
@@ -125,5 +125,42 @@
                 }
             </tbody>
         </table>
+
+        <!-- Phân trang -->
+        <div class="pagination d-flex justify-content-center mt-4">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <a href="@Url.Action("Index", "Blog", new { area = "Admin", searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, fromDate = ViewBag.FromDate, toDate = ViewBag.ToDate, page = ViewBag.CurrentPage - 1 })" class="btn btn-outline-primary mx-1">⬅️</a>
+            }
+            else
+            {
+                <span class="btn btn-outline-secondary mx-1 disabled">⬅️</span>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                if (i == ViewBag.CurrentPage)
+                {
+                    <span class="btn btn-primary mx-1">@i</span>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "Blog", new { area = "Admin", searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, fromDate = ViewBag.FromDate, toDate = ViewBag.ToDate, page = i })" class="btn btn-outline-primary mx-1">@i</a>
+                }
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <a href="@Url.Action("Index", "Blog", new { area = "Admin", searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, fromDate = ViewBag.FromDate, toDate = ViewBag.ToDate, page = ViewBag.CurrentPage + 1 })" class="btn btn-outline-primary mx-1">➡️</a>
+            }
+            else
+            {
+                <span class="btn btn-outline-secondary mx-1 disabled">➡️</span>
+            }
+        </div>
+
+        <p class="text-center mt-2">
+            Trang @ViewBag.CurrentPage / @ViewBag.TotalPages
+        </p>
     </div>
 </div>

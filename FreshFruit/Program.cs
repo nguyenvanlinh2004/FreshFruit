@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductServices>();

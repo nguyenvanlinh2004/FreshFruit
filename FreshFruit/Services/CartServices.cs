@@ -1,4 +1,4 @@
-﻿using FreshFruit.Models;
+using FreshFruit.Models;
 using Newtonsoft.Json;
 using FreshFruit.Services; 
 
@@ -98,7 +98,7 @@ namespace FreshFruit.Services
         public bool IncreaseQuantity(int cartItemId)
         {
             Cart cart = GetCart();
-            CartItem cartItem = cart.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId) ?? new CartItem();
+CartItem cartItem = cart.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId) ?? new CartItem();
 
             if (cartItem.Quantity >= cartItem.Product.Quantity)
             {
