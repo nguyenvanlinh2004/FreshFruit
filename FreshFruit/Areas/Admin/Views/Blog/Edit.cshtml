@@ -1,0 +1,85 @@
+﻿@model FreshFruit.Models.ViewModel.BlogViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa bài viết";
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <h2>@ViewData["Title"]</h2>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <!-- Hidden field để truyền Id -->
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Tiêu đề</label>
+                <input asp-for="Title" class="form-control" id="titleInput" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Slug</label>
+                <input asp-for="Slug" class="form-control" id="slugInput" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nội dung</label>
+                <textarea asp-for="Contents" class="form-control" rows="5"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Hình ảnh hiện tại</label><br />
+                @if (!string.IsNullOrEmpty(Model.Image))
+                {
+                    <img src="@Model.Image" alt="Hình ảnh" width="150" class="mb-3" />
+                }
+                else
+                {
+                    <p>Chưa có hình ảnh</p>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Chọn hình ảnh mới (nếu muốn thay)</label>
+                <input type="file" name="ImageFile" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tác giả (ID)</label>
+                <input asp-for="AuthorId" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Trạng thái</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="1" selected="@(Model.Status == 1)">Hiển thị</option>
+                    <option value="0" selected="@(Model.Status == 0)">Ẩn</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+
+        @section Scripts {
+            <script>
+                function generateSlug(str) {
+                    return str.toString().toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\w\-]+/g, '')
+                        .replace(/\-\-+/g, '-')
+                        .replace(/^-+/, '')
+                        .replace(/-+$/, '');
+                }
+
+                document.getElementById('titleInput').addEventListener('input', function () {
+                    var title = this.value;
+                    var slug = generateSlug(title);
+                    document.getElementById('slugInput').value = slug;
+                });
+            </script>
+        }
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@model FreshFruit.Models.ViewModel.BlogViewModel
+
+@{
+    ViewData["Title"] = "Tạo bài viết";
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <h2>@ViewData["Title"]</h2>
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <!-- KHÔNG được có input cho Id -->
+
+            <div class="mb-3">
+                <label class="form-label">Tiêu đề</label>
+                <input asp-for="Title" class="form-control" id="titleInput" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Slug</label>
+                <input asp-for="Slug" class="form-control" id="slugInput" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nội dung</label>
+                <textarea asp-for="Contents" class="form-control" rows="5"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Hình ảnh</label>
+                <input type="file" name="ImageFile" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tác giả (ID)</label>
+                <input asp-for="AuthorId" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+
+        @section Scripts {
+            <script>
+                function generateSlug(str) {
+                    return str.toString().toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/[^\w\-]+/g, '')
+                        .replace(/\-\-+/g, '-')
+                        .replace(/^-+/, '')
+                        .replace(/-+$/, '');
+                }
+
+                document.getElementById('titleInput').addEventListener('input', function () {
+                    var title = this.value;
+                    var slug = generateSlug(title);
+                    document.getElementById('slugInput').value = slug;
+                });
+            </script>
+        }
+    </div>
+</div>
