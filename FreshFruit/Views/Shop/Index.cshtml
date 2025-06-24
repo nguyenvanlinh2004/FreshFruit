@@ -1,53 +1,95 @@
 ﻿    <!-- Start All Title Box -->
-    <style>
-        .products-single {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+<style>
+    .products-single {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
 
-.box-img-hover {
-    position: relative;
-    overflow: hidden;
-    height: 230px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .box-img-hover {
+        position: relative;
+        overflow: hidden;
+        height: 230px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.product-img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: cover;
-}
+    .product-img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+    }
 
-.sale {
-    background-color: darkolivegreen;
-    color: white;
-    padding: 3px 8px;
-    font-size: 12px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border-radius: 3px;
-}
+    .sale {
+        background-color: darkolivegreen;
+        color: white;
+        padding: 3px 8px;
+        font-size: 12px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border-radius: 3px;
+    }
 
-.why-text h4 {
-    font-size: 18px;
-    margin: 10px 0 5px;
-}
+    .why-text h4 {
+        font-size: 18px;
+        margin: 10px 0 5px;
+    }
 
-.why-text h5 {
-    font-size: 16px;
-    font-weight: 600;
-}
+    .why-text h5 {
+        font-size: 16px;
+        font-weight: 600;
+    }
 
-    </style>
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function addToCart(productId) {
+        const quantity = document.getElementById("qty-" + productId).value;
+
+        fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `productId=${productId}&quantity=${quantity}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đã thêm vào giỏ hàng!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể thêm vào giỏ hàng!',
+                    text: 'Vui lòng thử lại.'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi hệ thống!',
+                text: 'Không gửi được yêu cầu đến máy chủ.'
+            });
+        });
+    }
+</script>
+
+
 <div class="all-title-box">
     <div class="container">
         <div class="row">
@@ -101,36 +143,48 @@
                                     @foreach (var item in Model.Products)
                                     {
                                         <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-4 d-flex">
-                                            <div class="products-single fix flex-fill d-flex flex-column">
-                                                <div class="box-img-hover">
-                                                    <div class="type-lb">
-                                                        @if (item.Status == 1)
-                                                        {
-                                                            <p class="sale">SALE</p>
-                                                        }
+                                            <div class="products-single fix flex-fill d-flex flex-column shadow rounded overflow-hidden">
+
+                                                <!-- Hình ảnh sản phẩm có thể nhấp -->
+                                                <a href="@Url.Action("ProductDetail", "Shop", new { id = item.Id })" class="box-img-hover position-relative">
+                                                    @* @if (item.Status == 1)
+                                                    {
+                                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">SALE</span>
+                                                    } *@
+                                                    <img src="~/images/@item.Image" class="img-fluid product-img rounded-top" alt="@item.Name">
+                                                </a>
+
+                                                <!-- Thông tin sản phẩm -->
+                                                <div class="why-text text-center mt-auto p-3 bg-light">
+                                                    <!-- Tên sản phẩm có thể nhấp -->
+                                                    <a href="@Url.Action("ProductDetail", "Shop", new { id = item.Id })" class="text-decoration-none text-dark">
+                                                        <h5 class="fw-semibold mb-2">@item.Name</h5>
+                                                    </a>
+                                                    <h6 class="text-success mb-3">@String.Format("{0:0,0}₫", item.Price) /Kg</h6>
+
+                                                    <!-- Nút chức năng -->
+                                                    <div class="d-flex justify-content-center gap-5">
+                                                        <!-- Nút Add to Cart -->
+                                                        <div class="d-flex justify-content-center gap-2">
+                                                            <input type="number" id="qty-@item.Id" value="1" class="form-control form-control-sm w-50" />
+                                                            <button type="button" class="btn btn-success btn-sm"
+                                                                    onclick="addToCart(@item.Id)">
+                                                                <i class="fas fa-shopping-cart"></i>
+                                                            </button>
+                                                        </div>
+                                                        <!-- Nút Wishlist -->
+                                                        <form asp-action="AddToWishlist" asp-controller="Wishlist" method="post">
+                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center px-3">
+                                                                <i class="far fa-heart me-2"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
-                                                    <img src="~/images/@item.Image" class="img-fluid product-img" alt="@item.Name">
-                                                    <div class="mask-icon">
-                                                        <ul>
-                                                            <li>
-                                                                <a href="@Url.Action("ProductDetail", "Shop", new { id = item.Id })" data-toggle="tooltip" title="View">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li><a href="#" data-toggle="tooltip" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
-                                                            <li><a href="#" data-toggle="tooltip" title="Wishlist"><i class="far fa-heart"></i></a></li>
-                                                        </ul>
-                                                        <a class="cart" href="@Url.Action("AddToCart", "Cart", new { id = item.Id })">Add to Cart</a>
-                                                    </div>
-                                                </div>
-                                                <div class="why-text text-center mt-auto p-2">
-                                                    <h4>@item.Name</h4>
-                                                    <h5>@String.Format("{0:0,0}₫", item.Price)</h5>
                                                 </div>
                                             </div>
                                         </div>
-
                                     }
+
                                 </div>
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination justify-content-center">
@@ -140,7 +194,7 @@
                                                 <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
                                             </li>
                                         }
-                                    </ul> 
+                                    </ul>
                                 </nav>
                             </div>
                         </div>

@@ -6,7 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IProductServices, ProductServices>();
+builder.Services.AddScoped<IInvoiceServices, InvoiceServices>();
+
 builder.Services.AddDbContext<FreshFruitDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FreshFruitConnection")));
 

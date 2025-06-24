@@ -1,5 +1,6 @@
 ﻿using FreshFruit.Models;
-using FreshFruit.Services;
+using Newtonsoft.Json;
+using FreshFruit.Services; 
 
 namespace FreshFruit.Services
 {
@@ -45,7 +46,7 @@ namespace FreshFruit.Services
             {
                 cartItem.Quantity += quantity;
 
-                if (cartItem.Quantity > product.Stock)
+                if (cartItem.Quantity > product.Quantity)
                 {
                     return false;
                 }
@@ -91,7 +92,7 @@ namespace FreshFruit.Services
         public decimal GetTotalPrice()
         {
             Cart cart = GetCart();
-            return cart.CartItems.Sum(p => p.Quantity * (p.Product.Price - (p.Product.Price * p.Product.DiscountRate / 100)));
+            return cart.CartItems.Sum(p => p.Quantity * (decimal)(p.Product.Price ?? 0));
         }
 
         public bool IncreaseQuantity(int cartItemId)
@@ -99,7 +100,7 @@ namespace FreshFruit.Services
             Cart cart = GetCart();
             CartItem cartItem = cart.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId) ?? new CartItem();
 
-            if (cartItem.Quantity >= cartItem.Product.Stock)
+            if (cartItem.Quantity >= cartItem.Product.Quantity)
             {
                 return false;
             }
@@ -136,9 +137,9 @@ namespace FreshFruit.Services
             return true;
         }
 
-        public void Checkout(Invoice order, List<CartItem> cartItems)
+        public void Checkout(Invoice invoice, List<CartItem> cartItems)
         {
-            _context.Invoices.Add(order);
+            _context.Invoices.Add(invoice);
             _context.SaveChanges();
 
             var detailOrders = new List<InvoiceDetail>();
@@ -146,8 +147,7 @@ namespace FreshFruit.Services
             foreach (CartItem item in cartItems)
             {
                 detailOrders.Add(new InvoiceDetail
-                {
-                    Id = order.Id,
+                {                  
                     ProductId = item.Product.Id,
                     Quantity = item.Quantity,
                     Total = (decimal)(item.Product?.Price ?? 0) * item.Quantity
