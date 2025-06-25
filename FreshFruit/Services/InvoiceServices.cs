@@ -12,9 +12,7 @@ namespace FreshFruit.Services
         }
         public string GenerateOrderCode()
         {
-            string currentDate = DateTime.Now.ToString("yyyyMMdd");
-            var maxOrderId = _context.Invoices.Max(o => (int?)o.Id);
-            return $"ORD{currentDate}{maxOrderId + 1}";
+            return $"HD{DateTime.Now:yyyyMMddHHmmssfff}";
         }
     }
 }

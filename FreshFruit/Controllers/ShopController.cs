@@ -18,6 +18,7 @@ namespace FreshFruit.Controllers
         {
             var query = _context.Products
                         .Include(p => p.Category)
+                        .Include(r=>r.Ratings)
                         .Where(p => p.Status == 1);
 
             var totalProducts = _context.Products.Count();

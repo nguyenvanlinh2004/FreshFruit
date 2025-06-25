@@ -139,6 +139,7 @@ CartItem cartItem = cart.CartItems.FirstOrDefault(item => item.CartItemId == car
 
         public void Checkout(Invoice invoice, List<CartItem> cartItems)
         {
+
             _context.Invoices.Add(invoice);
             _context.SaveChanges();
 
@@ -147,10 +148,13 @@ CartItem cartItem = cart.CartItems.FirstOrDefault(item => item.CartItemId == car
             foreach (CartItem item in cartItems)
             {
                 detailOrders.Add(new InvoiceDetail
-                {                  
+                {
+                    InvoiceId = invoice.Id,
                     ProductId = item.Product.Id,
                     Quantity = item.Quantity,
-                    Total = (decimal)(item.Product?.Price ?? 0) * item.Quantity
+                    UnitPrice=invoice.Total,
+                    Total = (decimal)(item.Product?.Price ?? 0) * item.Quantity,
+                    Status=1
                 });
             }
 

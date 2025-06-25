@@ -33,4 +33,5 @@ public partial class Account
 
     [InverseProperty("CreateByNavigation")]
     public virtual ICollection<PurchaseReceipt> PurchaseReceipts { get; set; } = new List<PurchaseReceipt>();
+    public virtual ICollection<WishList> WishLists { get; set; } = new List<WishList>();
 }
