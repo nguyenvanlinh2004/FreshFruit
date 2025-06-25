@@ -141,10 +141,10 @@
                             <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
                                 <div class="row">
                                     @foreach (var item in Model.Products)
-                                    {
+                                    {                                
                                         <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4 mb-4 d-flex">
                                             <div class="products-single fix flex-fill d-flex flex-column shadow rounded overflow-hidden">
-
+                                                
                                                 <!-- Hình ảnh sản phẩm có thể nhấp -->
                                                 <a href="@Url.Action("ProductDetail", "Shop", new { id = item.Id })" class="box-img-hover position-relative">
                                                     @* @if (item.Status == 1)
@@ -173,8 +173,8 @@
                                                             </button>
                                                         </div>
                                                         <!-- Nút Wishlist -->
-                                                        <form asp-action="AddToWishlist" asp-controller="Wishlist" method="post">
-                                                            <input type="hidden" name="id" value="@item.Id" />
+                                                        <form asp-action="AddToWishlist" asp-controller="Wish" method="post">
+                                                            <input type="hidden" name="productId" value="@item.Id" />
                                                             <button type="submit" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center px-3">
                                                                 <i class="far fa-heart me-2"></i>
                                                             </button>

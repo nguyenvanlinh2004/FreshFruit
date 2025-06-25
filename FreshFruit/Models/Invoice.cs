@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-
 namespace FreshFruit.Models;
 
 public partial class Invoice
@@ -29,8 +30,6 @@ public partial class Invoice
 
     [InverseProperty("Invoice")]
     public virtual ICollection<InvoiceDetail> InvoiceDetails { get; set; } = new List<InvoiceDetail>();
-
-    [ForeignKey("MemberId")]
-    [InverseProperty("Invoices")]
+    [ValidateNever]
     public virtual Member Member { get; set; } = null!;
 }

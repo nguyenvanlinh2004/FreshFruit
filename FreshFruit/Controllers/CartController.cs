@@ -2,25 +2,26 @@
 using FreshFruit.Models.ViewModel;
 using FreshFruit.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace FreshFruit.Controllers
 {
-        public class CartController : Controller
+    public class CartController : Controller
+    {
+        private readonly FreshFruitDbContext _context;
+        private readonly ICartService _cartService;
+        private readonly IProductServices _productServices;
+        private readonly IInvoiceServices _invoiceServices;
+        private readonly int pageSize = 4;
+        public CartController(FreshFruitDbContext context, ICartService cartService, IProductServices productServices, IInvoiceServices invoiceServices)
         {
-            private readonly FreshFruitDbContext _context;
-            private readonly ICartService _cartService;
-            private readonly IProductServices _productServices;
-            private readonly IInvoiceServices _invoiceServices;
-            private readonly int pageSize = 4;
-            public CartController(FreshFruitDbContext context,ICartService cartService, IProductServices productServices, IInvoiceServices invoiceServices)
-            {
-                _cartService = cartService;
-                _context = context;
-                _productServices = productServices;
-                _invoiceServices = invoiceServices;
-            }
-            public IActionResult Index()
-            {
+            _cartService = cartService;
+            _context = context;
+            _productServices = productServices;
+            _invoiceServices = invoiceServices;
+        }
+        public IActionResult Index()
+        {
             var cartViewModel = new CartViewModel
             {
                 CartItems = _cartService.GetCart().CartItems,
@@ -32,178 +33,198 @@ namespace FreshFruit.Controllers
             return View(cartViewModel);
         }
 
-            [HttpGet]
-            public IActionResult GetCart(int currentPage = 1)
+        [HttpGet]
+        public IActionResult GetCart(int currentPage = 1)
+        {
+            var cartViewModel = new CartViewModel
             {
-                var cartViewModel = new CartViewModel
-                {
-                    CartItems = _cartService.GetCart().CartItems
-                        .Skip((currentPage - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToList(),
-                    TotalPrice = _cartService.GetTotalPrice(),
-                    TotalQuantity = _cartService.GetTotalQuantity(),
-                    TotalItems = _cartService.GetTotalItems()
-                };
+                CartItems = _cartService.GetCart().CartItems
+                    .Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList(),
+                TotalPrice = _cartService.GetTotalPrice(),
+                TotalQuantity = _cartService.GetTotalQuantity(),
+                TotalItems = _cartService.GetTotalItems()
+            };
 
-                return Json(cartViewModel);
+            return Json(cartViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        {
+            var product = await _productServices.GetProduct(productId);
+
+            bool isAddToCart = _cartService.AddToCart(product, quantity);
+
+            if (!isAddToCart)
+            {
+                return Json(new { success = false });
+            }
+            var cartViewModel = new CartViewModel
+            {
+                CartItems = _cartService.GetCart().CartItems,
+                TotalPrice = _cartService.GetTotalPrice(),
+                TotalQuantity = _cartService.GetTotalQuantity(),
+                TotalItems = _cartService.GetTotalItems()
+            };
+
+            return Json(new { success = true, cartViewModel = cartViewModel });
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoveItem(int productId)
+        {
+            var product = await _productServices.GetProduct(productId);
+
+            if (product != null)
+            {
+                _cartService.RemoveFromCart(product);
+
+                return Json(new { success = true, newTotalPrice = _cartService.GetTotalPrice() });
             }
 
-            [HttpPost]
-            public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+            return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng." });
+        }
+
+        [HttpPost]
+        public IActionResult ClearCart()
+        {
+            bool isClearCart = _cartService.ClearCart();
+
+            if (!isClearCart)
             {
-                var product = await _productServices.GetProduct(productId);
-
-                bool isAddToCart = _cartService.AddToCart(product, quantity);
-
-                if (!isAddToCart)
-                {
-                    return Json(new { success = false });
-                }
-                var cartViewModel = new CartViewModel
-                {
-                    CartItems = _cartService.GetCart().CartItems,
-                    TotalPrice = _cartService.GetTotalPrice(),
-                    TotalQuantity = _cartService.GetTotalQuantity(),
-                    TotalItems = _cartService.GetTotalItems()
-                };
-
-                return Json(new { success = true, cartViewModel = cartViewModel });
+                return Json(new { success = false });
             }
-            [HttpPost]
-            public async Task<IActionResult> RemoveItem(int productId)
+            return Json(new { success = true });
+        }
+
+        public IActionResult IncreaseQuantity(int cartItemId)
+        {
+            if (!_cartService.IncreaseQuantity(cartItemId))
             {
-                var product = await _productServices.GetProduct(productId);
-
-                if (product != null)
-                {
-                    _cartService.RemoveFromCart(product);
-
-                    return Json(new { success = true, newTotalPrice = _cartService.GetTotalPrice() });
-                }
-
-                return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng." });
+                return Json(new { success = false });
             }
 
-            [HttpPost]
-            public IActionResult ClearCart()
+            var cartViewModel = new CartViewModel
             {
-                bool isClearCart = _cartService.ClearCart();
+                CartItems = _cartService.GetCart().CartItems,
+                TotalPrice = _cartService.GetTotalPrice(),
+                TotalQuantity = _cartService.GetTotalQuantity(),
+                TotalItems = _cartService.GetTotalItems()
+            };
+            return Json(new { success = true, cartViewModel = cartViewModel });
+        }
+        public IActionResult DecreaseQuantity(int cartItemId)
+        {
+            if (!_cartService.DecreaseQuantity(cartItemId))
+            {
+                return Json(new { success = false });
+            }
+            var cartViewModel = new CartViewModel
+            {
+                CartItems = _cartService.GetCart().CartItems,
+                TotalPrice = _cartService.GetTotalPrice(),
+                TotalQuantity = _cartService.GetTotalQuantity(),
+                TotalItems = _cartService.GetTotalItems()
+            };
+            return Json(new { success = true, cartViewModel = cartViewModel });
+        }
+        public IActionResult UpdateQuantity(int cartItemId, int quantity)
+        {
+            if (!_cartService.UpdateQuantity(cartItemId, quantity))
+            {
+                return Json(new { success = false });
+            }
+            var cartViewModel = new CartViewModel
+            {
+                CartItems = _cartService.GetCart().CartItems,
+                TotalPrice = _cartService.GetTotalPrice(),
+                TotalQuantity = _cartService.GetTotalQuantity(),
+                TotalItems = _cartService.GetTotalItems()
+            };
+            return Json(new { success = true, cartViewModel = cartViewModel });
+        }
 
-                if (!isClearCart)
-                {
-                    return Json(new { success = false });
-                }
-                return Json(new { success = true });
+        [HttpGet]
+        public IActionResult Checkout()
+        {
+            var accountId = HttpContext.Session.GetInt32("AccountId");
+            if (accountId == null)
+            {
+                return RedirectToAction("Login", "Account");
             }
 
-            public IActionResult IncreaseQuantity(int cartItemId)
+            var member = _context.Members.FirstOrDefault(m => m.AccountId == accountId);
+            if (member == null || string.IsNullOrWhiteSpace(member.Fullname) || string.IsNullOrWhiteSpace(member.Phone) || string.IsNullOrWhiteSpace(member.Address))
             {
-                if (!_cartService.IncreaseQuantity(cartItemId))
-                {
-                    return Json(new { success = false });
-                }
-
-                var cartViewModel = new CartViewModel
-                {
-                    CartItems = _cartService.GetCart().CartItems,
-                    TotalPrice = _cartService.GetTotalPrice(),
-                    TotalQuantity = _cartService.GetTotalQuantity(),
-                    TotalItems = _cartService.GetTotalItems()
-                };
-                return Json(new { success = true, cartViewModel = cartViewModel });
-            }
-            public IActionResult DecreaseQuantity(int cartItemId)
-            {
-                if (!_cartService.DecreaseQuantity(cartItemId))
-                {
-                    return Json(new { success = false });
-                }
-                var cartViewModel = new CartViewModel
-                {
-                    CartItems = _cartService.GetCart().CartItems,
-                    TotalPrice = _cartService.GetTotalPrice(),
-                    TotalQuantity = _cartService.GetTotalQuantity(),
-                    TotalItems = _cartService.GetTotalItems()
-                };
-                return Json(new { success = true, cartViewModel = cartViewModel });
-            }
-            public IActionResult UpdateQuantity(int cartItemId, int quantity)
-            {
-                if (!_cartService.UpdateQuantity(cartItemId, quantity))
-                {
-                    return Json(new { success = false });
-                }
-                var cartViewModel = new CartViewModel
-                {
-                    CartItems = _cartService.GetCart().CartItems,
-                    TotalPrice = _cartService.GetTotalPrice(),
-                    TotalQuantity = _cartService.GetTotalQuantity(),
-                    TotalItems = _cartService.GetTotalItems()
-                };
-                return Json(new { success = true, cartViewModel = cartViewModel });
+                TempData["error"] = "Vui lòng cập nhật đầy đủ thông tin trước khi thanh toán.";
+                return RedirectToAction("Profile", "Account");
             }
 
-            [HttpGet]
-            public IActionResult Checkout()
-            {
-                var cartItems = _cartService.GetCart().CartItems;
-                var totalPrice = _cartService.GetTotalPrice();
+            var cartItems = _cartService.GetCart().CartItems;
+            var totalPrice = _cartService.GetTotalPrice();
 
-                Member? member = new Member();
-                var accountId = HttpContext.Session.GetInt32("AccountId");
+            var checkoutVM = new CheckOutViewModel
+            {
+                invoice = new Invoice
+                {
+                    MemberId = member.Id,
+                    InvoiceDate = DateOnly.FromDateTime(DateTime.Now)
+                },
+                CartItems = cartItems,
+                TotalPrice = totalPrice,
+                FullName = member.Fullname,
+                Phone = member.Phone,
+                Address = member.Address
+            };
+
+            return View(checkoutVM);
+        }
+        [HttpPost]
+        public IActionResult Checkout(CheckOutViewModel checkout)
+        {
+            var accountId = HttpContext.Session.GetInt32("AccountId");
+            var cartItems = _cartService.GetCart().CartItems;
 
             if (accountId == null)
             {
-                return BadRequest(new { success = false, message = "Tài khoản chưa được xác định." });
+                return RedirectToAction("Login", "Account");
             }
 
-            var checkout = new CheckOutViewModel
-                {
-                    invoice = new Invoice
-                    {
-                        MemberId = (int)accountId!,
-                        InvoiceDate= DateOnly.FromDateTime(DateTime.Now)
-                    },
-                    CartItems = cartItems,
-                    TotalPrice = totalPrice
-                };
-                return View(checkout);
-            }
+            // Remove những field không bind từ View
+            ModelState.Remove("invoice.InvoicesCode");
+            ModelState.Remove("invoice.Member");
 
-            [HttpPost]
-            public IActionResult Checkout(CheckOutViewModel checkout,int MemberId)
+            if (!ModelState.IsValid)
             {
-                int? memberId = null;
-                var cartItems = _cartService.GetCart().CartItems;
-
-                ModelState.Remove("Invoices.InvoicesCode");
-
-                if (MemberId!=null)
-                {
-                    memberId = _context.Members.FirstOrDefault(m=>m.Id==memberId)!.Id;
-                }
-                if (!ModelState.IsValid)
-                {
-
-                    return BadRequest(new { success = false, modelState = ModelState });
-                }
-                Invoice invoice = new Invoice
-                {
-                    InvoicesCode = _invoiceServices.GenerateOrderCode(),
-                    InvoiceDate=DateOnly.FromDateTime(DateTime.Now),
-                    PaymentMethod = checkout.invoice.PaymentMethod,
-                    Total = checkout.invoice.Total,
-                    MemberId= (int)memberId!,
-                    Status = 1,
-                };
-
-                _cartService.Checkout(invoice, cartItems);
-
-                _cartService.ClearCart();
-
-                return Json(new { success = true, invoice = invoice });
+                return BadRequest(new { success = false, modelState = ModelState });
             }
+
+            Invoice invoice = new Invoice
+            {
+                InvoicesCode = $"HD{DateTime.Now:yyyyMMddHHmmssfff}",
+                MemberId = (int)accountId,
+                PaymentMethod = checkout.invoice.PaymentMethod,
+                InvoiceDate=DateOnly.FromDateTime(DateTime.Now),
+                Total = checkout.invoice.Total,
+                Status = 1
+            };
+
+            _cartService.Checkout(invoice, cartItems);
+            _cartService.ClearCart();
+
+            return Json(new
+            {
+                success = true,
+                order = new
+                {
+                    invoice.InvoicesCode,
+                    invoice.Total,
+                    invoice.PaymentMethod,
+                    invoiceDate = invoice.InvoiceDate.ToString("yyyy-MM-dd")
+                },
+            });
         }
 
+    }
 }

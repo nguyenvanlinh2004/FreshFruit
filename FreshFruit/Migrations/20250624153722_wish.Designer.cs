@@ -4,6 +4,7 @@ using FreshFruit.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreshFruit.Migrations
 {
     [DbContext(typeof(FreshFruitDbContext))]
-    partial class FreshFruitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624153722_wish")]
+    partial class wish
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1399,7 +1402,10 @@ namespace FreshFruit.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AccountID")
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MemberId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -1407,7 +1413,7 @@ namespace FreshFruit.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountID");
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("ProductId");
 
@@ -1568,7 +1574,7 @@ namespace FreshFruit.Migrations
                 {
                     b.HasOne("FreshFruit.Models.Account", "Account")
                         .WithMany("WishLists")
-                        .HasForeignKey("AccountID")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
