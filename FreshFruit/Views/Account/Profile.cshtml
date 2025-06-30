@@ -2,9 +2,12 @@
 @{
     var member = ViewBag.Member as FreshFruit.Models.Member;
     var invoices = ViewBag.Invoices as List<FreshFruit.Models.Invoice>;
+    string statusFilter = ViewBag.StatusFilter as string ?? "";
+    string fromDate = ViewBag.FromDate as string ?? "";
+    string toDate = ViewBag.ToDate as string ?? "";
 }
-
 <style>
+ 
     body {
         background: url('/images/fruit-background.jpg') no-repeat center center fixed;
         background-size: cover;
@@ -17,17 +20,17 @@
         transition: all 0.3s ease;
     }
 
-        input:focus {
-            border-color: #22c55e;
-            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
-            outline: none;
-            background-color: #ffffff;
-        }
+    input:focus {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+        outline: none;
+        background-color: #ffffff;
+    }
 
-        button:hover {
-            transform: scale(1.05);
-            background-color: #16a34a;
-        }
+    button:hover {
+        transform: scale(1.05);
+        background-color: #16a34a;
+    }
 
     .profile-container {
         display: flex;
@@ -37,31 +40,29 @@
         padding: 20px;
     }
 
-    .form-section {
-        flex: 0 0 40%;
+    .form-section, .history-section {
         background: rgba(255, 255, 255, 0.95);
         border-radius: 20px;
         padding: 1.5rem;
         box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
         border: 2px solid #bbf7d0;
+    }
+
+    .form-section {
+        flex: 0 0 40%;
     }
 
     .history-section {
         flex: 0 0 60%;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        padding: 1.5rem;
-        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-        border: 2px solid #bbf7d0;
         overflow-x: auto;
     }
 
-        .form-section h2, .history-section h2 {
-            text-align: center;
-            color: #16a34a;
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
-        }
+    .form-section h2, .history-section h2 {
+        text-align: center;
+        color: #16a34a;
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+    }
 
     label {
         font-weight: 600;
@@ -70,7 +71,7 @@
         color: #065f46;
     }
 
-    input {
+    input, select {
         width: 100%;
         padding: 0.7rem 1rem;
         border: 1px solid #d1d5db;
@@ -129,7 +130,18 @@
         color: #065f46;
     }
 
-    
+    .filter-form {
+        display: flex;
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .filter-form div {
+        flex: 1;
+        min-width: 120px;
+    }
 </style>
 
 <div class="profile-container">
@@ -150,53 +162,29 @@
         <form asp-action="Profile" method="post">
             <input type="hidden" name="id" value="@Model.Id" />
 
-            <!-- Email -->
-            <div class="form-group">
-                <label>Email</label>
-                <input type="text" value="@Model.Email" disabled />
-            </div>
+            <label>Email</label>
+            <input type="text" value="@Model.Email" disabled />
 
-            <!-- Họ tên -->
-            <div class="form-group">
-                <label for="fullname">Họ tên</label>
-                <input type="text" id="fullname" name="fullname" value="@member?.Fullname" />
-            </div>
+            <label for="fullname">Họ tên</label>
+            <input type="text" id="fullname" name="fullname" value="@member?.Fullname" />
 
-            <!-- Số điện thoại -->
-            <div class="form-group">
-                <label for="phone">Số điện thoại</label>
-                <input type="text" id="phone" name="phone" value="@member?.Phone" />
-            </div>
+            <label for="phone">Số điện thoại</label>
+            <input type="text" id="phone" name="phone" value="@member?.Phone" />
 
-            <!-- Địa chỉ -->
-            <div class="form-group">
-                <label for="address">Địa chỉ</label>
-                <input type="text" id="address" name="address" value="@member?.Address" />
-            </div>
+            <label for="address">Địa chỉ</label>
+            <input type="text" id="address" name="address" value="@member?.Address" />
 
-            <!-- Ngày sinh -->
-            <div class="form-group">
-                <label for="dob">Ngày sinh</label>
-                <input type="date" id="dob" name="dob" value="@(member?.Dob?.ToString("yyyy-MM-dd"))" />
-            </div>
+            <label for="dob">Ngày sinh</label>
+            <input type="date" id="dob" name="dob" value="@(member?.Dob?.ToString("yyyy-MM-dd"))" />
 
-            <!-- Mật khẩu hiện tại -->
-            <div class="form-group">
-                <label for="currentPassword">Mật khẩu hiện tại <span style="color:red">*</span></label>
-                <input type="password" id="currentPassword" name="currentPassword" required />
-            </div>
+            <label for="currentPassword">Mật khẩu hiện tại <span style="color:red">*</span></label>
+            <input type="password" id="currentPassword" name="currentPassword" required />
 
-            <!-- Mật khẩu mới -->
-            <div class="form-group">
-                <label for="password">Mật khẩu mới</label>
-                <input type="password" id="password" name="password" />
-            </div>
+            <label for="password">Mật khẩu mới</label>
+            <input type="password" id="password" name="password" />
 
-            <!-- Nhập lại mật khẩu mới -->
-            <div class="form-group">
-                <label for="confirmPassword">Nhập lại mật khẩu mới</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" />
-            </div>
+            <label for="confirmPassword">Nhập lại mật khẩu mới</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" />
 
             <button type="submit">Cập nhật</button>
         </form>
@@ -205,6 +193,31 @@
     <!-- Lịch sử mua hàng -->
     <div class="history-section">
         <h2>Lịch sử mua hàng</h2>
+
+        <form method="get" asp-action="Profile" class="filter-form">
+            <div>
+                <label for="statusFilter">Trạng thái</label>
+                <select name="statusFilter" id="statusFilter">
+                    <option value="" selected="@(string.IsNullOrEmpty(statusFilter))">Tất cả</option>
+                    <option value="1" selected="@(statusFilter == "1")">Hoàn thành</option>
+                    <option value="0" selected="@(statusFilter == "0")">Đang xử lý</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="fromDate">Từ ngày</label>
+                <input type="date" name="fromDate" id="fromDate" value="@fromDate" />
+            </div>
+
+            <div>
+                <label for="toDate">Đến ngày</label>
+                <input type="date" name="toDate" id="toDate" value="@toDate" />
+            </div>
+
+            <div>
+                <button type="submit">Lọc</button>
+            </div>
+        </form>
 
         @if (invoices != null && invoices.Any())
         {
@@ -234,7 +247,8 @@
         }
         else
         {
-            <p style="text-align:center; margin-top:20px; color:#b91c1c;">Bạn chưa có đơn hàng nào.</p>
+            <p style="text-align:center; margin-top:20px; color:#b91c1c;">Không có đơn hàng phù hợp.</p>
         }
     </div>
 </div>
+
