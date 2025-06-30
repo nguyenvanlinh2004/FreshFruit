@@ -99,6 +99,11 @@
                                    onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái đơn hàng này?');">
                                     @(item.Status == 1 ? "🕒 Chưa giao" : "✅ Đã giao")
                                 </a>
+                                <!-- Nút xuất PDF -->
+                                <form asp-area="Admin" asp-controller="Export" asp-action="GenerateInvoicePdf" method="post" target="_blank" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm mt-1">📄 Xuất PDF</button>
+                                </form>
                             </td>
                         </tr>
                     }

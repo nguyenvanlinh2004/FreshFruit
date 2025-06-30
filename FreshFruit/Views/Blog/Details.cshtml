@@ -91,7 +91,6 @@
             transform: scale(1.05);
         }
 
-    /* Breadcrumb */
     .breadcrumb {
         background: none;
         padding-left: 0;
@@ -111,10 +110,6 @@
         .breadcrumb a:hover {
             text-decoration: underline;
         }
-
-    
-
-    
 </style>
 
 <section class="container my-5 blog-details">
@@ -136,8 +131,15 @@
         }
 
         <p class="blog-meta-details">
-            🖋️ Tác giả: <strong style="color: #28a745;">@Model.Author?.Members.FirstOrDefault()?.Fullname</strong> |
-            📅 Ngày đăng: <strong style="color: #17a2b8;">@Model.CreatedAt?.ToString("dd/MM/yyyy")</strong>
+            🖋️ Tác giả:
+            <strong style="color: #28a745;">
+                @(Model.Author?.Members.FirstOrDefault()?.Fullname ?? "Không rõ người viết")
+            </strong>
+            |
+            📅 Ngày đăng:
+            <strong style="color: #17a2b8;">
+                @(Model.CreatedAt?.ToString("dd/MM/yyyy") ?? "Chưa rõ ngày")
+            </strong>
         </p>
 
         <div class="blog-contents mb-4">
@@ -145,7 +147,9 @@
         </div>
 
         <div class="text-center">
-            <a href="@Url.Action("Index", "Blog")" class="btn btn-outline-primary back-button">⬅️ Quay lại danh sách</a>
+            <a href="@Url.Action("Index", "Blog")" class="btn btn-outline-primary back-button">
+                ⬅️ Quay lại danh sách
+            </a>
         </div>
     </div>
 </section>

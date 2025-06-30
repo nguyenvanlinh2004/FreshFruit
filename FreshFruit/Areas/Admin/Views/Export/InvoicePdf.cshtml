@@ -1,0 +1,153 @@
+﻿@model FreshFruit.Models.Invoice
+@{
+    Layout = null;
+    var company = ViewBag.CompanyInfo as FreshFruit.Models.CompanyInfo;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hóa đơn mua hàng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 12px;
+            margin: 40px;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .header h1 {
+                color: #16a34a;
+                margin: 0;
+                font-size: 20px;
+            }
+
+        .invoice-info {
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+            .invoice-info p {
+                margin: 2px 0;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 11px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0fdf4;
+            color: #065f46;
+        }
+
+        .total {
+            margin-top: 10px;
+            text-align: right;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 15px;
+            font-size: 11px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            text-align: center;
+            gap: 10px;
+        }
+
+            .footer div {
+                word-break: break-word;
+            }
+
+        .note {
+            margin-top: 20px;
+            font-style: italic;
+            font-size: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>HÓA ĐƠN MUA HÀNG</h1>
+    </div>
+
+    <div class="invoice-info">
+        <p><strong>Mã hóa đơn:</strong> @Model.InvoicesCode</p>
+        <p><strong>Ngày lập:</strong> @Model.InvoiceDate.ToString("dd/MM/yyyy")</p>
+        <p><strong>Khách hàng:</strong> @Model.Member?.Fullname</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.InvoiceDetails)
+            {
+                <tr>
+                    <td>@detail.Product.Name</td>
+                    <td>@detail.Quantity</td>
+                    <td>@String.Format("{0:N0}", detail.UnitPrice)</td>
+                    <td>@String.Format("{0:N0}", detail.Total)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="total">
+        Tổng cộng: @String.Format("{0:N0} ₫", Model.Total)
+    </div>
+
+    @if (company != null)
+    {
+        <div class="footer">
+            <div><strong>@company.CompanyName</strong></div>
+            @if (!string.IsNullOrEmpty(company.Address))
+            {
+                <div>@company.Address</div>
+            }
+            @if (!string.IsNullOrEmpty(company.Phone))
+            {
+                <div>Tel: @company.Phone</div>
+            }
+            @if (!string.IsNullOrEmpty(company.Email))
+            {
+                <div>@company.Email</div>
+            }
+            @if (!string.IsNullOrEmpty(company.Website))
+            {
+                <div>@company.Website</div>
+            }
+        </div>
+    }
+
+    <div class="note">
+        Cảm ơn quý khách đã mua hàng!
+    </div>
+</body>
+</html>

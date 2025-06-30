@@ -163,6 +163,7 @@
                         </p>
 
                         <small class="text-muted mb-2 d-block blog-meta">
+                            @* Lấy tên tác giả và ngày đăng *@
                             @{
                                 var fullname = blog.Author?.Members.FirstOrDefault()?.Fullname ?? "Không rõ người viết";
                                 var createdDate = blog.CreatedAt?.ToString("dd/MM/yyyy") ?? "Chưa rõ ngày";
@@ -171,8 +172,9 @@
                             📅 <span style="color: #17a2b8;">@createdDate</span>
                         </small>
 
-                        <a href="@Url.Action("Details", "Blog", new { id = blog.Id })" class="btn btn-outline-primary mt-auto blog-button">
-                            Xem chi tiết
+                        <a href="@Url.Action("Details", "Blog", new { id = blog.Id, slug = blog.Slug })"
+                           class="btn btn-outline-primary mt-auto blog-button">
+                           Xem chi tiết
                         </a>
                     </div>
                 </div>
@@ -180,27 +182,36 @@
         }
     </div>
 
-    <!-- Pagination with query params -->
+    <!-- Pagination -->
     <div class="pagination mt-4 d-flex justify-content-center">
         <nav>
             <ul class="pagination">
                 <li class="page-item @(ViewBag.CurrentPage <= 1 ? "disabled" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, searchDate = ViewBag.SearchDate })" aria-label="Previous">
-                        <span aria-hidden="true">&laquo; Trước</span>
-                    </a>
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        page = ViewBag.CurrentPage - 1,
+                        searchTitle = ViewBag.SearchTitle,
+                        searchAuthor = ViewBag.SearchAuthor,
+                        searchDate = ViewBag.SearchDate
+                    })">&laquo; Trước</a>
                 </li>
-
                 @for (int i = 1; i <= ViewBag.TotalPages; i++)
                 {
                     <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", new { page = i, searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, searchDate = ViewBag.SearchDate })">@i</a>
+                        <a class="page-link" href="@Url.Action("Index", new {
+                            page = i,
+                            searchTitle = ViewBag.SearchTitle,
+                            searchAuthor = ViewBag.SearchAuthor,
+                            searchDate = ViewBag.SearchDate
+                        })">@i</a>
                     </li>
                 }
-
                 <li class="page-item @(ViewBag.CurrentPage >= ViewBag.TotalPages ? "disabled" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, searchTitle = ViewBag.SearchTitle, searchAuthor = ViewBag.SearchAuthor, searchDate = ViewBag.SearchDate })" aria-label="Next">
-                        <span aria-hidden="true">Tiếp &raquo;</span>
-                    </a>
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        page = ViewBag.CurrentPage + 1,
+                        searchTitle = ViewBag.SearchTitle,
+                        searchAuthor = ViewBag.SearchAuthor,
+                        searchDate = ViewBag.SearchDate
+                    })">Tiếp &raquo;</a>
                 </li>
             </ul>
         </nav>
