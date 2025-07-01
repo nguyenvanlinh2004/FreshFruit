@@ -470,6 +470,56 @@ namespace FreshFruit.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FreshFruit.Models.CompanyInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Website")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyInfos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "123 Đường Hoa Quả, Quận 1, TP.HCM",
+                            CompanyName = "Công ty TNHH Trái Cây Tươi",
+                            Email = "info@traicaytuoi.vn",
+                            LogoUrl = "/images/company-logo.png",
+                            Phone = "0123456789",
+                            Website = "https://traicaytuoi.vn"
+                        });
+                });
+
             modelBuilder.Entity("FreshFruit.Models.Invoice", b =>
                 {
                     b.Property<int>("Id")

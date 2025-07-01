@@ -1,34 +1,239 @@
 ﻿@model FreshFruit.Models.ViewModel.ProductStatisticsPageViewModel
 
-<!-- Thêm Font Awesome -->
+@{
+    string formattedStartDate = ViewBag.StartDate as string ?? "";
+    string formattedEndDate = ViewBag.EndDate as string ?? "";
+    string formattedMonthStart = ViewBag.MonthStart as string ?? "";
+    string formattedMonthEnd = ViewBag.MonthEnd as string ?? "";
+    string formattedQuarterStart = ViewBag.QuarterStart as string ?? "";
+    string formattedQuarterEnd = ViewBag.QuarterEnd as string ?? "";
+    string formattedQuarterYear = ViewBag.QuarterYear as string ?? "";
+}
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+<style>
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-icon {
+        font-size: 2rem;
+        color: #3498db;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-wrapper {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+
+    .summary-card {
+        flex: 1;
+        min-width: 250px;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s ease;
+        color: #fff;
+    }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .summary-members {
+        background-color: #3498db;
+    }
+
+    .summary-receipts {
+        background-color: #9b59b6;
+    }
+
+    .summary-invoices {
+        background-color: #e67e22;
+    }
+
+    .summary-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .summary-label {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #34495e;
+        margin: 40px 0 20px;
+    }
+
+    .chart-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .chart-card {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .chart-title {
+        text-align: center;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+
+    canvas {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .form-control {
+        margin-bottom: 10px;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+</style>
 
 <div class="page-wrapper">
     <div class="content">
-
-        <!-- Tiêu đề Dashboard -->
         <div class="dashboard-header text-center mb-5">
             <i class="fas fa-tachometer-alt dashboard-icon"></i>
             <h1 class="dashboard-title">Dashboard</h1>
         </div>
 
-        <!-- Hiển thị tổng số liệu -->
-        <div class="row text-center mb-5">
-            <div class="col-md-4 summary-card">
+        <!-- Tổng số liệu -->
+        <div class="summary-wrapper">
+            <div class="summary-card summary-members">
                 <div class="summary-value">@Model.TotalMembers</div>
                 <div class="summary-label">Tổng Thành Viên</div>
             </div>
-            <div class="col-md-4 summary-card">
+            <div class="summary-card summary-receipts">
                 <div class="summary-value">@Model.TotalPurchaseReceipts</div>
                 <div class="summary-label">Tổng Phiếu Nhập Hàng</div>
             </div>
-            <div class="col-md-4 summary-card">
+            <div class="summary-card summary-invoices">
                 <div class="summary-value">@Model.TotalInvoices</div>
                 <div class="summary-label">Tổng Đơn Hàng</div>
             </div>
         </div>
 
-        <!-- Top sản phẩm bán chạy -->
+        <h2 class="section-title">Thống Kê Doanh Thu</h2>
+
+        <!-- Lọc doanh thu theo ngày -->
+        <div class="revenue-section mb-5">
+            <form method="get" class="row justify-content-center mb-3">
+                <input type="hidden" name="filterType" value="day" />
+                <div class="col-md-3">
+                    <label for="startDate">Từ ngày:</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control" value="@formattedStartDate" />
+                </div>
+                <div class="col-md-3">
+                    <label for="endDate">Đến ngày:</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control" value="@formattedEndDate" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100">Lọc theo ngày</button>
+                </div>
+            </form>
+            <div class="text-center chart-container">
+                <div class="chart-card">
+                    <div class="chart-title">Doanh Thu Theo Ngày</div>
+                    <canvas id="dailyRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lọc theo tháng -->
+        <div class="revenue-section mb-5">
+            <form method="get" class="row justify-content-center mb-3">
+                <input type="hidden" name="filterType" value="month" />
+                <div class="col-md-3">
+                    <label for="monthStart">Từ tháng (1-12):</label>
+                    <input type="number" min="1" max="12" id="monthStart" name="monthStart" class="form-control" value="@formattedMonthStart" />
+                </div>
+                <div class="col-md-3">
+                    <label for="monthEnd">Đến tháng (1-12):</label>
+                    <input type="number" min="1" max="12" id="monthEnd" name="monthEnd" class="form-control" value="@formattedMonthEnd" />
+                </div>
+                <div class="col-md-3">
+                    <label for="quarterYear">Năm:</label>
+                    <input type="number" id="quarterYear" name="quarterYear" class="form-control" value="@formattedQuarterYear" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Lọc theo tháng</button>
+                </div>
+            </form>
+            <div class="text-center chart-container">
+                <div class="chart-card">
+                    <div class="chart-title">Doanh Thu Theo Tháng</div>
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lọc theo quý -->
+        <div class="revenue-section mb-5">
+            <form method="get" class="row justify-content-center mb-3">
+                <input type="hidden" name="filterType" value="quarter" />
+                <div class="col-md-2">
+                    <label for="quarterStart">Từ quý:</label>
+                    <select id="quarterStart" name="quarterStart" class="form-control">
+                        @for (int i = 1; i <= 4; i++)
+                        {
+                            var selected = i.ToString() == formattedQuarterStart ? "selected" : "";
+                            <option value="@i" selected="@selected">Quý @i</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="quarterEnd">Đến quý:</label>
+                    <select id="quarterEnd" name="quarterEnd" class="form-control">
+                        @for (int i = 1; i <= 4; i++)
+                        {
+                            var selected = i.ToString() == formattedQuarterEnd ? "selected" : "";
+                            <option value="@i" selected="@selected">Quý @i</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="quarterYear">Năm:</label>
+                    <input type="number" id="quarterYear" name="quarterYear" class="form-control" value="@formattedQuarterYear" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-warning w-100">Lọc theo quý</button>
+                </div>
+            </form>
+            <div class="text-center chart-container">
+                <div class="chart-card">
+                    <div class="chart-title">Doanh Thu Theo Quý</div>
+                    <canvas id="quarterlyRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top sản phẩm -->
         <h2 class="section-title">Top 3 Sản Phẩm Bán Chạy Nhất</h2>
         @if (Model?.TopProducts?.Any() == true)
         {
@@ -57,7 +262,7 @@
             <p class="text-muted">Không có sản phẩm bán chạy.</p>
         }
 
-        <!-- Top sản phẩm bán ít -->
+        <!-- Bottom sản phẩm -->
         <h2 class="section-title">Top 3 Sản Phẩm Bán Ít Nhất</h2>
         @if (Model?.BottomProducts?.Any() == true)
         {
@@ -85,190 +290,58 @@
         {
             <p class="text-muted">Không có sản phẩm bán ít.</p>
         }
-
-        <!-- Biểu đồ doanh thu -->
-        <h2 class="section-title">Thống Kê Doanh Thu</h2>
-
-        <div class="row justify-content-center">
-            <div class="col-md-5 text-center mb-4 chart-container">
-                <div class="chart-card">
-                    <div class="chart-title">Doanh Thu Theo Tháng</div>
-                    <canvas id="monthlyRevenueChart" width="300" height="200"></canvas>
-                </div>
-            </div>
-
-            <div class="col-md-5 text-center mb-4 chart-container">
-                <div class="chart-card">
-                    <div class="chart-title">Doanh Thu Theo Quý</div>
-                    <canvas id="quarterlyRevenueChart" width="300" height="200"></canvas>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 
-<style>
-    .dashboard-header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 40px;
-        animation: fadeInDown 1s ease;
-    }
-
-    .dashboard-icon {
-        font-size: 40px;
-        color: #4CAF50;
-        margin-right: 15px;
-    }
-
-    .dashboard-title {
-        font-size: 36px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    .section-title {
-        text-align: center;
-        font-size: 28px;
-        font-weight: bold;
-        color: #4CAF50;
-        margin-bottom: 30px;
-        animation: fadeInDown 1s ease;
-        border-bottom: 3px solid #4CAF50;
-        display: inline-block;
-        padding-bottom: 8px;
-    }
-
-    .chart-container {
-        display: flex;
-        justify-content: center;
-    }
-
-    .chart-card {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 350px;
-    }
-
-    .chart-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: #333;
-        text-align: center;
-        transition: color 0.3s ease;
-    }
-
-        .chart-title:hover {
-            color: #4CAF50;
-        }
-
-    .summary-card {
-        border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 20px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        color: #fff;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-    }
-
-        /* Card màu riêng */
-        .summary-card:nth-child(1) {
-            background: linear-gradient(135deg, #1abc9c, #16a085);
-        }
-
-        .summary-card:nth-child(2) {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-
-        .summary-card:nth-child(3) {
-            background: linear-gradient(135deg, #e67e22, #d35400);
-        }
-
-        .summary-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        }
-
-    .summary-value {
-        font-size: 36px;
-        font-weight: bold;
-    }
-
-    .summary-label {
-        font-size: 18px;
-        margin-top: 8px;
-    }
-
-    table th, table td {
-        vertical-align: middle !important;
-    }
-
-    .table-responsive {
-        margin-bottom: 40px;
-    }
-</style>
-
+<!-- Chart.js scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     window.onload = function () {
+        const dailyLabels = @Html.Raw(Json.Serialize(Model.DailyRevenue.Select(r => r.Label)));
+        const dailyData = @Html.Raw(Json.Serialize(Model.DailyRevenue.Select(r => r.TotalRevenue)));
 
-        // Doanh thu theo tháng
-        var monthlyLabels = @Html.Raw(Json.Serialize(Model.MonthlyRevenue.Select(r => r.Label)));
-        var monthlyData = @Html.Raw(Json.Serialize(Model.MonthlyRevenue.Select(r => r.TotalRevenue)));
+        new Chart(document.getElementById('dailyRevenueChart'), {
+            type: 'line',
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    label: 'Doanh thu theo ngày',
+                    data: dailyData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            }
+        });
 
-        var monthlyCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
-        new Chart(monthlyCtx, {
+        const monthlyLabels = @Html.Raw(Json.Serialize(Model.MonthlyRevenue.Select(r => r.Label)));
+        const monthlyData = @Html.Raw(Json.Serialize(Model.MonthlyRevenue.Select(r => r.TotalRevenue)));
+
+        new Chart(document.getElementById('monthlyRevenueChart'), {
             type: 'bar',
             data: {
                 labels: monthlyLabels,
                 datasets: [{
                     label: 'Doanh thu theo tháng',
                     data: monthlyData,
-                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                    barPercentage: 0.4,
-                    categoryPercentage: 0.4
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)'
                 }]
-            },
-            options: {
-                responsive: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { ticks: { autoSkip: true, maxTicksLimit: 6 } }
-                }
             }
         });
 
-        // Doanh thu theo quý
-        var quarterlyLabels = @Html.Raw(Json.Serialize(Model.QuarterlyRevenue.Select(r => r.Label)));
-        var quarterlyData = @Html.Raw(Json.Serialize(Model.QuarterlyRevenue.Select(r => r.TotalRevenue)));
+        const quarterlyLabels = @Html.Raw(Json.Serialize(Model.QuarterlyRevenue.Select(r => r.Label)));
+        const quarterlyData = @Html.Raw(Json.Serialize(Model.QuarterlyRevenue.Select(r => r.TotalRevenue)));
 
-        var quarterlyCtx = document.getElementById('quarterlyRevenueChart').getContext('2d');
-        new Chart(quarterlyCtx, {
+        new Chart(document.getElementById('quarterlyRevenueChart'), {
             type: 'bar',
             data: {
                 labels: quarterlyLabels,
                 datasets: [{
                     label: 'Doanh thu theo quý',
                     data: quarterlyData,
-                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                    barPercentage: 0.4,
-                    categoryPercentage: 0.4
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)'
                 }]
-            },
-            options: {
-                responsive: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { ticks: { autoSkip: true, maxTicksLimit: 6 } }
-                }
             }
         });
     };

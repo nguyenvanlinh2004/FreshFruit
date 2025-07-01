@@ -83,7 +83,7 @@ namespace FreshFruit.Controllers
 
 		// Hiển thị form Profile
 		[HttpGet]
-		public async Task<IActionResult> Profile()
+		public async Task<IActionResult> Profile(string statusFilter, DateTime? fromDate, DateTime? toDate)
 		{
 			var accountId = HttpContext.Session.GetInt32("AccountId");
 			if (accountId == null)
@@ -106,19 +106,35 @@ namespace FreshFruit.Controllers
 			var member = account.Members.FirstOrDefault();
 			ViewBag.Member = member;
 
+			List<Invoice> invoices = new List<Invoice>();
+
 			if (member != null)
 			{
-				ViewBag.Invoices = member.Invoices.OrderByDescending(i => i.InvoiceDate).ToList();
+				invoices = member.Invoices
+					.Where(i =>
+						(string.IsNullOrEmpty(statusFilter) ||
+							(statusFilter == "1" && i.Status == 1) ||
+							(statusFilter == "0" && i.Status != 1)) &&
+						(!fromDate.HasValue || i.InvoiceDate >= DateOnly.FromDateTime(fromDate.Value)) &&
+						(!toDate.HasValue || i.InvoiceDate <= DateOnly.FromDateTime(toDate.Value))
+
+					)
+					.OrderByDescending(i => i.InvoiceDate)
+					.ToList();
 			}
 			else
 			{
-				ViewBag.Invoices = new List<Invoice>();
+				invoices = new List<Invoice>();
 			}
+
+			ViewBag.Invoices = invoices;
+			ViewBag.StatusFilter = statusFilter;
+			ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+			ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
 
 			return View(account);
 		}
 
-		// Xử lý cập nhật Profile
 		[HttpPost]
 		public async Task<IActionResult> Profile(int id, string fullname, string phone, string address, DateTime? dob, string currentPassword, string password, string confirmPassword)
 		{
@@ -130,14 +146,12 @@ namespace FreshFruit.Controllers
 				return RedirectToAction(nameof(Profile));
 			}
 
-			// Kiểm tra mật khẩu hiện tại
 			if (account.Password != currentPassword)
 			{
 				TempData["Error"] = "Mật khẩu hiện tại không đúng.";
 				return RedirectToAction(nameof(Profile));
 			}
 
-			// Nếu người dùng muốn đổi mật khẩu
 			if (!string.IsNullOrEmpty(password))
 			{
 				if (password == currentPassword)
@@ -162,12 +176,10 @@ namespace FreshFruit.Controllers
 				_context.Update(account);
 			}
 
-			// Kiểm tra Member đã tồn tại hay chưa
 			var member = account.Members.FirstOrDefault();
 
 			if (member != null)
 			{
-				// Update thông tin
 				member.Fullname = fullname;
 				member.Phone = phone;
 				member.Address = address;
@@ -177,14 +189,13 @@ namespace FreshFruit.Controllers
 			}
 			else
 			{
-				// Nếu chưa có, thêm mới thông tin
 				var newMember = new Member
 				{
 					Fullname = fullname,
 					Phone = phone,
 					Address = address,
 					Dob = dob.HasValue ? DateOnly.FromDateTime(dob.Value) : (DateOnly?)null,
-					AccountId = account.Id // Gán lại AccountId để liên kết
+					AccountId = account.Id
 				};
 
 				_context.Members.Add(newMember);
@@ -194,6 +205,7 @@ namespace FreshFruit.Controllers
 			TempData["Success"] = "Cập nhật thông tin thành công.";
 			return RedirectToAction(nameof(Profile));
 		}
+
 
 
 

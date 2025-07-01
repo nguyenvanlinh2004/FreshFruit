@@ -16,68 +16,104 @@ namespace FreshFruit.Areas.Admin.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(
+			DateTime? startDate, DateTime? endDate,
+			int? monthStart, int? monthEnd,
+			int? quarterStart, int? quarterEnd,
+			int? quarterYear,
+			string? filterType // "day", "month", "quarter"
+		)
 		{
-			// Doanh thu theo ngày
-			var dailyRevenueRaw = await _context.Invoices
+			var invoicesByDay = _context.Invoices.AsQueryable();
+			var invoicesByMonth = _context.Invoices.AsQueryable();
+			var invoicesByQuarter = _context.Invoices.AsQueryable();
+
+			if (filterType == "day" && startDate.HasValue && endDate.HasValue)
+			{
+				var s = DateOnly.FromDateTime(startDate.Value.Date);
+				var e = DateOnly.FromDateTime(endDate.Value.Date);
+				invoicesByDay = invoicesByDay.Where(i => i.InvoiceDate >= s && i.InvoiceDate <= e);
+
+				ViewBag.StartDate = s.ToString("yyyy-MM-dd");
+				ViewBag.EndDate = e.ToString("yyyy-MM-dd");
+			}
+			else
+			{
+				ViewBag.StartDate = "";
+				ViewBag.EndDate = "";
+			}
+
+			if (filterType == "month" && monthStart.HasValue && monthEnd.HasValue && quarterYear.HasValue)
+			{
+				invoicesByMonth = invoicesByMonth.Where(i =>
+					i.InvoiceDate.Month >= monthStart &&
+					i.InvoiceDate.Month <= monthEnd &&
+					i.InvoiceDate.Year == quarterYear);
+
+				ViewBag.MonthStart = monthStart.ToString();
+				ViewBag.MonthEnd = monthEnd.ToString();
+			}
+			else
+			{
+				ViewBag.MonthStart = "";
+				ViewBag.MonthEnd = "";
+			}
+
+			if (filterType == "quarter" && quarterStart.HasValue && quarterEnd.HasValue && quarterYear.HasValue)
+			{
+				int startMonth = (quarterStart.Value - 1) * 3 + 1;
+				int endMonth = (quarterEnd.Value - 1) * 3 + 3;
+
+				invoicesByQuarter = invoicesByQuarter.Where(i =>
+					i.InvoiceDate.Month >= startMonth &&
+					i.InvoiceDate.Month <= endMonth &&
+					i.InvoiceDate.Year == quarterYear);
+
+				ViewBag.QuarterStart = quarterStart.ToString();
+				ViewBag.QuarterEnd = quarterEnd.ToString();
+				ViewBag.QuarterYear = quarterYear.ToString();
+			}
+			else
+			{
+				ViewBag.QuarterStart = "";
+				ViewBag.QuarterEnd = "";
+				ViewBag.QuarterYear = "";
+			}
+
+			var invoicesDay = await invoicesByDay.ToListAsync();
+			var invoicesMonth = await invoicesByMonth.ToListAsync();
+			var invoicesQuarter = await invoicesByQuarter.ToListAsync();
+
+			var dailyRevenue = invoicesDay
 				.GroupBy(i => i.InvoiceDate)
-				.Select(g => new
+				.Select(g => new RevenueChartViewModel
 				{
-					InvoiceDate = g.Key,
-					TotalRevenue = g.Sum(e => e.Total)
+					Label = g.Key.ToString("yyyy-MM-dd"),
+					TotalRevenue = g.Sum(i => i.Total)
 				})
-				.OrderBy(x => x.InvoiceDate)
-				.ToListAsync();
-
-			var dailyRevenue = dailyRevenueRaw
-				.Select(x => new RevenueChartViewModel
-				{
-					Label = x.InvoiceDate.ToString("yyyy-MM-dd"),
-					TotalRevenue = x.TotalRevenue
-				})
+				.OrderBy(x => x.Label)
 				.ToList();
 
-			// Doanh thu theo tháng
-			var monthlyRevenueRaw = await _context.Invoices
+			var monthlyRevenue = invoicesMonth
 				.GroupBy(i => new { i.InvoiceDate.Year, i.InvoiceDate.Month })
-				.Select(g => new
+				.Select(g => new RevenueChartViewModel
 				{
-					Year = g.Key.Year,
-					Month = g.Key.Month,
-					TotalRevenue = g.Sum(e => e.Total)
+					Label = $"{g.Key.Year}-{g.Key.Month:D2}",
+					TotalRevenue = g.Sum(i => i.Total)
 				})
-				.OrderBy(x => x.Year).ThenBy(x => x.Month)
-				.ToListAsync();
-
-			var monthlyRevenue = monthlyRevenueRaw
-				.Select(x => new RevenueChartViewModel
-				{
-					Label = $"{x.Year}-{x.Month:D2}",
-					TotalRevenue = x.TotalRevenue
-				})
+				.OrderBy(x => x.Label)
 				.ToList();
 
-			// Doanh thu theo quý
-			var quarterlyRevenueRaw = await _context.Invoices
+			var quarterlyRevenue = invoicesQuarter
 				.GroupBy(i => new { i.InvoiceDate.Year, Quarter = (i.InvoiceDate.Month - 1) / 3 + 1 })
-				.Select(g => new
+				.Select(g => new RevenueChartViewModel
 				{
-					Year = g.Key.Year,
-					Quarter = g.Key.Quarter,
-					TotalRevenue = g.Sum(e => e.Total)
+					Label = $"Q{g.Key.Quarter} - {g.Key.Year}",
+					TotalRevenue = g.Sum(i => i.Total)
 				})
-				.OrderBy(x => x.Year).ThenBy(x => x.Quarter)
-				.ToListAsync();
-
-			var quarterlyRevenue = quarterlyRevenueRaw
-				.Select(x => new RevenueChartViewModel
-				{
-					Label = $"Q{x.Quarter} - {x.Year}",
-					TotalRevenue = x.TotalRevenue
-				})
+				.OrderBy(x => x.Label)
 				.ToList();
 
-			// Top 3 sản phẩm bán chạy nhất
 			var topProducts = await _context.InvoiceDetails
 				.Include(d => d.Product)
 				.GroupBy(d => new { d.ProductId, d.Product.Name })
@@ -90,7 +126,6 @@ namespace FreshFruit.Areas.Admin.Controllers
 				.Take(3)
 				.ToListAsync();
 
-			// Top 3 sản phẩm bán ít nhất
 			var bottomProducts = await _context.InvoiceDetails
 				.Include(d => d.Product)
 				.GroupBy(d => new { d.ProductId, d.Product.Name })
@@ -103,30 +138,19 @@ namespace FreshFruit.Areas.Admin.Controllers
 				.Take(3)
 				.ToListAsync();
 
-			// Tổng số thành viên
-			var totalMembers = await _context.Members.CountAsync();
-
-			// Tổng số phiếu nhập hàng
-			var totalPurchaseReceipts = await _context.PurchaseReceipts.CountAsync();
-
-			// Tổng số đơn hàng
-			var totalInvoices = await _context.Invoices.CountAsync();
-
-			// Gửi dữ liệu ra ViewModel
 			var viewModel = new ProductStatisticsPageViewModel
 			{
-				TopProducts = topProducts,
-				BottomProducts = bottomProducts,
 				DailyRevenue = dailyRevenue,
 				MonthlyRevenue = monthlyRevenue,
 				QuarterlyRevenue = quarterlyRevenue,
-				TotalMembers = totalMembers,
-				TotalPurchaseReceipts = totalPurchaseReceipts,
-				TotalInvoices = totalInvoices
+				TopProducts = topProducts,
+				BottomProducts = bottomProducts,
+				TotalMembers = await _context.Members.CountAsync(),
+				TotalPurchaseReceipts = await _context.PurchaseReceipts.CountAsync(),
+				TotalInvoices = await _context.Invoices.CountAsync()
 			};
 
 			return View(viewModel);
 		}
-
 	}
 }

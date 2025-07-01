@@ -1,51 +1,70 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using FreshFruit.Models;
 using FreshFruit.Models.Momo;
 using FreshFruit.Services;
 using FreshFruit.Services.Momo;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using System.Runtime.Loader;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession();
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
+// Load native library libwkhtmltox.dll từ wwwroot
+var context = new CustomAssemblyLoadContext();
+context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
+
+// Add services
+builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddScoped<IInvoiceServices, InvoiceServices>();
 
-//Momo API Payment
+// Momo API Payment
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();
 
+// Razor view renderer
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+builder.Services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
 
+// DinkToPdf
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
+// DB context
 builder.Services.AddDbContext<FreshFruitDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FreshFruitConnection")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseSession();
 app.UseAuthorization();
+
+// === ROUTING ===
 app.MapControllerRoute(
-      name: "admin",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
+	name: "blog_slug",
+	pattern: "bai-viet/{id:int}/{slug}",
+	defaults: new { controller = "Blog", action = "Details" });
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+	name: "admin",
+	pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

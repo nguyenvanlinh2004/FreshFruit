@@ -43,8 +43,9 @@ public partial class FreshFruitDbContext : DbContext
     public virtual DbSet<Voucher> Vouchers { get; set; }
     public virtual DbSet<WishList> WishLists { get; set; }
 
+	public virtual DbSet<CompanyInfo> CompanyInfos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       => optionsBuilder.UseSqlServer("Name=FreshFruitConnection");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -281,9 +282,27 @@ public partial class FreshFruitDbContext : DbContext
                 .HasConstraintName("FK_Rating_Products");
         });
 
+		modelBuilder.Entity<CompanyInfo>(entity =>
+		{
+			entity.HasData(
+				new CompanyInfo
+				{
+					Id = 1,
+					CompanyName = "Công ty TNHH Trái Cây Tươi",
+					Address = "123 Đường Hoa Quả, Quận 1, TP.HCM",
+					Phone = "0123456789",
+					Email = "info@traicaytuoi.vn",
+					Website = "https://traicaytuoi.vn",
+					LogoUrl = "/images/company-logo.png"
+				}
+			);
+		});
 
 
-        OnModelCreatingPartial(modelBuilder);
+
+
+
+		OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
