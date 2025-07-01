@@ -1,0 +1,29 @@
+﻿@model FreshFruit.Models.Momo.MomoExecuteResponseModel
+
+<div class="container mt-5">
+    <div class="alert alert-success shadow-sm border rounded p-4">
+        <h4 class="mb-3 text-success"><i class="fas fa-check-circle me-2"></i>Thanh toán Momo thành công!</h4>
+
+        @if (Model != null)
+        {
+            <ul class="list-group list-group-flush fs-5">
+                <li class="list-group-item"><strong>Mã đơn hàng:</strong> @Model.OrderId</li>
+                <li class="list-group-item"><strong>Nội dung:</strong> @Model.OrderInfo</li>
+                <li class="list-group-item"><strong>Số tiền:</strong> @String.Format("{0:0,0}₫", Model.Amount)</li>
+            </ul>
+        }
+        else
+        {
+            <div class="alert alert-danger mt-3">Không tìm thấy thông tin thanh toán!</div>
+        }
+
+        <div class="mt-4">
+            <a asp-action="Profile" asp-controller="Account" class="btn btn-primary">
+                <i class="fas fa-history me-2"></i>Xem lịch sử đơn hàng
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- FontAwesome (nếu chưa có trong layout) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">

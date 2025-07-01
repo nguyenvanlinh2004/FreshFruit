@@ -18,12 +18,12 @@ public partial class Product
     public double? Price { get; set; }
 
     public string? Description { get; set; }
+    public string? LongDescription { get; set; }
 
     [Unicode(false)]
     public string? Image { get; set; }
 
     public int? Status { get; set; }
-
 
 	public double? Quantity { get; set; }
 
@@ -52,6 +52,4 @@ public partial class Product
     [InverseProperty("Product")]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<WishList> WishLists { get; set; } = new List<WishList>();
-
-
 }
