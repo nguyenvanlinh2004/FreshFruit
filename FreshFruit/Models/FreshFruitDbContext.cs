@@ -133,14 +133,14 @@ public partial class FreshFruitDbContext : DbContext
         modelBuilder.Entity<Invoice>(entity =>
         {
             entity.HasData(
-				new Invoice { Id = 1, InvoicesCode = "INV0001", MemberId = 1, InvoiceDate = new DateOnly(2025, 1, 10), Total = 250000, Status = 1, PaymentMethod = "Tiền mặt" },
-	new Invoice { Id = 2, InvoicesCode = "INV0002", MemberId = 2, InvoiceDate = new DateOnly(2025, 1, 15), Total = 350000, Status = 1, PaymentMethod = "Chuyển khoản" },
-	new Invoice { Id = 3, InvoicesCode = "INV0003", MemberId = 3, InvoiceDate = new DateOnly(2025, 2, 1), Total = 180000, Status = 1, PaymentMethod = "Chuyển khoản" },
-	new Invoice { Id = 4, InvoicesCode = "INV0004", MemberId = 4, InvoiceDate = new DateOnly(2025, 2, 18), Total = 410000, Status = 1, PaymentMethod = "Tiền mặt" },
-	new Invoice { Id = 5, InvoicesCode = "INV0005", MemberId = 5, InvoiceDate = new DateOnly(2025, 3, 2), Total = 295000, Status = 1, PaymentMethod = "Chuyển khoản" },
-	new Invoice { Id = 6, InvoicesCode = "INV0006", MemberId = 6, InvoiceDate = new DateOnly(2025, 3, 20), Total = 150000, Status = 1, PaymentMethod = "Chuyển khoản" },
-	new Invoice { Id = 7, InvoicesCode = "INV0007", MemberId = 7, InvoiceDate = new DateOnly(2025, 4, 5), Total = 320000, Status = 1, PaymentMethod = "Tiền mặt" }
-				);
+                new Invoice { Id = 1, InvoicesCode = "INV0001", MemberId = 1, InvoiceDate = new DateTime(2025, 1, 15), Fullname = "Nguyễn Văn A", Email = "vana@example.com", Phone = "0912345678", Address = "123 Đường A", Total = 250000, Status = 1, PaymentMethod = "Tiền mặt" },
+                new Invoice { Id = 3, InvoicesCode = "INV0003", MemberId = 3, InvoiceDate = new DateTime(2025, 2, 1), Fullname = "Lê Văn C", Email = "levc@example.com", Phone = "0987654321", Address = "789 Đường C", Total = 180000, Status = 1, PaymentMethod = "Chuyển khoản" },
+                new Invoice { Id = 4, InvoicesCode = "INV0004", MemberId = 4, InvoiceDate = new DateTime(2025, 2, 18), Fullname = "Phạm Văn D", Email = "phamd@example.com", Phone = "0901122334", Address = "321 Đường D", Total = 410000, Status = 1, PaymentMethod = "Tiền mặt" },
+                new Invoice { Id = 2, InvoicesCode = "INV0002", MemberId = 2, InvoiceDate = new DateTime(2025, 1, 20), Fullname = "Trần Thị B", Email = "tranb@example.com", Phone = "0934567890", Address = "456 Đường B", Total = 350000, Status = 1, PaymentMethod = "Chuyển khoản" },
+                new Invoice { Id = 5, InvoicesCode = "INV0005", MemberId = 5, InvoiceDate = new DateTime(2025, 3, 2), Fullname = "Đặng Thị E", Email = "dange@example.com", Phone = "0933221144", Address = "654 Đường E", Total = 295000, Status = 1, PaymentMethod = "Chuyển khoản" },
+                new Invoice { Id = 6, InvoicesCode = "INV0006", MemberId = 6, InvoiceDate = new DateTime(2025, 3, 20), Fullname = "Hoàng Văn F", Email = "hoangf@example.com", Phone = "0977766554", Address = "987 Đường F", Total = 150000, Status = 1, PaymentMethod = "Chuyển khoản" },
+                new Invoice { Id = 7, InvoicesCode = "INV0007", MemberId = 7, InvoiceDate = new DateTime(2025, 4, 5), Fullname = "Lý Thị G", Email = "lyg@example.com", Phone = "0909090909", Address = "111 Đường G", Total = 320000, Status = 1, PaymentMethod = "Tiền mặt" }
+                );
             entity.HasOne(d => d.Member).WithMany(p => p.Invoices)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Invoices_Members_01");

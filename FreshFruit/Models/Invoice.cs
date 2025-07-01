@@ -17,9 +17,17 @@ public partial class Invoice
     public string InvoicesCode { get; set; } = null!;
 
     public int MemberId { get; set; }
+    public DateTime InvoiceDate { get; set; }= DateTime.Now;
+    public string Fullname { get; set; } = null!;
 
-    public DateOnly InvoiceDate { get; set; }
+    [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
+    public string? Email { get; set; }
 
+    [Required(ErrorMessage = "Số điện thoại không được bỏ trống.")]
+    public string Phone { get; set; } = null!;
+
+    [Required(ErrorMessage = "Địa chỉ không được bỏ trống.")]
+    public string Address { get; set; } = null!;
     [Column(TypeName = "decimal(18, 0)")]
     public decimal Total { get; set; }
 

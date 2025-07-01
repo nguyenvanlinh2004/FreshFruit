@@ -19,6 +19,7 @@ namespace FreshFruit.Models.ViewModel
         public double? Price { get; set; }
 
         public string? Description { get; set; }
+        public string? LongDescription { get; set; }
 
         public string? Slug { get; set; }
 

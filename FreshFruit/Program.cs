@@ -1,5 +1,7 @@
 using FreshFruit.Models;
+using FreshFruit.Models.Momo;
 using FreshFruit.Services;
+using FreshFruit.Services.Momo;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,11 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddScoped<IInvoiceServices, InvoiceServices>();
+
+//Momo API Payment
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+builder.Services.AddScoped<IMomoService, MomoService>();
+
 
 builder.Services.AddDbContext<FreshFruitDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FreshFruitConnection")));
