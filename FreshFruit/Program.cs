@@ -1,7 +1,9 @@
-﻿using DinkToPdf;
+using DinkToPdf;
 using DinkToPdf.Contracts;
 using FreshFruit.Models;
+using FreshFruit.Models.Momo;
 using FreshFruit.Services;
+using FreshFruit.Services.Momo;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -21,6 +23,10 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddScoped<IInvoiceServices, InvoiceServices>();
 
+// Momo API Payment
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+builder.Services.AddScoped<IMomoService, MomoService>();
+
 // Razor view renderer
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
@@ -30,7 +36,7 @@ builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new 
 
 // DB context
 builder.Services.AddDbContext<FreshFruitDbContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("FreshFruitConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FreshFruitConnection")));
 
 var app = builder.Build();
 

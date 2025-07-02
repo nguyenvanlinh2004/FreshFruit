@@ -4,6 +4,7 @@ using FreshFruit.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.X86;
 
 
 namespace FreshFruit.Areas.Admin.Controllers
@@ -66,6 +67,7 @@ namespace FreshFruit.Areas.Admin.Controllers
                 CategoryId = vm.CategoryId,
                 Price = vm.Price,
                 Description = vm.Description,
+                LongDescription=vm.LongDescription,
                 Quantity = 0,
                 ShipmentId =null,
                 Slug = slug,
@@ -136,6 +138,7 @@ namespace FreshFruit.Areas.Admin.Controllers
                 CategoryId = product.CategoryId,
                 Price = product.Price,
                 Description = product.Description,
+                LongDescription = product.LongDescription,
                 Slug = product.Slug,
                 Image = product.Image,
                 OldGalleryImages = product.ProductImages
@@ -174,11 +177,13 @@ namespace FreshFruit.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            Console.WriteLine(new { des = vm.Description, longdes = vm.LongDescription });
             // Cập nhật thông tin
             product.Name = vm.Name;
             product.CategoryId = vm.CategoryId;
             product.Price = vm.Price;
             product.Description = vm.Description;
+            product.LongDescription = vm.LongDescription;
             product.Slug = SlugHelper.GenerateSlug(vm.Name);
 
             if (vm.ImageFile != null)

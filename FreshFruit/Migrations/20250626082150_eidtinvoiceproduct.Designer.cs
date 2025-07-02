@@ -4,6 +4,7 @@ using FreshFruit.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreshFruit.Migrations
 {
     [DbContext(typeof(FreshFruitDbContext))]
-    partial class FreshFruitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626082150_eidtinvoiceproduct")]
+    partial class eidtinvoiceproduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -467,56 +470,6 @@ namespace FreshFruit.Migrations
                             MemberId = 7,
                             ProductId = 7,
                             Status = 0
-                        });
-                });
-
-            modelBuilder.Entity("FreshFruit.Models.CompanyInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("LogoUrl")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Website")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CompanyInfos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "123 Đường Hoa Quả, Quận 1, TP.HCM",
-                            CompanyName = "Công ty TNHH Trái Cây Tươi",
-                            Email = "info@traicaytuoi.vn",
-                            LogoUrl = "/images/company-logo.png",
-                            Phone = "0123456789",
-                            Website = "https://traicaytuoi.vn"
                         });
                 });
 
