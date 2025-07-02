@@ -195,7 +195,7 @@
         </div>
     </div>
     <!-- End Instagram Feed  -->
-    @await Html.PartialAsync("_Footer")
+    @await Component.InvokeAsync("CompanyInfoFooter")
     @RenderSection("Scripts", required: false)
     <!-- ALL JS FILES -->
     <script src="js/jquery-3.2.1.min.js"></script>

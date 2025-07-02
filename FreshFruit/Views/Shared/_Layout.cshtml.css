@@ -1,44 +1,54 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿/* Bootstrap customizations & override */
 
+/* Navbar */
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-word;
 }
 
+/* Link màu mặc định */
 a {
-  color: #0077cc;
+    color: #0077cc;
 }
 
+/* Button chính */
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* Nav pills */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
+/* Viền */
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
+/* Bóng đổ */
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
+/* Cookie policy */
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
+/* ⚠️ GỠ BỎ HOẶC GHI ĐÈ class footer lỗi cũ */
+/*
 .footer {
   position: absolute;
   bottom: 0;
@@ -46,3 +56,22 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+*/
+
+/* ✅ Footer mới chuẩn responsive */
+.footer-main {
+    position: relative !important;
+    width: 100%;
+    background-color: #212529; /* giống bg-dark */
+    color: white;
+    padding: 2rem 0 1rem;
+}
+
+    .footer-main a {
+        color: #f8f9fa;
+    }
+
+        .footer-main a:hover {
+            color: #ffc107;
+            text-decoration: underline;
+        }
