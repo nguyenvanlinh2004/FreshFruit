@@ -1,0 +1,58 @@
+﻿@model FreshFruit.Models.CompanyInfo
+
+@if (Model == null || string.IsNullOrEmpty(Model.CompanyName))
+{
+    <footer class="footer-main bg-dark text-white text-center p-4 w-100">
+        <p>⚠ Không có thông tin công ty</p>
+    </footer>
+}
+else
+{
+    <footer class="footer-main bg-dark text-white w-100 mt-5 pt-4 pb-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="text-uppercase">Thông tin công ty</h5>
+                    <p><strong>@Model.CompanyName</strong></p>
+                    @if (!string.IsNullOrEmpty(Model.Address))
+                    {
+                        <p>📍 @Model.Address</p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Phone))
+                    {
+                        <p>📞 @Model.Phone</p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <p>✉️ <a href="mailto:@Model.Email" class="text-white">@Model.Email</a></p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Website))
+                    {
+                        <p>🌐 <a href="@Model.Website" class="text-white" target="_blank">@Model.Website</a></p>
+                    }
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h5 class="text-uppercase">Thời gian hoạt động</h5>
+                    <ul class="list-unstyled">
+                        <li>Thứ 2 - Thứ 6: 8:00 - 17:00</li>
+                        <li>Thứ 7: 8:00 - 12:00</li>
+                        <li>Chủ nhật: Nghỉ</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-12 text-center mb-4">
+                    <h5 class="text-uppercase">Logo</h5>
+                    @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                    {
+                        <img src="@Model.LogoUrl" alt="Logo" class="img-fluid" style="max-height: 100px;" />
+                    }
+                </div>
+            </div>
+
+            <div class="text-center pt-3 border-top border-secondary">
+                &copy; @DateTime.Now.Year - @Model.CompanyName. All rights reserved.
+            </div>
+        </div>
+    </footer>
+}
