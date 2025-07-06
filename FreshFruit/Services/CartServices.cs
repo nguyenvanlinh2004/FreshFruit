@@ -147,6 +147,12 @@ CartItem cartItem = cart.CartItems.FirstOrDefault(item => item.CartItemId == car
 
             foreach (CartItem item in cartItems)
             {
+                var productInDb = _context.Products.FirstOrDefault(p => p.Id == item.Product.Id);
+                if (productInDb != null)
+                {
+                    productInDb.Quantity -= item.Quantity;
+                    if (productInDb.Quantity < 0) productInDb.Quantity = 0;
+                }
                 detailOrders.Add(new InvoiceDetail
                 {
                     InvoiceId = invoice.Id,

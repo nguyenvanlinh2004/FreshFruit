@@ -110,6 +110,7 @@ namespace FreshFruit.Controllers
 
 			if (member != null)
 			{
+<<<<<<< HEAD
 				invoices = member.Invoices
 					.Where(i =>
 						(string.IsNullOrEmpty(statusFilter) ||
@@ -122,6 +123,19 @@ namespace FreshFruit.Controllers
 					.OrderByDescending(i => i.InvoiceDate)
 					.ToList();
 			}
+=======
+                invoices = member.Invoices
+       .Where(i =>
+           (string.IsNullOrEmpty(statusFilter) ||
+            (statusFilter == "1" && i.Status == 1) ||
+            (statusFilter == "0" && i.Status != 1)) &&
+           (!fromDate.HasValue || i.InvoiceDate >= fromDate.Value) &&
+           (!toDate.HasValue || i.InvoiceDate <= toDate.Value)
+       )
+       .OrderByDescending(i => i.InvoiceDate)
+       .ToList();
+            }
+>>>>>>> fea37cdeed482eb11c0a9aee7405f71185506db5
 			else
 			{
 				invoices = new List<Invoice>();
