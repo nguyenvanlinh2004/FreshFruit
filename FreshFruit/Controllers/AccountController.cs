@@ -81,73 +81,7 @@ namespace FreshFruit.Controllers
             return RedirectToAction("Login");
         }
 
-		// Hiển thị form Profile
-		[HttpGet]
-		public async Task<IActionResult> Profile(string statusFilter, DateTime? fromDate, DateTime? toDate)
-		{
-			var accountId = HttpContext.Session.GetInt32("AccountId");
-			if (accountId == null)
-			{
-				return RedirectToAction("Login");
-			}
-
-			var account = await _context.Accounts
-				.Include(a => a.Members)
-					.ThenInclude(m => m.Invoices)
-						.ThenInclude(i => i.InvoiceDetails)
-							.ThenInclude(d => d.Product)
-				.FirstOrDefaultAsync(a => a.Id == accountId);
-
-			if (account == null)
-			{
-				return NotFound();
-			}
-
-			var member = account.Members.FirstOrDefault();
-			ViewBag.Member = member;
-
-			List<Invoice> invoices = new List<Invoice>();
-
-			if (member != null)
-			{
-<<<<<<< HEAD
-				invoices = member.Invoices
-					.Where(i =>
-						(string.IsNullOrEmpty(statusFilter) ||
-							(statusFilter == "1" && i.Status == 1) ||
-							(statusFilter == "0" && i.Status != 1)) &&
-						(!fromDate.HasValue || i.InvoiceDate.Date >= fromDate.Value.Date) &&
-						(!toDate.HasValue || i.InvoiceDate.Date <= toDate.Value.Date)
-
-					)
-					.OrderByDescending(i => i.InvoiceDate)
-					.ToList();
-			}
-=======
-                invoices = member.Invoices
-       .Where(i =>
-           (string.IsNullOrEmpty(statusFilter) ||
-            (statusFilter == "1" && i.Status == 1) ||
-            (statusFilter == "0" && i.Status != 1)) &&
-           (!fromDate.HasValue || i.InvoiceDate >= fromDate.Value) &&
-           (!toDate.HasValue || i.InvoiceDate <= toDate.Value)
-       )
-       .OrderByDescending(i => i.InvoiceDate)
-       .ToList();
-            }
->>>>>>> fea37cdeed482eb11c0a9aee7405f71185506db5
-			else
-			{
-				invoices = new List<Invoice>();
-			}
-
-			ViewBag.Invoices = invoices;
-			ViewBag.StatusFilter = statusFilter;
-			ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
-			ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
-
-			return View(account);
-		}
+		
 
 		[HttpPost]
 		public async Task<IActionResult> Profile(int id, string fullname, string phone, string address, DateTime? dob, string currentPassword, string password, string confirmPassword)

@@ -91,10 +91,10 @@ namespace FreshFruit.Areas.Admin.Controllers
 			return View(blogs);
 		}
 
-		// ✅ Hiển thị form tạo
+		//  Hiển thị form tạo
 		public IActionResult Create() => View();
 
-		// ✅ Xử lý tạo mới
+		//  Xử lý tạo mới
 		[HttpPost]
 		public async Task<IActionResult> Create(BlogViewModel model)
 		{
