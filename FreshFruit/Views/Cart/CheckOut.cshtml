@@ -126,7 +126,6 @@
                                     url: "/Payment/CreateMomoPayment",
                                     contentType: "application/json",
                                     data: JSON.stringify({
-                                        console.log("Tổng tiền gửi qua Momo:", Number(response.invoice.total));
                                         FullName: response.invoice.fullname,
                                         OrderInfomation: "Thanh toán đơn hàng tại FreshFruit",
                                         Amount: Number(response.invoice.total)

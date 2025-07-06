@@ -53,7 +53,9 @@ namespace FreshFruit.Controllers
 
             var ratingsWithComments = (
                 from r in _context.Ratings
-                join c in _context.Comments
+				join m in _context.Members on r.MemberId equals m.Id into rm
+				from member in rm.DefaultIfEmpty()
+				join c in _context.Comments
                     on new { r.ProductId, r.MemberId } equals new { c.ProductId, c.MemberId }
                 where r.ProductId == product.Id && r.Status == 1 && c.Status == 1
                 select new RatingWithCommentVM
@@ -66,8 +68,9 @@ namespace FreshFruit.Controllers
                     Status = r.Status,
                     CommentText = c.Contents,
                     CommentCreatedAt = c.CreatedAt,
-                    CommentStatus = c.Status
-                }
+                    CommentStatus = c.Status,
+					 FullName = member != null ? member.Fullname : "Ẩn danh"
+				}
             ).ToList();
 
             var vm = new ProductDetailViewModel
@@ -82,8 +85,8 @@ namespace FreshFruit.Controllers
                     ? ratingsWithComments.Average(r => r.RatingValue)
                     : 0
             };
-
-            return View(vm);
+			ViewBag.Categories = _context.Categories.Where(c => c.Status == 1).ToListAsync();
+			return View(vm);
         }
 
         [HttpPost]
@@ -91,12 +94,13 @@ namespace FreshFruit.Controllers
         {
             if (!ModelState.IsValid)
             {
+						
                 // Load lại dữ liệu nếu có lỗi
                 model.Product = _context.Products
                     .Include(p => p.ProductImages)
                     .FirstOrDefault(p => p.Id == model.ProductId);
-
-                model.ProductImages = _context.ProductImages
+				model.slug=model.slug ?? string.Empty;
+				model.ProductImages = _context.ProductImages
                     .Where(pi => pi.ProductId == model.ProductId).ToList();
 
                 model.RatingsWithComments = (from r in _context.Ratings
@@ -141,7 +145,6 @@ namespace FreshFruit.Controllers
             };
             _context.Ratings.Add(rating);
             _context.SaveChanges();
-
             // Tạo Comment mới
             var comment = new Comment
             {
@@ -154,7 +157,7 @@ namespace FreshFruit.Controllers
             _context.Comments.Add(comment);
             _context.SaveChanges();
 
-            return RedirectToAction("ProductDetail", new { id = model.ProductId });
+            return RedirectToAction("ProductDetail", new { slug= model.slug});
         }
 
     }

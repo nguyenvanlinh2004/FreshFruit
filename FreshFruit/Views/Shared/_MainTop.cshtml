@@ -23,12 +23,16 @@
                             <option value="/Account/Register">Register Here</option>
                             <option value="/Account/Login">Sign In</option>
                         </select>
-                    }else
-                    {
-                        <span class="form-control bg-[#b0b435] text-white">
-                            Xin Chào!
-                        </span>
                     }
+                    else
+                    {
+                        <form asp-controller="Account" asp-action="Logout" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
+                            <button type="submit" class="form-control bg-[#b0b435] text-white hover:bg-[#9aa22d]">
+                                Đăng xuất
+                            </button>
+                        </form>
+                    }
+
 
                 </div>
                 <div class="text-slid-box">

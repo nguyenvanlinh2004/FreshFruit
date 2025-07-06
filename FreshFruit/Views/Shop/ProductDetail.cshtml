@@ -339,7 +339,7 @@
                             <li class="media mb-4 pb-3 border-bottom">
                                 <div class="media-body">
                                     <h6 class="text-primary font-weight-bold">
-                                        @(comment.MemberId != null ? $"Thành viên #{comment.MemberId}" : "Ẩn danh")
+                                        @(comment.MemberId != null ? $"{comment.FullName}" : "Ẩn danh")
                                     </h6>
 
                                     <ul class="list-inline review-star mb-1">
@@ -389,7 +389,7 @@
                                     <textarea id="CommentInput" name="CommentInput" rows="3" class="form-control" placeholder="Viết bình luận..." required></textarea>
                                 </div>
                             </div>
-
+                                <input type="hidden" name="slug" value="@Model.Product.Slug" />
                             <button type="submit" class="btn btn-success">
                                 <i class="fa fa-paper-plane mr-1"></i> Gửi đánh giá
                             </button>

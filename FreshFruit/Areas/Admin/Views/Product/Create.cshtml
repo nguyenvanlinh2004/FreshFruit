@@ -28,7 +28,7 @@
                             <div class="form-group">
                                 <label asp-for="CategoryId">Category</label>
                                 @Html.DropDownListFor(model => model.CategoryId, new SelectList(ViewBag.Categories, "Id", "Name"), "-- Choose Category --", new { @class = "form-control" })
-                                <option value="">-- Choose Category --</option>
+                                <option value=""></option>
                                 </select>
                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
                             </div>

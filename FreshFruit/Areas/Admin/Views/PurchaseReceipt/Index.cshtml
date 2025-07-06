@@ -9,7 +9,7 @@
     <a asp-action="Create" class="btn btn-primary mb-3">Thêm phiếu nhập</a>
 
 
-    <div class="text-center align-middle table-responsive mt-3 table-striped table-hover ">
+    <div class="text-center align-middle table-responsive mt-3 table-striped table-hover">
         <table class="table datanew ">
             <thead>
                 <tr>
@@ -36,8 +36,8 @@
                         </td>
                         <td>
                             <a asp-action="Details" asp-route-id="@receipt.Id" class="btn btn-info btn-sm">Chi tiết</a>
-                            <a asp-action="Edit" asp-route-id="@receipt.Id" class="btn btn-warning btn-sm">Sửa</a>
-                            <a asp-action="Delete" asp-route-id="@receipt.Id" class="btn btn-danger btn-sm">Xóa</a>
+                            @* <a asp-action="Edit" asp-route-id="@receipt.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@receipt.Id" class="btn btn-danger btn-sm">Xóa</a> *@
                             <!-- Nút xuất PDF -->
                             <form asp-area="Admin" asp-controller="Export" asp-action="GenerateReceiptPdf" method="post" target="_blank" style="display:inline;">
                             <input type="hidden" name="id" value="@receipt.Id" />

@@ -1,0 +1,64 @@
+﻿@model List<FreshFruit.Models.ViewModel.UserViewModel>
+@{
+    ViewData["Title"] = "Danh sách người dùng";
+}
+
+<div class="page-wrapper">
+    <h2 class="text-xl font-bold mb-4">Danh sách người dùng</h2>
+
+    <div class="text-center align-middle table-responsive mt-3 table-striped table-hover">
+        <table class="table datanew ">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Họ tên</th>
+                    <th>SĐT</th>
+                    <th>Ngày sinh</th>
+                    <th>Địa chỉ</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.AccountId</td>
+                        <td>@user.Email</td>
+                        <td>@user.Fullname</td>
+                        <td>@user.Phone</td>
+                        <td>@user.Dob?.ToString("dd/MM/yyyy")</td>
+                        <td>@user.Address</td>
+                        <td>@(user.Role == 1 ? "Admin" : "User")</td>
+                        <td class="fw-bold text-@(user.AccountStatus == 1 ? "success" : "danger")">
+                            @(user.AccountStatus == 1 ? "Hoạt động" : "Bị khóa")
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@user.AccountId" class="btn btn-info btn-sm mb-1">Chi tiết</a>
+
+                            @if (user.AccountStatus == 1)
+                            {
+                                <form asp-action="Lock" asp-route-id="@user.AccountId" method="post"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản này không?')"
+                                      style="display:inline;">
+                                    <button type="submit" class="btn btn-warning btn-sm">Khóa</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Unlock" asp-route-id="@user.AccountId" method="post"
+                                      onsubmit="return confirm('Bạn có muốn MỞ KHÓA tài khoản này không?')"
+                                      style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">Mở khóa</button>
+                                </form>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

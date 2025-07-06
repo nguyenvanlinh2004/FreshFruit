@@ -28,16 +28,23 @@ namespace FreshFruit.Areas.Admin.Controllers
 			var invoicesByMonth = _context.Invoices.AsQueryable();
 			var invoicesByQuarter = _context.Invoices.AsQueryable();
 
-			if (filterType == "day" && startDate.HasValue && endDate.HasValue)
+			var adminId = HttpContext.Session.GetInt32("AdminId");
+			if (adminId == null)
 			{
-				var s = DateOnly.FromDateTime(startDate.Value.Date);
-				var e = DateOnly.FromDateTime(endDate.Value.Date);
-				invoicesByDay = invoicesByDay.Where(i => i.InvoiceDate >= s && i.InvoiceDate <= e);
-
-				ViewBag.StartDate = s.ToString("yyyy-MM-dd");
-				ViewBag.EndDate = e.ToString("yyyy-MM-dd");
+				return RedirectToAction("login", "Account");
 			}
-			else
+			if (filterType == "day" && startDate.HasValue && endDate.HasValue)
+            {
+                var s = startDate.Value.Date;
+                var e = endDate.Value.Date;
+
+                invoicesByDay = invoicesByDay
+					.Where(i => i.InvoiceDate.Date >= s && i.InvoiceDate.Date <= e);
+
+                ViewBag.StartDate = s.ToString("yyyy-MM-dd");
+                ViewBag.EndDate = e.ToString("yyyy-MM-dd");
+            }
+            else
 			{
 				ViewBag.StartDate = "";
 				ViewBag.EndDate = "";
