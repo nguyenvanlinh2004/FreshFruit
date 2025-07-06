@@ -1,69 +1,32 @@
 ﻿@model FreshFruit.Models.ViewModel.CheckOutViewModel
 
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#checkout-form").submit(function (e) {
-                e.preventDefault();
-
-                const $submitBtn = $("#checkout-submit-btn");
-                $submitBtn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm"></span> Đang xử lý...');
-
-                var formData = $(this).serialize();
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Cart/Checkout",
-                    data: formData,
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: "Thành công",
-                                text: `Bạn đã dặt hàng thành công, Mã đơn hàng của bạn là: ${response.invoice.invoiceCode}`,
-                                icon: "success",
-                                allowOutsideClick: true,
-                            }).then(() => {
-                                window.location.href = "/Cart";
-                            });
-                        } else {
-                            Swal.fire("Thất bại", "Vui lòng kiểm tra lại thông tin.", "error");
-                        }
-                    },
-                    error: function () {
-                        Swal.fire("Lỗi", "Không thể gửi đơn hàng.", "error");
-                    },
-                    complete: function () {
-                        $submitBtn.prop("disabled", false).html('<i class="fas fa-check-circle"></i> Xác nhận đặt hàng');
-                    }
-                });
-            });
-        });
-    </script>
-}
-
 <div class="container py-5">
     <form asp-action="Checkout" asp-controller="Cart" method="post" id="checkout-form">
         <div class="row g-4">
             <!-- Thông tin khách hàng -->
             <div class="col-md-6">
                 <h4 class="mb-3">🧍 Thông tin người nhận</h4>
-                <input type="hidden" name="invoice.Total" value="@Model.TotalPrice" />
+
+                <!-- Giá trị tổng sau giảm -->
+                <input type="hidden" name="FinalPrice" value="@Model.TotalPrice" id="FinalPrice" />
 
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" value="@Model.FullName" readonly />
+                    <input type="email" class="form-control" name="invoice.Email" value="@Model.Email" required />
+                    <label>Email</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="invoice.Fullname" value="@Model.FullName" required />
                     <label>Họ và tên</label>
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" value="@Model.Phone" readonly />
+                    <input type="text" class="form-control" name="invoice.Phone" value="@Model.Phone?.Trim()" required />
                     <label>Số điện thoại</label>
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" value="@Model.Address" readonly />
+                    <input type="text" class="form-control" name="invoice.Address" value="@Model.Address" required />
                     <label>Địa chỉ</label>
                 </div>
 
@@ -71,14 +34,28 @@
                     <select class="form-select" name="invoice.PaymentMethod" required>
                         <option value="">-- Chọn phương thức --</option>
                         <option value="Tiền mặt">Tiền mặt</option>
-                        <option value="Chuyển khoản">Chuyển khoản</option>
+                        <option value="Momo">Momo</option>
                     </select>
                     <label>Phương thức thanh toán</label>
                 </div>
             </div>
 
-            <!-- Đơn hàng -->
             <div class="col-md-6">
+                <!-- Mã giảm giá -->
+                <div class="form-floating mb-3 mt-3">
+                    <select class="form-select" name="SelectedVoucherCode" id="SelectedVoucherCode">
+                        <option value="">-- Chọn mã giảm giá --</option>
+                        @foreach (var voucher in Model.Vouchers)
+                        {
+                            <option value="@voucher.Code" data-discount="@voucher.DiscountAmount">
+                                @voucher.Code - Giảm @String.Format("{0:0,0}₫", voucher.DiscountAmount)
+                            </option>
+                        }
+                    </select>
+                    <label>Mã giảm giá</label>
+                </div>
+
+                <!-- Đơn hàng -->
                 <h4 class="mb-3">🛒 Đơn hàng của bạn</h4>
                 <div class="border rounded p-4 bg-light shadow-sm">
                     @foreach (var item in Model.CartItems)
@@ -89,9 +66,23 @@
                         </div>
                     }
 
-                    <div class="d-flex justify-content-between mt-3 fs-5">
+                    <!-- Tổng ban đầu -->
+                    <div class="d-flex justify-content-between mt-3 fs-6">
+                        <span>Tạm tính:</span>
+                        <span id="total-price">@String.Format("{0:0,0}₫", Model.TotalPrice)</span>
+                    </div>
+
+                    <!-- Giảm giá -->
+                    <div class="d-flex justify-content-between fs-6 text-success">
+                        <span>Giảm giá:</span>
+                        <span id="discount-amount">0₫</span>
+                    </div>
+
+                    <!-- Tổng sau giảm -->
+                    <div class="d-flex justify-content-between mt-2 fs-5 border-top pt-2">
                         <strong>Tổng cộng</strong>
-                        <strong>@String.Format("{0:0,0}₫", Model.TotalPrice)</strong>
+                        <strong id="final-total">@String.Format("{0:0,0}₫", Model.TotalPrice)</strong>
+                        <input type="hidden" name="invoice.Total" id="invoiceTotalInput" value="@Model.TotalPrice" />
                     </div>
 
                     <button type="submit" id="checkout-submit-btn" class="btn btn-success w-100 mt-4">
@@ -103,5 +94,94 @@
     </form>
 </div>
 
-<!-- Font Awesome for icons -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Khi submit form
+            $("#checkout-form").submit(function (e) {
+                e.preventDefault();
+
+                const paymentMethod = $("select[name='invoice.PaymentMethod']").val();
+                const formData = $(this).serialize();
+                const $submitBtn = $("#checkout-submit-btn");
+
+                $submitBtn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm"></span> Đang xử lý...');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Cart/Checkout",
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            if (paymentMethod === "Momo") {
+                                // Gọi API tạo thanh toán Momo
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Payment/CreateMomoPayment",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({
+                                        console.log("Tổng tiền gửi qua Momo:", Number(response.invoice.total));
+                                        FullName: response.invoice.fullname,
+                                        OrderInfomation: "Thanh toán đơn hàng tại FreshFruit",
+                                        Amount: Number(response.invoice.total)
+                                    }),
+                                    success: function (res) {
+                                        if (res.payUrl) {
+                                            window.location.href = res.payUrl;
+                                        } else {
+                                            Swal.fire("Lỗi", "Không thể tạo thanh toán Momo", "error");
+                                        }
+                                    },
+                                    error: function () {
+                                        Swal.fire("Lỗi", "Không thể gửi yêu cầu thanh toán Momo.", "error");
+                                    }
+                                });
+                            } else {
+                                // Thanh toán tiền mặt
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: "Thành công",
+                                    html: `
+                                        <p>Mã đơn hàng: <b>${response.invoice.invoicesCode}</b></p>
+                                        <p>Người nhận: ${response.invoice.fullname}</p>
+                                        <p>Phương thức: ${response.invoice.paymentMethod}</p>
+                                        <p>Tổng tiền: ${Number(response.invoice.total).toLocaleString()}₫</p>
+                                    `,
+                                    timer: 3500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href = "/Cart";
+                                });
+                            }
+                        } else {
+                            Swal.fire("Thất bại", "Vui lòng kiểm tra lại thông tin.", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("Lỗi", "Không thể gửi đơn hàng.", "error");
+                    },
+                    complete: function () {
+                        $submitBtn.prop("disabled", false).html('<i class="fas fa-check-circle me-2"></i> Xác nhận đặt hàng');
+                    }
+                });
+            });
+
+            // Xử lý cập nhật khi chọn mã giảm giá
+            $('#SelectedVoucherCode').change(function () {
+                const discount = parseFloat($(this).find('option:selected').data('discount')) || 0;
+                const total = parseFloat('@Model.TotalPrice');
+                const final = Math.max(0, total - discount);
+
+                $('#discount-amount').text(discount.toLocaleString('vi-VN') + '₫');
+                $('#final-total').text(final.toLocaleString('vi-VN') + '₫');
+                $('#FinalPrice').val(final); // Cập nhật input ẩn
+            });
+        });
+    </script>
+}

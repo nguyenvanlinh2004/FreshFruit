@@ -30,9 +30,9 @@ namespace FreshFruit.Areas.Admin.Controllers
 
 			if (filterType == "day" && startDate.HasValue && endDate.HasValue)
 			{
-				var s = DateOnly.FromDateTime(startDate.Value.Date);
-				var e = DateOnly.FromDateTime(endDate.Value.Date);
-				invoicesByDay = invoicesByDay.Where(i => i.InvoiceDate >= s && i.InvoiceDate <= e);
+				var s = startDate.Value.Date;
+				var e = endDate.Value.Date;
+				invoicesByDay = invoicesByDay.Where(i => i.InvoiceDate.Date >= s && i.InvoiceDate.Date <= e);
 
 				ViewBag.StartDate = s.ToString("yyyy-MM-dd");
 				ViewBag.EndDate = e.ToString("yyyy-MM-dd");

@@ -115,8 +115,8 @@ namespace FreshFruit.Controllers
 						(string.IsNullOrEmpty(statusFilter) ||
 							(statusFilter == "1" && i.Status == 1) ||
 							(statusFilter == "0" && i.Status != 1)) &&
-						(!fromDate.HasValue || i.InvoiceDate >= DateOnly.FromDateTime(fromDate.Value)) &&
-						(!toDate.HasValue || i.InvoiceDate <= DateOnly.FromDateTime(toDate.Value))
+						(!fromDate.HasValue || i.InvoiceDate.Date >= fromDate.Value.Date) &&
+						(!toDate.HasValue || i.InvoiceDate.Date <= toDate.Value.Date)
 
 					)
 					.OrderByDescending(i => i.InvoiceDate)

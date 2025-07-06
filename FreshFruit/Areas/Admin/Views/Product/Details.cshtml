@@ -16,13 +16,14 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-4">
-                        <img src="~/images/@Model.Product.Image" alt="@Model.Product.Name" class="img-fluid rounded" />
+                        <img src="~/images/@Model.Product?.Image" alt="@Model.Product?.Name" class="img-fluid rounded" />
                     </div>
                     <div class="col-lg-8">
                         <h3>@Model.Product.Name</h3>
                         <p><strong>Danh mục:</strong> @Model.Product.Category?.Name</p>
                         <p><strong>Giá bán:</strong> @Model.Product.Price?.ToString("N0") đ</p>
-                        <p><strong>Mô tả:</strong> @Model.Product.Description</p>
+                        <p><strong>Mô tả:</strong> @Html.Raw(Model.Product.Description)</p>
+                        <p><strong>Mô tả chi tiết:</strong> @Html.Raw(Model.Product.LongDescription)</p>
                         <p><strong>Tổng tồn kho:</strong> @Model.Product.Quantity</p>
                     </div>
                 </div>

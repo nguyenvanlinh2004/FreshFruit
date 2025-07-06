@@ -18,6 +18,7 @@ namespace FreshFruit.Models.ViewModel
 
         [Required(ErrorMessage = "Mô tả không được để trống")]
         public string? Description { get; set; }
+        public string? LongDescription { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn ảnh chính")]
         [Display(Name = "Ảnh chính")]

@@ -40,14 +40,14 @@ namespace FreshFruit.Controllers
 
             return View(vm);
         }
-        [Route("ProductDetail/{id}")]
-        public IActionResult ProductDetail(int id)
+        [Route("ProductDetail/{slug}")]
+        public IActionResult ProductDetail(string slug)
         {
             var product = _context.Products
                 .Include(p => p.ProductImages)
                 .Include(p => p.Ratings)
                 .Include(p => p.Comments)
-                .FirstOrDefault(p => p.Id == id && p.Status == 1);
+                .FirstOrDefault(p => p.Slug == slug && p.Status == 1);
 
             if (product == null) return NotFound();
 
@@ -55,7 +55,7 @@ namespace FreshFruit.Controllers
                 from r in _context.Ratings
                 join c in _context.Comments
                     on new { r.ProductId, r.MemberId } equals new { c.ProductId, c.MemberId }
-                where r.ProductId == id && r.Status == 1 && c.Status == 1
+                where r.ProductId == product.Id && r.Status == 1 && c.Status == 1
                 select new RatingWithCommentVM
                 {
                     RatingId = r.Id,
@@ -76,7 +76,7 @@ namespace FreshFruit.Controllers
                 ProductImages = product.ProductImages?.ToList(),
                 RatingsWithComments = ratingsWithComments,
                 RelatedProducts = _context.Products
-                    .Where(p => p.CategoryId == product.CategoryId && p.Id != id && p.Status == 1)
+                    .Where(p => p.CategoryId == product.CategoryId && p.Slug != slug && p.Status == 1)
                     .Take(4).ToList(),
                 AverageRating = ratingsWithComments.Any()
                     ? ratingsWithComments.Average(r => r.RatingValue)
