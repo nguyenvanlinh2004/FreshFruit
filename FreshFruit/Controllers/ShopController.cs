@@ -14,33 +14,71 @@ namespace FreshFruit.Controllers
             _context = context;
         }
 
-        public IActionResult Index(int page = 1, int pageSize = 6)
-        {
-            var query = _context.Products
-                        .Include(p => p.Category)
-                        .Include(r=>r.Ratings)
-                        .Where(p => p.Status == 1);
+		public IActionResult Index(
+	  string? searchName,
+	  List<int>? categoryIds,
+	  double? priceFrom,
+	  double? priceTo,
+	  int page = 1,
+	  int pageSize = 6)
+		{
+			var query = _context.Products
+				.Include(p => p.Category)
+				.Include(p => p.Ratings)
+				.Where(p => p.Status == 1); // chỉ lấy sản phẩm còn hoạt động
 
-            var totalProducts = _context.Products.Count();
-            var totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
+			// Lọc theo tên sản phẩm
+			if (!string.IsNullOrEmpty(searchName))
+			{
+				query = query.Where(p => p.Name.Contains(searchName));
+			}
 
-            var products = _context.Products
-                .Include(p => p.Category)
-                .OrderBy(p => p.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+			// Lọc theo danh mục
+			if (categoryIds != null && categoryIds.Any())
+			{
+				query = query.Where(p => categoryIds.Contains(p.CategoryId));
+			}
 
-            var vm = new ProductListViewModel
-            {
-                Products = products,
-                CurrentPage = page,
-                TotalPages = totalPages
-            };
+			// Lọc theo khoảng giá
+			if (priceFrom.HasValue)
+			{
+				query = query.Where(p => p.Price >= priceFrom.Value);
+			}
+			if (priceTo.HasValue)
+			{
+				query = query.Where(p => p.Price <= priceTo.Value);
+			}
+			ViewBag.Categories = _context.Categories
+			.Where(c => c.Status == 1)
+			.ToList();
+			// Tính tổng sản phẩm sau khi lọc
+			var totalProducts = query.Count();
+			var totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
 
-            return View(vm);
-        }
-        [Route("ProductDetail/{slug}")]
+			// Lấy sản phẩm phân trang
+			var products = query
+				.OrderBy(p => p.Id)
+				.Skip((page - 1) * pageSize)
+				.Take(pageSize)
+				.ToList();
+
+			var vm = new ProductListViewModel
+			{
+				Products = products,
+				CurrentPage = page,
+				TotalPages = totalPages,
+
+				// Giữ lại điều kiện lọc để dùng lại ở View
+				SearchName = searchName,
+				SelectedCategoryIds = categoryIds,
+				PriceFrom = priceFrom,
+				PriceTo = priceTo
+			};
+
+			return View(vm);
+		}
+
+		[Route("ProductDetail/{slug}")]
         public IActionResult ProductDetail(string slug)
         {
             var product = _context.Products
