@@ -7,6 +7,7 @@ namespace FreshFruit.Models.ViewModel
         // Thông tin sản phẩm chính
         public Product? Product { get; set; }
 
+		public string? slug { get; set; }
         // Hình ảnh liên quan đến sản phẩm
         public List<ProductImage>? ProductImages { get; set; }
 
@@ -42,5 +43,6 @@ namespace FreshFruit.Models.ViewModel
         public string? CommentText { get; set; }
         public DateTime? CommentCreatedAt { get; set; }
         public int? CommentStatus { get; set; }
+		public string? FullName { get; set; }
     }
 }

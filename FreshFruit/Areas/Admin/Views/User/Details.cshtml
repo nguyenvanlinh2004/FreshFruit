@@ -1,0 +1,47 @@
+﻿@model FreshFruit.Models.ViewModel.UserViewModel
+<div class="page-wrapper">
+    <h2 class="text-xl font-bold mb-4">Danh sách người dùng</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>ID tài khoản</th>
+        <td>@Model.AccountId</td>
+    </tr>
+    <tr>
+        <th>Email đăng nhập</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Vai trò</th>
+        <td>@(Model.Role == 1 ? "Admin" : "User")</td>
+    </tr>
+    <tr>
+        <th>Trạng thái tài khoản</th>
+        <td class="fw-bold text-@(Model.AccountStatus == 1 ? "success" : "danger")">
+            @(Model.AccountStatus == 1 ? "Hoạt động" : "Bị khóa")
+        </td>
+    </tr>
+    <tr>
+        <th>Họ tên</th>
+        <td>@Model.Fullname</td>
+    </tr>
+    <tr>
+        <th>Số điện thoại</th>
+        <td>@Model.Phone</td>
+    </tr>
+    <tr>
+        <th>Email cá nhân</th>
+        <td>@Model.MemberEmail</td>
+    </tr>
+    <tr>
+        <th>Ngày sinh</th>
+        <td>@Model.Dob?.ToString("dd/MM/yyyy")</td>
+    </tr>
+    <tr>
+        <th>Địa chỉ</th>
+        <td>@Model.Address</td>
+    </tr>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">← Quay lại danh sách</a>
+</div>

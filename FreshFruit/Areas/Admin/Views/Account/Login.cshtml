@@ -1,0 +1,85 @@
+﻿@model FreshFruit.Models.ViewModel.LogInViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập quản trị";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: url('/images/login.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 5% auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+            .login-box h2 {
+                font-weight: bold;
+                color: #28a745;
+                margin-bottom: 25px;
+            }
+
+        .btn-login {
+            background-color: #28a745;
+            border: none;
+        }
+
+            .btn-login:hover {
+                background-color: #218838;
+            }
+
+        .logo {
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box text-center">
+        <img src="/images/login.jpg" alt="Logo FreshFruit" class="logo mb-3" />
+        <h2>Đăng nhập quản trị</h2>
+
+        <form asp-action="Login" asp-controller="Account" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group mb-3 text-start">
+                <label asp-for="UserName" class="form-label">Email</label>
+                <input asp-for="UserName" class="form-control" placeholder="Nhập email..." />
+                <span asp-validation-for="UserName" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group mb-3 text-start">
+                <label asp-for="Password" class="form-label">Mật khẩu</label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="Nhập mật khẩu..." />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ViewBag.Error))
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+
+            <button type="submit" class="btn btn-login w-100 text-white">Đăng nhập</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

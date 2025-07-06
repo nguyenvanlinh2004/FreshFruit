@@ -110,18 +110,17 @@ namespace FreshFruit.Controllers
 
 			if (member != null)
 			{
-				invoices = member.Invoices
-					.Where(i =>
-						(string.IsNullOrEmpty(statusFilter) ||
-							(statusFilter == "1" && i.Status == 1) ||
-							(statusFilter == "0" && i.Status != 1)) &&
-						(!fromDate.HasValue || i.InvoiceDate >= DateOnly.FromDateTime(fromDate.Value)) &&
-						(!toDate.HasValue || i.InvoiceDate <= DateOnly.FromDateTime(toDate.Value))
-
-					)
-					.OrderByDescending(i => i.InvoiceDate)
-					.ToList();
-			}
+                invoices = member.Invoices
+       .Where(i =>
+           (string.IsNullOrEmpty(statusFilter) ||
+            (statusFilter == "1" && i.Status == 1) ||
+            (statusFilter == "0" && i.Status != 1)) &&
+           (!fromDate.HasValue || i.InvoiceDate >= fromDate.Value) &&
+           (!toDate.HasValue || i.InvoiceDate <= toDate.Value)
+       )
+       .OrderByDescending(i => i.InvoiceDate)
+       .ToList();
+            }
 			else
 			{
 				invoices = new List<Invoice>();
