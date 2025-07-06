@@ -5,27 +5,11 @@
 }
 
 <style>
-    html, body {
-        height: 100%;
-        margin: 0;
+    /* Không dùng flex ở đây nữa */
+    .blog-list {
+        min-height: 500px;
     }
 
-        body > .container, /* cái container trong Layout */
-        .blog-list.container {
-            min-height: calc(100vh - 120px); /* trừ chiều cao footer + header */
-            display: flex;
-            flex-direction: column;
-        }
-
-    /* Giữ footer luôn dưới cùng */
-    footer {
-        height: 120px; /* chiều cao footer, sửa cho phù hợp */
-        background-color: #f8f9fa;
-        padding: 1rem;
-        margin-top: auto;
-    }
-
-    /* Các style hiện có */
     .blog-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border-radius: 12px;
@@ -34,10 +18,10 @@
         border: 1px solid #e1e1e1;
     }
 
-        .blog-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
+    .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
 
     .blog-image {
         width: 100%;
@@ -84,11 +68,11 @@
         border-color: #007bff;
     }
 
-        .blog-button:hover {
-            background-color: #007bff;
-            color: #fff;
-            border-color: #007bff;
-        }
+    .blog-button:hover {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
 
     .blog-list h2 {
         color: #343a40;
@@ -96,15 +80,15 @@
         position: relative;
     }
 
-        .blog-list h2::after {
-            content: "";
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: #007bff;
-            margin: 12px auto 0;
-            border-radius: 3px;
-        }
+    .blog-list h2::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 3px;
+        background: #007bff;
+        margin: 12px auto 0;
+        border-radius: 3px;
+    }
 
     .pagination .page-item.active .page-link {
         background-color: #007bff;
@@ -117,9 +101,9 @@
         transition: background-color 0.3s ease;
     }
 
-        .pagination .page-link:hover {
-            background-color: #e9f4ff;
-        }
+    .pagination .page-link:hover {
+        background-color: #e9f4ff;
+    }
 </style>
 
 <section class="blog-list container my-5">
@@ -163,7 +147,6 @@
                         </p>
 
                         <small class="text-muted mb-2 d-block blog-meta">
-                            @* Lấy tên tác giả và ngày đăng *@
                             @{
                                 var fullname = blog.Author?.Members.FirstOrDefault()?.Fullname ?? "Không rõ người viết";
                                 var createdDate = blog.CreatedAt?.ToString("dd/MM/yyyy") ?? "Chưa rõ ngày";

@@ -31,7 +31,16 @@ namespace FreshFruit.Areas.Admin.Controllers
 			var adminId = HttpContext.Session.GetInt32("AdminId");
 			if (adminId == null)
 			{
+
+				var s = startDate.Value.Date;
+				var e = endDate.Value.Date;
+				invoicesByDay = invoicesByDay.Where(i => i.InvoiceDate.Date >= s && i.InvoiceDate.Date <= e);
+
+				ViewBag.StartDate = s.ToString("yyyy-MM-dd");
+				ViewBag.EndDate = e.ToString("yyyy-MM-dd");
+
 				return RedirectToAction("login", "Account");
+
 			}
 			if (filterType == "day" && startDate.HasValue && endDate.HasValue)
             {

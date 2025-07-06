@@ -15,6 +15,7 @@ public partial class FreshFruitDbContext : DbContext
     {
     }
 
+
     public virtual DbSet<Account> Accounts { get; set; }
 
     public virtual DbSet<Blog> Blogs { get; set; }
