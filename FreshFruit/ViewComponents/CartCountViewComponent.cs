@@ -12,7 +12,7 @@ public class CartCountViewComponent : ViewComponent
 
     public IViewComponentResult Invoke()
     {
-        int cartCount = _cartService.GetTotalQuantity();
+        int cartCount =(int) _cartService.GetTotalQuantity();
         return View(cartCount);
     }
 }

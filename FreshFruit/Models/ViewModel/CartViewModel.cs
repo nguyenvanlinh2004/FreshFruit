@@ -4,7 +4,7 @@
     {
         public List<CartItem> CartItems { get; set; } = new List<CartItem>();
         public decimal TotalPrice { get; set; }
-        public int TotalQuantity { get; set; }
+        public decimal TotalQuantity { get; set; }
         public int TotalItems { get; set; }
     }
 }   

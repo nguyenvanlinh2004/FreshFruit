@@ -3,6 +3,7 @@ using FreshFruit.Models.ViewModel;
 using FreshFruit.Services;
 using FreshFruit.Services.Momo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 
@@ -55,7 +56,7 @@ namespace FreshFruit.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        public async Task<IActionResult> AddToCart(int productId, decimal quantity)
         {
             var product = await _productServices.GetProduct(productId);
 
@@ -133,7 +134,7 @@ namespace FreshFruit.Controllers
             };
             return Json(new { success = true, cartViewModel = cartViewModel });
         }
-        public IActionResult UpdateQuantity(int cartItemId, int quantity)
+        public IActionResult UpdateQuantity(int cartItemId, decimal quantity)
         {
             if (!_cartService.UpdateQuantity(cartItemId, quantity))
             {
@@ -183,17 +184,21 @@ namespace FreshFruit.Controllers
                 Phone = member.Phone,
                 Address = member.Address,
                 Vouchers=validVouchers
-                
-            };
-
-            return View(checkoutVM);
+			};
+			Console.WriteLine($"sdyudskjlfv {member.Email}");
+			return View(checkoutVM);
         }
         [HttpPost]
         public async Task<IActionResult> Checkout(CheckOutViewModel checkout)
         {
             var accountId = HttpContext.Session.GetInt32("AccountId");
             var cartItems = _cartService.GetCart().CartItems;
-
+			var member = await _context.Members.FirstOrDefaultAsync(m => m.AccountId == accountId.Value);
+			if (member == null)
+			{
+				return BadRequest(new { success = false, message = "Không tìm thấy thông tin thành viên." });
+			}
+			Console.WriteLine($"dyigsfodjvpgbkopfjioehduif{accountId}");
             if (accountId == null)
             {
                 return RedirectToAction("Login", "Account");
@@ -210,7 +215,7 @@ namespace FreshFruit.Controllers
             var invoice = new Invoice
             {
                 InvoicesCode = $"HD{DateTime.Now:yyyyMMddHHmmssfff}",
-                MemberId = accountId.Value,
+                MemberId = member.Id,
                 Fullname = checkout.invoice.Fullname,
                 Phone = checkout.invoice.Phone?.Trim(),
                 Email = checkout.invoice.Email,

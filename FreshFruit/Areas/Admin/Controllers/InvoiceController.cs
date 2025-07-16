@@ -17,7 +17,6 @@ namespace FreshFruit.Areas.Admin.Controllers
 			_context = context;
 		}
 
-		// Hàm bỏ dấu
 		private string RemoveDiacritics(string text)
 		{
 			if (string.IsNullOrEmpty(text)) return text;
@@ -37,14 +36,13 @@ namespace FreshFruit.Areas.Admin.Controllers
 			return sb.ToString().Normalize(NormalizationForm.FormC).ToLower();
 		}
 
-		public async Task<IActionResult> Index(string searchCustomer, decimal? minTotal, decimal? maxTotal, int page = 1)
+		public async Task<IActionResult> Index(string searchCustomer, decimal? minTotal, decimal? maxTotal, int? status, int page = 1)
 		{
 			var allInvoices = await _context.Invoices
 				.Include(i => i.Member)
 				.OrderByDescending(i => i.InvoiceDate)
 				.ToListAsync();
 
-			// Lọc tên khách hàng
 			if (!string.IsNullOrEmpty(searchCustomer))
 			{
 				var noD = RemoveDiacritics(searchCustomer);
@@ -60,6 +58,9 @@ namespace FreshFruit.Areas.Admin.Controllers
 			if (maxTotal.HasValue)
 				allInvoices = allInvoices.Where(i => i.Total <= maxTotal.Value).ToList();
 
+			if (status.HasValue)
+				allInvoices = allInvoices.Where(i => i.Status == status.Value).ToList();
+
 			var totalItems = allInvoices.Count;
 			var totalPages = (int)Math.Ceiling((double)totalItems / PageSize);
 			var pagedInvoices = allInvoices.Skip((page - 1) * PageSize).Take(PageSize).ToList();
@@ -69,6 +70,7 @@ namespace FreshFruit.Areas.Admin.Controllers
 			ViewBag.SearchCustomer = searchCustomer;
 			ViewBag.MinTotal = minTotal;
 			ViewBag.MaxTotal = maxTotal;
+			ViewBag.Status = status;
 
 			return View(pagedInvoices);
 		}
@@ -78,7 +80,24 @@ namespace FreshFruit.Areas.Admin.Controllers
 			var invoice = await _context.Invoices.FindAsync(id);
 			if (invoice == null) return NotFound();
 
-			invoice.Status = invoice.Status == 1 ? 0 : 1;
+			if (invoice.Status == 0)
+				invoice.Status = 1;
+			else if (invoice.Status == 1)
+				invoice.Status = 0;
+
+			_context.Update(invoice);
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("Index");
+		}
+
+		public async Task<IActionResult> MarkAsCompleted(int id)
+		{
+			var invoice = await _context.Invoices.FindAsync(id);
+			if (invoice == null || invoice.Status != 1)
+				return NotFound();
+
+			invoice.Status = 2;
 			_context.Update(invoice);
 			await _context.SaveChangesAsync();
 

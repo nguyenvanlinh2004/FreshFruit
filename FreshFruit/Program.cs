@@ -19,6 +19,7 @@ context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libw
 // Add services
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHostedService<ExpiredLotProcessor>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddScoped<IInvoiceServices, InvoiceServices>();

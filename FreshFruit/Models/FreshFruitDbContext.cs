@@ -69,13 +69,9 @@ public partial class FreshFruitDbContext : DbContext
 			modelBuilder.Entity<Category>(entity =>
 			{
 				entity.HasData(
-					new Category { Id = 1, Name = "Fruits", Status = 1 },
-					new Category { Id = 2, Name = "Vegetables", Status = 1 },
-					new Category { Id = 3, Name = "Dairy", Status = 1 },
-					new Category { Id = 4, Name = "Bakery", Status = 1 },
-					new Category { Id = 5, Name = "Meat", Status = 1 },
-					new Category { Id = 6, Name = "Beverages", Status = 1 },
-					new Category { Id = 7, Name = "Snacks", Status = 1 }
+					new Category { Id = 1, Name = "Trái cây nhiệt đới", Status = 1 },
+					new Category { Id = 2, Name = "Trái cây ôn đới", Status = 1 },
+					new Category { Id = 3, Name = "Trái cây đặc", Status = 1 }
 				);
 			});
 
@@ -192,13 +188,13 @@ public partial class FreshFruitDbContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasData(
-				 new Product { Id = 1, Name = "Táo Mỹ", CategoryId = 1, Price = 45000, Description = "Táo nhập khẩu Mỹ, giòn ngọt", Image = "tao.jpg", Status = 1, Quantity = 100, ShipmentId = "SHIP001", Slug = "tao-my" },
-	new Product { Id = 2, Name = "Cam Sành", CategoryId = 2, Price = 30000, Description = "Cam sành miền Tây, nhiều nước", Image = "cam.jpg", Status = 1, Quantity = 150, ShipmentId = "SHIP002", Slug = "cam-sanh" },
-	new Product { Id = 3, Name = "Chuối Laba", CategoryId = 3, Price = 20000, Description = "Chuối Laba Đà Lạt chín cây", Image = "chuoi.jpg", Status = 1, Quantity = 120, ShipmentId = "SHIP003", Slug = "chuoi-laba" },
-	new Product { Id = 4, Name = "Nho Ninh Thuận", CategoryId = 4, Price = 60000, Description = "Nho tươi không hạt", Image = "nho.jpg", Status = 1, Quantity = 80, ShipmentId = "SHIP004", Slug = "nho-ninh-thuan" },
-	new Product { Id = 5, Name = "Dưa Hấu", CategoryId = 5, Price = 15000, Description = "Dưa hấu đỏ ruột, ngọt mát", Image = "duahau.jpg", Status = 1, Quantity = 200, ShipmentId = "SHIP005", Slug = "dua-hau" },
-	new Product { Id = 6, Name = "Ổi Lê", CategoryId = 6, Price = 25000, Description = "Ổi lê giòn, ít hạt", Image = "oi.jpg", Status = 1, Quantity = 90, ShipmentId = "SHIP006", Slug = "oi-le" },
-	new Product { Id = 7, Name = "Mít Thái", CategoryId = 7, Price = 40000, Description = "Mít Thái thơm, ngọt", Image = "mit.jpg", Status = 1, Quantity = 70, ShipmentId = "SHIP007", Slug = "mit-thai" }
+				 new Product { Id = 1, Name = "Táo Mỹ", CategoryId = 1, Price = 45000, Description = "Táo nhập khẩu Mỹ, giòn ngọt", Image = "tao.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP001", Slug = "tao-my" },
+	new Product { Id = 2, Name = "Cam Sành", CategoryId = 2, Price = 30000, Description = "Cam sành miền Tây, nhiều nước", Image = "cam.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP002", Slug = "cam-sanh" },
+	new Product { Id = 3, Name = "Chuối Laba", CategoryId = 3, Price = 20000, Description = "Chuối Laba Đà Lạt chín cây", Image = "chuoi.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP003", Slug = "chuoi-laba" },
+	new Product { Id = 4, Name = "Nho Ninh Thuận", CategoryId = 1, Price = 60000, Description = "Nho tươi không hạt", Image = "nho.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP004", Slug = "nho-ninh-thuan" },
+	new Product { Id = 5, Name = "Dưa Hấu", CategoryId = 2, Price = 15000, Description = "Dưa hấu đỏ ruột, ngọt mát", Image = "duahau.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP005", Slug = "dua-hau" },
+	new Product { Id = 6, Name = "Ổi Lê", CategoryId = 3, Price = 25000, Description = "Ổi lê giòn, ít hạt", Image = "oi.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP006", Slug = "oi-le" },
+	new Product { Id = 7, Name = "Mít Thái", CategoryId = 1, Price = 40000, Description = "Mít Thái thơm, ngọt", Image = "mit.jpg", Status = 1, Quantity = 0, ShipmentId = "SHIP007", Slug = "mit-thai" }
 				);
 			entity.HasKey(e => e.Id).HasName("PK_product");
 
@@ -298,13 +294,41 @@ public partial class FreshFruitDbContext : DbContext
 				}
 			);
 		});
-
-
-
-
-
 		OnModelCreatingPartial(modelBuilder);
-    }
+
+		modelBuilder.Entity<Voucher>().HasData(
+	   new Voucher
+	   {
+		   Id = 1,
+		   Name = "Giảm giá 10k",
+		   Code = "DISCOUNT10",
+		   DiscountAmount = 10000,
+		   StartDate = new DateTime(2025, 7, 1),
+		   EndDate = new DateTime(2025, 8, 31),
+		   Status = 1
+	   },
+	   new Voucher
+	   {
+		   Id = 2,
+		   Name = "Giảm giá 20k",
+		   Code = "DISCOUNT20",
+		   DiscountAmount = 50000,
+		   StartDate = new DateTime(2025, 7, 10),
+		   EndDate = new DateTime(2025, 12, 31),
+		   Status = 1
+	   },
+	   new Voucher
+	   {
+		   Id = 3,
+		   Name = "Giảm giá 50k",
+		   Code = "DISCOUNT50",
+		   DiscountAmount = 200000,
+		   StartDate = new DateTime(2025, 11, 25),
+		   EndDate = new DateTime(2025, 11, 30),
+		   Status = 1
+	   }
+	 );
+	}
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

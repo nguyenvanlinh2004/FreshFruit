@@ -39,18 +39,18 @@
                             <tbody id="cart-body">
                                 @foreach (var item in Model.CartItems)
                                 {
-                                    <tr data-product-id="@item.Product.Id">
+                                    <tr data-product-id="@item.Product.Id" data-price="@item.Product.Price">
                                         <td><img src="~/images/@item.Product.Image" class="img-fluid" style="width: 80px;" /></td>
                                         <td>@item.Product.Name</td>
                                         <td>@item.Product.Price?.ToString("N0") ₫</td>
                                         <td>
                                             <form class="update-qty-form">
                                                 <input type="hidden" name="cartItemId" value="@item.CartItemId" />
-                                                <input name="quantity" value="@item.Quantity" type="number" min="1" class="form-control" style="width: 80px;" />
+                                                <input name="quantity" value="@item.Quantity" type="number" min="0.01" step="any" class="form-control" style="width: 80px;" />
                                                 <button type="submit" class="btn btn-sm btn-primary mt-1">Cập nhật</button>
                                             </form>
                                         </td>
-                                        <td class="item-total">@((item.Product.Price * item.Quantity)?.ToString("N0")) ₫</td>
+                                       <td class="item-total">@(( (decimal?)(item.Product.Price ?? 0) * item.Quantity)) ₫</td>
                                         <td>
                                             <form class="remove-item-form">
                                                 <input type="hidden" name="productId" value="@item.Product.Id" />
@@ -101,18 +101,20 @@
 
     <script>
         function updateTotalPrices() {
-            let total = 0;
-            $('#cart-body tr').each(function () {
-                const priceText = $(this).find('td:nth-child(3)').text().replace(/[^\d]/g, '');
-                const quantity = $(this).find('input[name="quantity"]').val();
-                const price = parseInt(priceText);
-                const itemTotal = price * parseInt(quantity);
-                $(this).find('.item-total').text(itemTotal.toLocaleString() + ' ₫');
-                total += itemTotal;
-            });
+    let total = 0;
+    $('#cart-body tr').each(function () {
+        const price = parseFloat($(this).data('price'));
+        const quantity = parseFloat($(this).find('input[name="quantity"]').val());
 
-            $('#sub-total, #grand-total').text(total.toLocaleString() + ' ₫');
+        if (!isNaN(price) && !isNaN(quantity)) {
+            const itemTotal = price * quantity;
+            $(this).find('.item-total').text(itemTotal.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' ₫');
+            total += itemTotal;
         }
+    });
+
+    $('#sub-total, #grand-total').text(total.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' ₫');
+}
 
         $(document).ready(function () {
             // Update Quantity

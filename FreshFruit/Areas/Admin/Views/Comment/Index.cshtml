@@ -1,0 +1,48 @@
+﻿<div class="page-wrapper">
+    @model List<FreshFruit.Models.Comment>
+
+    @{
+        ViewData["Title"] = "Quản lý bình luận";
+    }
+
+    <h2>Quản lý bình luận</h2>
+
+    <div class="text-center align-middle table-responsive mt-3 table-striped table-hover">
+        <table class="table datanew ">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Sản phẩm</th>
+                <th>Người dùng</th>
+                <th>Nội dung</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.Id</td>
+                    <td>@c.Product?.Name</td>
+                    <td>@c.Member?.Fullname</td>
+                    <td>@c.Contents</td>
+                    <td>@c.CreatedAt.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <span class="badge @(c.Status == 1 ? "bg-success" : "bg-secondary")">
+                            @(c.Status == 1 ? "Hiển thị" : "Ẩn")
+                        </span>
+                    </td>
+                    <td>
+                        <form method="post" asp-action="ToggleStatus" asp-controller="Comment" style="display:inline">
+                            <input type="hidden" name="id" value="@c.Id" />
+                            <button class="btn btn-sm btn-warning" title="Đổi trạng thái">Ẩn</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+</div>

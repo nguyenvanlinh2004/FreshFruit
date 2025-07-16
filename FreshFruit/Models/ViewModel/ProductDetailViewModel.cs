@@ -28,7 +28,9 @@ namespace FreshFruit.Models.ViewModel
 
         // Gửi Id sản phẩm trong form POST
         public int ProductId { get; set; }
-    }
+		public int CommentCurrentPage { get; set; }
+		public int CommentTotalPages { get; set; }
+	}
 
     // Sub-ViewModel chứa cả Rating và Comment
     public class RatingWithCommentVM

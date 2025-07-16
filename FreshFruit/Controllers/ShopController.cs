@@ -2,6 +2,7 @@
 using FreshFruit.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace FreshFruit.Controllers
 {
@@ -79,7 +80,7 @@ namespace FreshFruit.Controllers
 		}
 
 		[Route("ProductDetail/{slug}")]
-        public IActionResult ProductDetail(string slug)
+        public IActionResult ProductDetail(string slug, int commentPage = 1, int commentPageSize = 4)
         {
             var product = _context.Products
                 .Include(p => p.ProductImages)
@@ -89,40 +90,63 @@ namespace FreshFruit.Controllers
 
             if (product == null) return NotFound();
 
-            var ratingsWithComments = (
-                from r in _context.Ratings
-				join m in _context.Members on r.MemberId equals m.Id into rm
-				from member in rm.DefaultIfEmpty()
-				join c in _context.Comments
-                    on new { r.ProductId, r.MemberId } equals new { c.ProductId, c.MemberId }
-                where r.ProductId == product.Id && r.Status == 1 && c.Status == 1
-                select new RatingWithCommentVM
-                {
-                    RatingId = r.Id,
-                    ProductId = r.ProductId,
-                    MemberId = r.MemberId,
-                    RatingValue = r.RatingValue,
-                    CreatedAt = r.CreatedAt,
-                    Status = r.Status,
-                    CommentText = c.Contents,
-                    CommentCreatedAt = c.CreatedAt,
-                    CommentStatus = c.Status,
-					 FullName = member != null ? member.Fullname : "Ẩn danh"
-				}
-            ).ToList();
+			var latestRatings = _context.Ratings
+				.Where(r => r.ProductId == product.Id && r.Status == 1)
+				.GroupBy(r => r.MemberId)
+				.Select(g => g.OrderByDescending(x => x.CreatedAt).FirstOrDefault())
+				.ToList();
 
-            var vm = new ProductDetailViewModel
+			var comments = _context.Comments
+				.Where(c => c.ProductId == product.Id && c.Status == 1)
+				.ToList();
+
+			var memberIds = comments.Select(c => c.MemberId).Distinct().ToList();
+			var members = _context.Members
+				.Where(m => memberIds.Contains(m.Id))
+				.ToDictionary(m => m.Id, m => m.Fullname);
+
+			var ratingsWithComments = comments.Select(c =>
+			{
+
+				var rating = latestRatings?.FirstOrDefault(r => r != null && r.MemberId == c.MemberId);
+				var fullName = members.ContainsKey(c.MemberId ?? 0) ? members[c.MemberId ?? 0] : "Ẩn danh";
+				Console.WriteLine($"full name: {fullName}");
+				return new RatingWithCommentVM
+				{
+					RatingId = rating?.Id ?? 0,
+					ProductId = c.ProductId,
+					MemberId = c.MemberId ?? 0,
+					RatingValue = rating?.RatingValue ?? 0,
+					CreatedAt = rating?.CreatedAt ?? c.CreatedAt,
+					Status = rating?.Status ?? 1,
+					CommentText = c.Contents,
+					CommentCreatedAt = c.CreatedAt,
+					CommentStatus = c.Status,
+					FullName = fullName
+				};
+			}).ToList();
+			var totalComments = ratingsWithComments.Count;
+			var totalCommentPages = (int)Math.Ceiling((double)totalComments / commentPageSize);
+			var paginatedComments = ratingsWithComments
+				.OrderByDescending(c => c.CommentCreatedAt)
+				.Skip((commentPage - 1) * commentPageSize)
+				.Take(commentPageSize)
+				.ToList();
+			var vm = new ProductDetailViewModel
             {
                 Product = product,
                 ProductImages = product.ProductImages?.ToList(),
-                RatingsWithComments = ratingsWithComments,
+                RatingsWithComments = paginatedComments,
                 RelatedProducts = _context.Products
                     .Where(p => p.CategoryId == product.CategoryId && p.Slug != slug && p.Status == 1)
                     .Take(4).ToList(),
                 AverageRating = ratingsWithComments.Any()
                     ? ratingsWithComments.Average(r => r.RatingValue)
-                    : 0
-            };
+                    : 0,
+				CommentCurrentPage = commentPage,
+				CommentTotalPages = totalCommentPages
+
+			};
 			ViewBag.Categories = _context.Categories.Where(c => c.Status == 1).ToListAsync();
 			return View(vm);
         }
@@ -133,7 +157,6 @@ namespace FreshFruit.Controllers
             if (!ModelState.IsValid)
             {
 						
-                // Load lại dữ liệu nếu có lỗi
                 model.Product = _context.Products
                     .Include(p => p.ProductImages)
                     .FirstOrDefault(p => p.Id == model.ProductId);
@@ -141,24 +164,30 @@ namespace FreshFruit.Controllers
 				model.ProductImages = _context.ProductImages
                     .Where(pi => pi.ProductId == model.ProductId).ToList();
 
-                model.RatingsWithComments = (from r in _context.Ratings
-                                             join c in _context.Comments on r.Id equals c.Id into rc
-                                             from Comment in rc.DefaultIfEmpty()
-                                             where r.ProductId == model.ProductId
-                                             select new RatingWithCommentVM
-                                             {
-                                                 RatingId = r.Id,
-                                                 ProductId = r.ProductId,
-                                                 MemberId = r.MemberId,
-                                                 RatingValue = r.RatingValue,
-                                                 CreatedAt = r.CreatedAt,
-                                                 Status = r.Status,
-                                                 CommentText = Comment != null ? Comment.Contents : null,
-                                                 CommentCreatedAt = Comment != null ? Comment.CreatedAt : null,
-                                                 CommentStatus = Comment != null ? Comment.Status : null
-                                             }).ToList();
+				model.RatingsWithComments = (
+					from r in _context.Ratings
+					join m in _context.Members on r.MemberId equals m.Id into rm
+					from mem in rm.DefaultIfEmpty()
+					join c in _context.Comments
+					on new { r.ProductId, r.MemberId } equals new { c.ProductId, c.MemberId }
+					where r.ProductId == model.ProductId && r.Status == 1 && c.Status == 1
+					select new RatingWithCommentVM
+					{
+						RatingId = r.Id,
+						ProductId = r.ProductId,
+						MemberId = r.MemberId,
+						RatingValue = r.RatingValue,
+						CreatedAt = r.CreatedAt,
+						Status = r.Status,
+						CommentText = c.Contents,
+						CommentCreatedAt = c.CreatedAt,
+						CommentStatus = c.Status,
+						FullName = mem != null ? mem.Fullname : "Ẩn danh"
+	}
+).ToList();
 
-                model.RelatedProducts = _context.Products
+
+				model.RelatedProducts = _context.Products
                     .Where(p => p.CategoryId == model.Product!.CategoryId && p.Id != model.ProductId && p.Status == 1)
                     .Take(4).ToList();
 
@@ -168,10 +197,18 @@ namespace FreshFruit.Controllers
 
                 return View("ProductDetail", model);
             }
+			var accountId = HttpContext.Session.GetInt32("AccountId");
+			if (accountId == null)
+			{
+				return RedirectToAction("Login", "Account");
+			}
 
-            // Giả lập lấy MemberId (hoặc lấy từ đăng nhập)
-            var memberId = HttpContext.Session.GetInt32("MemberId") ?? 1;
-
+			var member = _context.Members.FirstOrDefault(m => m.AccountId == accountId);
+			if (member == null)
+			{
+				return RedirectToAction("Login", "Account");
+			}
+			var memberId = member.Id;
             // Tạo Rating mới
             var rating = new Rating
             {

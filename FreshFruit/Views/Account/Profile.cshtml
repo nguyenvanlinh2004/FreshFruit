@@ -1,10 +1,12 @@
-﻿@model FreshFruit.Models.Account
+﻿ @model FreshFruit.Models.Account
 @{
     var member = ViewBag.Member as FreshFruit.Models.Member;
     var invoices = ViewBag.Invoices as List<FreshFruit.Models.Invoice>;
     string statusFilter = ViewBag.StatusFilter as string ?? "";
     string fromDate = ViewBag.FromDate as string ?? "";
     string toDate = ViewBag.ToDate as string ?? "";
+    int currentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1;
+    int totalPages = ViewBag.TotalPages != null ? (int)ViewBag.TotalPages : 1;
 }
 <style>
  
@@ -116,7 +118,7 @@
 
     table {
         width: 100%;
-        border-collapse: collapse;
+border-collapse: collapse;
     }
 
     th, td {
@@ -145,7 +147,7 @@
 </style>
 
 <div class="profile-container">
-    <!-- Form cập nhật thông tin -->
+    <!-- Cập nhật tài khoản -->
     <div class="form-section">
         <h2>Thông tin tài khoản</h2>
 
@@ -162,8 +164,8 @@
         <form asp-action="Profile" method="post">
             <input type="hidden" name="id" value="@Model.Id" />
 
-            <label>Email</label>
-            <input type="text" value="@Model.Email" disabled />
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" value="@member?.Email" required />
 
             <label for="fullname">Họ tên</label>
             <input type="text" id="fullname" name="fullname" value="@member?.Fullname" />
@@ -199,21 +201,20 @@
                 <label for="statusFilter">Trạng thái</label>
                 <select name="statusFilter" id="statusFilter">
                     <option value="" selected="@(string.IsNullOrEmpty(statusFilter))">Tất cả</option>
-                    <option value="1" selected="@(statusFilter == "1")">Hoàn thành</option>
-                    <option value="0" selected="@(statusFilter == "0")">Đang xử lý</option>
-                </select>
+                    <option value="0" selected="@(statusFilter == "0")">Chờ xác nhận</option>
+                    <option value="1" selected="@(statusFilter == "1")">Đang giao</option>
+                    <option value="2" selected="@(statusFilter == "2")">Đã hoàn thành</option>
+                    <option value="3" selected="@(statusFilter == "3")">Đã huỷ</option>
+</select>
             </div>
-
             <div>
                 <label for="fromDate">Từ ngày</label>
                 <input type="date" name="fromDate" id="fromDate" value="@fromDate" />
             </div>
-
             <div>
                 <label for="toDate">Đến ngày</label>
                 <input type="date" name="toDate" id="toDate" value="@toDate" />
             </div>
-
             <div>
                 <button type="submit">Lọc</button>
             </div>
@@ -229,6 +230,7 @@
                         <th>Tổng tiền</th>
                         <th>Phương thức</th>
                         <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -239,11 +241,90 @@
                             <td>@invoice.InvoiceDate.ToString("dd/MM/yyyy")</td>
                             <td>@String.Format("{0:N0}₫", invoice.Total)</td>
                             <td>@invoice.PaymentMethod</td>
-                            <td>@(invoice.Status == 1 ? "Hoàn thành" : "Đang xử lý")</td>
+                            <td>
+                                @{
+                                    string statusText = invoice.Status switch
+                                    {
+                                        0 => "Chờ xác nhận",
+                                        1 => "Đang giao",
+                                        2 => "Hoàn thành",
+                                        3 => "Đã huỷ",
+                                        _ => "Không xác định"
+                                    };
+                                    string color = invoice.Status switch
+                                    {
+                                        0 => "#f59e0b",
+                                        1 => "#3b82f6",
+                                        2 => "#10b981",
+                                        3 => "#ef4444",
+                                        _ => "#6b7280"
+                                    };
+                                }
+                                <span style="color: @color;">@statusText</span>
+                            </td>
+                           <td>
+                                <a class="btn btn-sm btn-outline-success" href="@Url.Action("InvoiceDetail", "Account", new { id = invoice.Id })">
+                                            👁️ Xem
+                                 </a>
+                                @if (invoice.Status == 1)
+                                 {
+                                        <form asp-action="CancelInvoice" asp-controller="Invoice" method="post" style="display:inline-block; margin-left: 5px;">
+<input type="hidden" name="id" value="@invoice.Id" />
+                                         <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Bạn có chắc muốn huỷ đơn hàng này không?')">
+                                                ❌ Huỷ
+                                         </button>
+                                         </form>
+                                  }
+                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
+
+            <!-- Phân trang -->
+            <div style="text-align:center; margin-top:20px">
+    <nav>
+        <ul style="display: inline-flex; gap: 8px; list-style: none; padding: 0; align-items:center;">
+            @if (currentPage > 1)
+            {
+                <li>
+                    <a href="@Url.Action("Profile", new { statusFilter, fromDate, toDate, page = currentPage - 1 })"
+                       style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; background: #f0fdf4; color: #16a34a;">
+                        ←
+                    </a>
+                </li>
+            }
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li>
+                    <a href="@Url.Action("Profile", new { statusFilter, fromDate, toDate, page = i })"
+                       style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px;
+                              background: @(i == currentPage ? "#22c55e" : "#f0fdf4");
+                              color: @(i == currentPage ? "white" : "#16a34a");
+                              font-weight: @(i == currentPage ? "bold" : "normal");">
+                        @i
+                    </a>
+                </li>
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <li>
+                    <a href="@Url.Action("Profile", new { statusFilter, fromDate, toDate, page = currentPage + 1 })"
+                       style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; background: #f0fdf4; color: #16a34a;">
+                        →
+                    </a>
+                </li>
+            }
+
+            <li style="padding-left:10px; color:#4b5563; font-size: 0.9rem; align-self: center;">
+                Trang @currentPage / @totalPages
+            </li>
+        </ul>
+    </nav>
+</div>
         }
         else
         {
@@ -251,4 +332,3 @@
         }
     </div>
 </div>
-

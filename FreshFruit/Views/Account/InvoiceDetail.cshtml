@@ -1,0 +1,67 @@
+﻿@model FreshFruit.Models.Invoice
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<h2>Chi tiết đơn hàng - @Model.InvoicesCode</h2>
+
+<div style="margin-bottom: 20px;">
+    <p><strong>Khách hàng:</strong> @Model.Fullname</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>SĐT:</strong> @Model.Phone</p>
+    <p><strong>Địa chỉ:</strong> @Model.Address</p>
+    <p><strong>Ngày mua:</strong> @Model.InvoiceDate.ToString("dd/MM/yyyy")</p>
+    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
+    <p>
+        <strong>Trạng thái:</strong>
+        @switch (Model.Status)
+        {
+            case 0:
+                <span style="color: #f59e0b;">Chờ xác nhận</span>
+                ; break;
+            case 1:
+
+                <span style="color: #3b82f6;">Đang giao</span>
+                ; break;
+            case 2:
+
+                <span style="color: #10b981;">Hoàn thành</span>
+                ; break;
+            case 3:
+
+                <span style="color: #dc2626;">Đã huỷ</span>
+                ; break;
+        }
+    </p>
+</div>
+
+<h3>Sản phẩm trong đơn hàng</h3>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.InvoiceDetails)
+        {
+            <tr>
+            
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity kg</td>
+                <td>@String.Format("{0:N0}₫", item.UnitPrice)</td>
+                <td>@String.Format("{0:N0}₫", item.Total)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div style="text-align:right; margin-top: 20px;">
+    <strong>Tổng cộng: @String.Format("{0:N0}₫", Model.Total)</strong>
+</div>
+
+<a class="btn btn-success mt-3" href="@Url.Action("Profile", "Account")">← Quay lại</a>

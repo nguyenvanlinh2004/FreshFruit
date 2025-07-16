@@ -11,7 +11,7 @@
                 <input type="hidden" name="FinalPrice" value="@Model.TotalPrice" id="FinalPrice" />
 
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" name="invoice.Email" value="@Model.Email" required />
+                    <input type="email" class="form-control" name="invoice.Email" value="@Model.invoice.Email" required />
                     <label>Email</label>
                 </div>
 
@@ -180,6 +180,7 @@
                 $('#discount-amount').text(discount.toLocaleString('vi-VN') + '₫');
                 $('#final-total').text(final.toLocaleString('vi-VN') + '₫');
                 $('#FinalPrice').val(final); // Cập nhật input ẩn
+                $('#invoiceTotalInput').val(final); // cập nhật input ẩn invoice.Total
             });
         });
     </script>
