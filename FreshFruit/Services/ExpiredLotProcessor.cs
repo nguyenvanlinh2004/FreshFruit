@@ -42,12 +42,10 @@ public class ExpiredLotProcessor : IHostedService, IDisposable
 				double currentQuantity = product.Quantity ?? 0;
 
 				product.Quantity = Math.Max(0, currentQuantity - quantityToReduce);
-
 				// Đánh dấu chi tiết này đã hết hạn và đã trừ
 				detail.Status = -1;
 			}
 		}
-
 		context.SaveChanges();
 	}
 

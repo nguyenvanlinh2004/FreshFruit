@@ -76,6 +76,14 @@
     {
         <option value="2">Hoàn thành</option>
     }
+    @if (selectedStatus == 3)
+    {
+        <option value="3" selected>Đã huỷ</option>
+    }
+    else
+    {
+        <option value="3">Đã huỷ</option>
+    }
 </select>
 
 
@@ -116,6 +124,8 @@
                                         <span class="badge bg-info text-dark">Đang giao</span>; break;
                                     case 2:
                                         <span class="badge bg-success">Hoàn thành</span>; break;
+                                    case 3:
+                                        <span class="badge bg-warning">Đã huỷ</span>; break;
                                 }
                             </td>
                             <td>

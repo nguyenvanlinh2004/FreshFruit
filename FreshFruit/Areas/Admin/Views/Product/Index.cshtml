@@ -45,7 +45,7 @@
                                 <th>Giá</th>
                                 <th>Số lượng tồn</th>
                                 <th>Đơn vị</th>
-                                <th>Lô hàng sắp hết hạn</th>
+                                <th>Lô hàng hết hạn</th>
                                 <th class="d-flex justify-content-center gap-2">Hành động</th>
                             </tr>
                         </thead>
@@ -65,7 +65,7 @@
                                         @* <td>@item.Product?.ShipmentId</td> *@
                                         <td>@item.Product?.Category?.Name</td>
                                         <td>@(item.Product?.Price?.ToString("N2") ?? "0.00")</td>
-                                        <td>@item.Product?.Quantity</td>
+                                        <td>@(item.Product?.Quantity?.ToString("N2") ?? "0.00")</td>
                                         <td>Kg</td>
                                         <td>
                                             @foreach (var lot in item.ExpiringLots)

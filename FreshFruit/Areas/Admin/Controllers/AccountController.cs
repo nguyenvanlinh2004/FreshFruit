@@ -31,6 +31,7 @@ namespace FreshFruit.Areas.Admin.Controllers
 			}
 
 			var account = _context.Accounts
+				.Where(p=>p.Status==1)
 				.FirstOrDefault(a => a.Email == model.UserName && a.Password == model.Password && a.Role == 1);
 
 			if (account != null)

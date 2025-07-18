@@ -266,15 +266,12 @@ border-collapse: collapse;
                                 <a class="btn btn-sm btn-outline-success" href="@Url.Action("InvoiceDetail", "Account", new { id = invoice.Id })">
                                             👁️ Xem
                                  </a>
-                                @if (invoice.Status == 1)
+                                @if (invoice.Status == 0)
                                  {
-                                        <form asp-action="CancelInvoice" asp-controller="Invoice" method="post" style="display:inline-block; margin-left: 5px;">
-<input type="hidden" name="id" value="@invoice.Id" />
-                                         <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Bạn có chắc muốn huỷ đơn hàng này không?')">
-                                                ❌ Huỷ
-                                         </button>
-                                         </form>
+                                        <form action="/Account/CancelOrder" method="post">
+                                        <input type="hidden" name="id" value="@invoice.Id" />
+                                        <button type="submit" class="btn btn-danger">Huỷ đơn hàng</button>
+                                   </form>
                                   }
                             </td>
                         </tr>

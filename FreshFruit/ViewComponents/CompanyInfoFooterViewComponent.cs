@@ -1,22 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using FreshFruit.Models;
-using System.Linq;
 
 namespace FreshFruit.ViewComponents
 {
 	public class CompanyInfoFooterViewComponent : ViewComponent
 	{
-		private readonly FreshFruitDbContext _context;
+		private readonly IServiceScopeFactory _scopeFactory;
 
-		public CompanyInfoFooterViewComponent(FreshFruitDbContext context)
+		public CompanyInfoFooterViewComponent(IServiceScopeFactory scopeFactory)
 		{
-			_context = context;
+			_scopeFactory = scopeFactory;
 		}
 
-		public IViewComponentResult Invoke()
+		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			var info = _context.CompanyInfos.FirstOrDefault() ?? new CompanyInfo();
-			return View(info); // Tự động gọi Default.cshtml
+			using var scope = _scopeFactory.CreateScope();
+			var context = scope.ServiceProvider.GetRequiredService<FreshFruitDbContext>();
+
+			var info = await context.CompanyInfos.FirstOrDefaultAsync() ?? new CompanyInfo();
+			return View(info);
 		}
 	}
 }

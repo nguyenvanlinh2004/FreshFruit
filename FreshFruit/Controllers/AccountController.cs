@@ -234,7 +234,7 @@ namespace FreshFruit.Controllers
 				return RedirectToAction(nameof(Profile));
 			}
 
-			if (invoice.Status != 1)
+			if (invoice.Status != 0)
 			{
 				TempData["Error"] = "Chỉ có thể huỷ đơn đang giao.";
 				return RedirectToAction(nameof(Profile));
